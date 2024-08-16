@@ -1,0 +1,19 @@
+<div class="background">
+  <div class="element">
+    <button class="subelement" (click)="create = !create" [disabled]="!create">Spieler*in auswählen</button>
+    <button class="subelement" (click)="create = !create" [disabled]="create">Neue*r Spieler*in</button>
+  </div>
+  <br>
+  @if (create) {
+    <span class="element">Name:</span>
+    <input class="element" #name>
+    <br>
+    <button class="element" (click)="createPlayer(name.value)">Erstellen</button>
+  } @else {
+    <div class="player-list">
+      @for (player of players; track player.id) {
+        <button class="player-button" (click)="selectPlayer(player.id!)">{{ player.name }}</button>
+      }
+    </div>
+  }
+</div>

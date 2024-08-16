@@ -1,0 +1,10 @@
+<div class="body">
+  @for (player of players; track player.id) {
+    @if (!player.hidden) {
+      <div class="player-container" [ngStyle]="{'color': player.color}" @slide-to-right>
+        <span class="player-name">{{ player.name }}</span>
+        <span class="player-score">{{ totalScore ? player.totalScore : player.gameScore }}</span>
+      </div>
+    }
+  }
+</div>

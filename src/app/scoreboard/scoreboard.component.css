@@ -1,0 +1,22 @@
+.body {
+  background: rgba(0, 0, 0, 0.25);
+  width: 250px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.player-container {
+  background: rgba(255, 255, 255, 0.25);
+  font-size: 25px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 10px;
+  width: 75%;
+}
