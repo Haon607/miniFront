@@ -15,3 +15,15 @@ export class Player {
     this.color = 'white'
   }
 }
+
+export class Game {
+  id: number;
+  players: Player[];
+  data: string;
+
+  constructor(id: number, players: Player[], data: string) {
+    this.id = id;
+    this.players = players;
+    this.data = data;
+  }
+}

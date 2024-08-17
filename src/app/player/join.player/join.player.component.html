@@ -10,9 +10,11 @@
     <br>
     <button class="element" (click)="createPlayer(name.value)">Erstellen</button>
   } @else {
+    <span class="element">Game ID:</span>
+    <input class="element" type="number" #gameId>
     <div class="player-list">
       @for (player of players; track player.id) {
-        <button class="player-button" (click)="selectPlayer(player.id!)">{{ player.name }}</button>
+        <button class="player-button" (click)="selectPlayer(gameId.value, player.id!)">{{ player.name }}</button>
       }
     </div>
   }

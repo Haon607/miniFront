@@ -43,6 +43,7 @@ export class ScoreboardComponent {
   constructor(private scoreboardService: ScoreboardService) {
     scoreboardService.playerSubject.subscribe((players: Player[]) => this.players = players)
     scoreboardService.totalSubject.subscribe((totalScore: boolean) => this.totalScore = totalScore)
+    scoreboardService.sortSubject.subscribe(() => this.sort())
   }
 
   async sort() {
