@@ -59,7 +59,7 @@ export class JoinGameComponent implements OnDestroy {
     let playMusic = new Audio('/audio/play.mp3');
     playMusic.play();
     playMusic.addEventListener('ended', () => {
-      this.router.navigateByUrl("/");
+      this.router.navigateByUrl("/game/players");
     });
   }
 }
