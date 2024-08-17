@@ -1,0 +1,12 @@
+.background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.content {
+  color: white;
+  margin: 0;
+  font-size: 250px;
+}

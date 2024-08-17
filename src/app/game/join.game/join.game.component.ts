@@ -31,8 +31,8 @@ export class JoinGameComponent implements OnDestroy {
     startMusic.play();
     this.startAnimation(9);
     startMusic.addEventListener('ended', () => {
-      // this.joinAble = true;
-      // this.getPlayers();
+      this.joinAble = true;
+      this.getPlayers();
     });
 
     this.joinAble = true; //DEBUG
@@ -40,7 +40,7 @@ export class JoinGameComponent implements OnDestroy {
 
     gameService.createGame().subscribe(game => {
       this.game = game
-      // this.game.id = 131; //DEBUG
+      this.game.id = 131; //DEBUG
     });
   }
 
