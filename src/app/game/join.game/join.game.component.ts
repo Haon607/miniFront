@@ -29,6 +29,7 @@ export class JoinGameComponent implements OnDestroy {
   ) {
     let startMusic = new Audio('/audio/start.mp3');
     startMusic.play();
+    this.startAnimation();
     startMusic.addEventListener('ended', () => {
       // this.joinAble = true;
       // this.getPlayers();
@@ -67,5 +68,9 @@ export class JoinGameComponent implements OnDestroy {
     playMusic.addEventListener('ended', () => {
       this.router.navigateByUrl("/game/players");
     });
+  }
+
+  async startAnimation() {
+    await this.squares.randomPath('#FFFFFF', 250, 10, 9);
   }
 }

@@ -17,7 +17,7 @@ export class RulesGameComponent {
   }
 
   async x ()  {
-    await this.squares.circle('#FF0000', 1000, 50);
+    await this.squares.randomPath('#FF0000', 1000, 25, 5);
 
   }
 }
