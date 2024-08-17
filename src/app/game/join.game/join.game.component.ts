@@ -35,7 +35,10 @@ export class JoinGameComponent implements OnDestroy {
     this.joinAble = true; //DEBUG
     this.getPlayers(); //DEBUG
 
-    gameService.createGame().subscribe(game => this.game = game);
+    gameService.createGame().subscribe(game => {
+      this.game = game
+      // this.game.id = 131; //DEBUG
+    });
   }
 
   async getPlayers() {

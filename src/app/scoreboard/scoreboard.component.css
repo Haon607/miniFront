@@ -5,7 +5,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: auto;
+}
+
+.body.no-scroll {
   justify-content: space-around;
+}
+
+.body.scroll {
+  justify-content: start;
 }
 
 .player-container {

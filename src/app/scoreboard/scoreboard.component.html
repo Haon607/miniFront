@@ -1,4 +1,4 @@
-<div class="body">
+<div class="body" #bodyElement [ngClass]="{'no-scroll': !isOverflowing, 'scroll': isOverflowing}">
   @for (player of players; track player.id) {
     @if (!player.hidden) {
       <div class="player-container" [ngStyle]="{'color': player.color}" @slide-to-right>

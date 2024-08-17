@@ -53,7 +53,7 @@ export class PlayerIntroGameComponent {
     );
     this.playerIntroMusic.play();
     this.playerIntroMusic.addEventListener('ended', () => {
-      this.router.navigateByUrl("/game/players");
+      this.skipToNext()
     });
   }
 
@@ -67,6 +67,6 @@ export class PlayerIntroGameComponent {
   skipToNext() {
     this.playerIntroMusic.pause();
     this.playerIntroMusic.currentTime = 0;
-    this.router.navigateByUrl("/game/join");
+    this.router.navigateByUrl("/game/rules/1");
   }
 }

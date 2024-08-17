@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
 import { Player } from "../models";
 import { animate, style, transition, trigger } from "@angular/animations";
-import { NgStyle } from "@angular/common";
+import { NgClass, NgStyle } from "@angular/common";
 import { ColorFader } from "../colorfader";
 import { ScoreboardService } from "./scoreboard.service";
 
@@ -9,7 +9,8 @@ import { ScoreboardService } from "./scoreboard.service";
   selector: 'app-scoreboard',
   standalone: true,
   imports: [
-    NgStyle
+    NgStyle,
+    NgClass
   ],
   templateUrl: './scoreboard.component.html',
   styleUrl: './scoreboard.component.css',
@@ -37,11 +38,16 @@ import { ScoreboardService } from "./scoreboard.service";
   ]
 })
 export class ScoreboardComponent {
+  @ViewChild('bodyElement') bodyElement!: ElementRef;
+  isOverflowing = false;
   totalScore: boolean = true;
   players: Player[] = [];
 
   constructor(private scoreboardService: ScoreboardService) {
-    scoreboardService.playerSubject.subscribe((players: Player[]) => this.players = players)
+    scoreboardService.playerSubject.subscribe((players: Player[]) => {
+      this.players = players;
+      this.checkOverflow();
+    })
     scoreboardService.totalSubject.subscribe((totalScore: boolean) => this.totalScore = totalScore)
     scoreboardService.sortSubject.subscribe(() => this.sort())
   }
@@ -85,5 +91,15 @@ export class ScoreboardComponent {
     for (let player of this.players) {
       new ColorFader().fadeColor(player.color, '#FFFFFF', 1000, (newColor) => player.color = newColor);
     }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkOverflow();
+  }
+
+  checkOverflow() {
+    const bodyEl = this.bodyElement.nativeElement;
+    this.isOverflowing = bodyEl.scrollHeight > bodyEl.clientHeight;
   }
 }
