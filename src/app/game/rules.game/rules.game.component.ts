@@ -53,7 +53,7 @@ export class RulesGameComponent {
   skipToNext() {
     switch (this.activatedRoute.snapshot.paramMap.get('round')) {
       case '1':
-
+        this.router.navigateByUrl('/game/round1')
         break;
       case '2':
         break;

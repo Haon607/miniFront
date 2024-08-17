@@ -40,7 +40,7 @@ export class JoinGameComponent implements OnDestroy {
 
     gameService.createGame().subscribe(game => {
       this.game = game
-      this.game.id = 131; //DEBUG
+      // this.game.id = 131; //DEBUG
     });
   }
 

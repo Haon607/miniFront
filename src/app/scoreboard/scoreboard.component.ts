@@ -46,6 +46,7 @@ export class ScoreboardComponent {
   constructor(private scoreboardService: ScoreboardService) {
     scoreboardService.playerSubject.subscribe((players: Player[]) => {
       this.players = players;
+      console.log(this.players);
       this.checkOverflow();
     })
     scoreboardService.totalSubject.subscribe((totalScore: boolean) => this.totalScore = totalScore)

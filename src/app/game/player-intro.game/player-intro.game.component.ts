@@ -50,6 +50,11 @@ export class PlayerIntroGameComponent {
         let players = game.players.sort((a, b) =>
           b.totalScore - a.totalScore
         )
+        players.forEach(player => {
+          player.gameScore = 0
+        });
+        memory.players = players;
+        console.log(players);
         this.populatePlayers(players);
         this.animate()
       }
