@@ -1,0 +1,5 @@
+<div class="all">
+  <div class="row" *ngFor="let row of squares">
+    <div class="box" *ngFor="let cell of row" [ngStyle]="{'background-color': cell}"></div>
+  </div>
+</div>

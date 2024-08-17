@@ -1,0 +1,19 @@
+.all {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.row {
+  flex-grow: 1;
+  min-width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.box {
+  flex-grow: 1;
+  height: 10vh;
+}

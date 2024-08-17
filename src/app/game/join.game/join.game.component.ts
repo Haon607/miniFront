@@ -5,6 +5,7 @@ import { GameReqService } from "../../service/request/game.req.service";
 import { ScoreboardService } from "../../scoreboard/scoreboard.service";
 import { MemoryGameService } from "../../service/memory/memory.game.service";
 import { Router } from "@angular/router";
+import { SquaresService } from "../../squares/squares.service";
 
 @Component({
   selector: 'app-join.game',
@@ -23,7 +24,8 @@ export class JoinGameComponent implements OnDestroy {
     private gameService: GameReqService,
     private scoreboardService: ScoreboardService,
     private memory: MemoryGameService,
-    private router: Router
+    private router: Router,
+    private squares: SquaresService
   ) {
     let startMusic = new Audio('/audio/start.mp3');
     startMusic.play();
@@ -44,6 +46,7 @@ export class JoinGameComponent implements OnDestroy {
   async getPlayers() {
     while (this.joinAble) {
       await new Promise(resolve => setTimeout(resolve, 500));
+
       this.gameService.getGame(this.game.id).subscribe(game => {
         this.scoreboardService.playerSubject.next(game.players);
         this.game = game;
