@@ -4,6 +4,7 @@ import { GameReqService } from "../../service/request/game.req.service";
 import { MemoryGameService } from "../../service/memory/memory.game.service";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { Router } from "@angular/router";
+import { SquaresService } from "../../squares/squares.service";
 
 @Component({
   selector: 'app-player-intro.game',
@@ -42,13 +43,15 @@ export class PlayerIntroGameComponent {
   constructor(
     private gameService: GameReqService,
     private memory: MemoryGameService,
-    private router: Router
+    private router: Router,
+    private squares: SquaresService
   ) {
     gameService.getGame(memory.gameId).subscribe(game => {
         let players = game.players.sort((a, b) =>
           b.totalScore - a.totalScore
         )
         this.populatePlayers(players);
+        this.animate()
       }
     );
     this.playerIntroMusic.play();
@@ -68,5 +71,11 @@ export class PlayerIntroGameComponent {
     this.playerIntroMusic.pause();
     this.playerIntroMusic.currentTime = 0;
     this.router.navigateByUrl("/game/rules/1");
+  }
+
+  private async animate() {
+    await this.squares.randomPath('#3333FF', 15, 1);
+    await this.squares.all('#3333FF');
+    await this.squares.allFade('#000080', 5000);
   }
 }

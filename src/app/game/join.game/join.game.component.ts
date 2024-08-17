@@ -29,7 +29,7 @@ export class JoinGameComponent implements OnDestroy {
   ) {
     let startMusic = new Audio('/audio/start.mp3');
     startMusic.play();
-    this.startAnimation();
+    this.startAnimation(9);
     startMusic.addEventListener('ended', () => {
       // this.joinAble = true;
       // this.getPlayers();
@@ -40,7 +40,7 @@ export class JoinGameComponent implements OnDestroy {
 
     gameService.createGame().subscribe(game => {
       this.game = game
-      // this.game.id = 131; //DEBUG
+      this.game.id = 131; //DEBUG
     });
   }
 
@@ -65,12 +65,13 @@ export class JoinGameComponent implements OnDestroy {
 
     let playMusic = new Audio('/audio/play.mp3');
     playMusic.play();
+    this.startAnimation(4);
     playMusic.addEventListener('ended', () => {
       this.router.navigateByUrl("/game/players");
     });
   }
 
-  async startAnimation() {
-    await this.squares.randomPath('#FFFFFF', 250, 10, 9);
+  async startAnimation(repeats: number) {
+    await this.squares.randomPath('#FFFFFF', 250, 10, repeats);
   }
 }
