@@ -13,4 +13,5 @@ import { SquaresComponent } from "./squares/squares.component";
 })
 export class AppComponent {
   title = 'wlFront';
+  protected readonly window = window;
 }

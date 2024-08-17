@@ -23,4 +23,8 @@ export class GameReqService {
   getGame(id: number): Observable<Game> {
     return this.http.get<Game>(`${this.url}/${id}`, {});
   }
+
+  modifyData(id: number, route: string, data: string = ''): Observable<Game> {
+    return this.http.put<Game>(`${this.url}/${id}`, [route, data]);
+  }
 }

@@ -5,11 +5,12 @@ import {LaunchGameComponent} from "./game/launch.game/launch.game.component";
 import { IdlePlayerComponent } from "./player/idle.player/idle.player.component";
 import { PlayerIntroGameComponent } from "./game/player-intro.game/player-intro.game.component";
 import { RulesGameComponent } from "./game/rules.game/rules.game.component";
+import { RulesPlayerComponent } from "./player/rules.player/rules.player.component";
 
 export const routes: Routes = [
   {path: "", component: JoinPlayerComponent},
   {path: "idle", component: IdlePlayerComponent},
-  {path: "rules/:round", component: RulesGameComponent},
+  {path: "rules/:round", component: RulesPlayerComponent},
   //---{atop: player routes | below: game routes}---
   {path: "game", component: LaunchGameComponent},
   {path: "game/join", component: JoinGameComponent},

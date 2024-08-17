@@ -1,6 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { GameReqService } from "../../service/request/game.req.service";
 import { MemoryPlayerService } from "../../service/memory/memory.player.service";
+import { Router } from "@angular/router";
+import { routes } from "../../app.routes";
+import { PlayerRouting } from "../playerRouting";
 
 @Component({
   selector: 'app-idle.player',
@@ -9,26 +12,14 @@ import { MemoryPlayerService } from "../../service/memory/memory.player.service"
   templateUrl: './idle.player.component.html',
   styleUrl: './idle.player.component.css'
 })
-export class IdlePlayerComponent implements OnDestroy{
-  endLoop = false;
+export class IdlePlayerComponent {
 
   constructor(
     private gameService: GameReqService,
-    private memory: MemoryPlayerService
+    private memory: MemoryPlayerService,
+    private router: Router,
   ) {
-    this.startLoop();
+    new PlayerRouting().routIf(router, memory, gameService);
   }
 
-  async startLoop() {
-    while (!this.endLoop) {
-      this.gameService.getGame(this.memory.gameId).subscribe(game => {
-        console.log(game)
-      });
-      await new Promise(resolve => setTimeout(resolve, 500));
-    }
-  }
-
-  ngOnDestroy() {
-    this.endLoop = true
-  }
 }

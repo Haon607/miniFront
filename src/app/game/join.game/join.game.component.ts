@@ -18,7 +18,7 @@ import { SquaresService } from "../../squares/squares.service";
 })
 export class JoinGameComponent implements OnDestroy {
   joinAble = false;
-  game: Game = new Game(NaN, [], '')
+  game: Game = new Game(NaN, [], '', '')
 
   constructor(
     private gameService: GameReqService,
@@ -40,7 +40,7 @@ export class JoinGameComponent implements OnDestroy {
 
     gameService.createGame().subscribe(game => {
       this.game = game
-      this.game.id = 131; //DEBUG
+      // this.game.id = 131; //DEBUG
     });
   }
 

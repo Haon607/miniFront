@@ -10,6 +10,12 @@ body {
   overflow: hidden;
 }
 
+@media (max-width: 1919px) {
+  .background {
+    background: #000080;
+  }
+}
+
 .content {
   margin-left: 300px;
   margin-right: 50px;

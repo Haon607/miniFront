@@ -19,11 +19,13 @@ export class Player {
 export class Game {
   id: number;
   players: Player[];
+  route: string;
   data: string;
 
-  constructor(id: number, players: Player[], data: string) {
+  constructor(id: number, players: Player[], route: string, data: string) {
     this.id = id;
     this.players = players;
+    this.route = route;
     this.data = data;
   }
 }
