@@ -1,3 +1,18 @@
 .background {
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.content {
+  text-align: center;
+  h1, p, button {
+    font-size: 100px;
+  }
+}
+
+#title {
+  font-size: 250px;
+}
+

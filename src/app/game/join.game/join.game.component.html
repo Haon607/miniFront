@@ -1,9 +1,14 @@
 <div class="background">
   @if (joinAble) {
     <div class="content">
-      <h1>Join now!</h1>
-      <p>Game ID: {{game.id}}</p>
+      <h1>Jetzt einsteigen!</h1>
+      <p>Spielnummer: {{ game.id }}</p>
+      @if (game.players.length > 0) {
+        <button (click)="startGame()">START</button>
+      }
     </div>
     <app-scoreboard class="scoreboard"></app-scoreboard>
+  } @else {
+    <span id="title">Winning Lines</span>
   }
 </div>

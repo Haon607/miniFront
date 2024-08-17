@@ -26,10 +26,14 @@ export class JoinPlayerComponent {
   }
 
   createPlayer(name: string) {
-    this.playerService.createPlayer(new Player(NaN, name, NaN, 0)).subscribe(() => this.playerService.getPlayers().subscribe(players => {
-      this.players = players;
-      this.create = false;
-    }));
+    this.playerService.createPlayer(new Player(NaN, name, NaN, 0))
+      .subscribe(() => this.playerService.getPlayers()
+        .subscribe(players => {
+            this.players = players;
+            this.create = false;
+          }
+        )
+      );
   }
 
   selectPlayer(gId: string, pId: number) {
@@ -37,7 +41,7 @@ export class JoinPlayerComponent {
       this.gameService.addPlayerToGame(Number(gId), pId).subscribe(game => {
         this.memory.gameId = game.id;
         this.memory.playerId = pId;
-        this.router.navigateByUrl("/player/idle")
+        this.router.navigateByUrl("/idle")
       })
     }
   }

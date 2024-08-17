@@ -6,7 +6,7 @@ import { IdlePlayerComponent } from "./player/idle.player/idle.player.component"
 
 export const routes: Routes = [
   {path: "", component: JoinPlayerComponent},
-  {path: "player/idle", component: IdlePlayerComponent},
+  {path: "idle", component: IdlePlayerComponent},
   {path: "game", component: LaunchGameComponent},
   {path: "game/join", component: JoinGameComponent},
 ];

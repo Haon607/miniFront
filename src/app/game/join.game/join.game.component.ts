@@ -3,6 +3,8 @@ import { Game } from "../../models";
 import { ScoreboardComponent } from "../../scoreboard/scoreboard.component";
 import { GameReqService } from "../../service/request/game.req.service";
 import { ScoreboardService } from "../../scoreboard/scoreboard.service";
+import { MemoryGameService } from "../../service/memory/memory.game.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-join.game',
@@ -17,13 +19,19 @@ export class JoinGameComponent implements OnDestroy {
   joinAble = false;
   game: Game = new Game(NaN, [], '')
 
-  constructor(private gameService: GameReqService, private scoreboardService: ScoreboardService) {
+  constructor(
+    private gameService: GameReqService,
+    private scoreboardService: ScoreboardService,
+    private memory: MemoryGameService,
+    private router: Router
+  ) {
     let startMusic = new Audio('/audio/start.mp3');
     startMusic.play();
     startMusic.addEventListener('ended', () => {
       // this.joinAble = true;
       // this.getPlayers();
     });
+
     this.joinAble = true; //DEBUG
     this.getPlayers(); //DEBUG
 
@@ -33,11 +41,25 @@ export class JoinGameComponent implements OnDestroy {
   async getPlayers() {
     while (this.joinAble) {
       await new Promise(resolve => setTimeout(resolve, 500));
-      this.gameService.getGame(this.game.id).subscribe(game => this.scoreboardService.playerSubject.next(game.players));
+      this.gameService.getGame(this.game.id).subscribe(game => {
+        this.scoreboardService.playerSubject.next(game.players);
+        this.game = game;
+      });
     }
   }
 
   ngOnDestroy() {
     this.joinAble = false;
+  }
+
+  startGame() {
+    this.joinAble = false
+    this.memory.gameId = this.game.id;
+
+    let playMusic = new Audio('/audio/play.mp3');
+    playMusic.play();
+    playMusic.addEventListener('ended', () => {
+      this.router.navigateByUrl("/");
+    });
   }
 }
