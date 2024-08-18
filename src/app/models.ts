@@ -5,6 +5,7 @@ export class Player {
   totalScore: number;
   hidden: boolean;
   color: string;
+  input: string;
 
   constructor(id: number, name: string, gameScore: number, totalScore: number) {
     this.id = id;
@@ -12,7 +13,8 @@ export class Player {
     this.gameScore = gameScore;
     this.totalScore = totalScore;
     this.hidden = false;
-    this.color = 'white'
+    this.color = 'white';
+    this.input = '';
   }
 }
 

@@ -19,4 +19,12 @@ export class PlayerReqService {
   createPlayer(body: Player): Observable<Player> {
     return this.http.post<Player>(`${this.url}`, body);
   }
+
+  setInput(id: number, input: String): Observable<Player> {
+    return this.http.post<Player>(`${this.url}/${id}`, input);
+  }
+
+  deleteInputs(): Observable<Player[]> {
+    return this.http.delete<Player[]>(`${this.url}`);
+  }
 }

@@ -80,6 +80,6 @@ export class PlayerIntroGameComponent {
   private async animate() {
     await this.squares.randomPath('#3333FF', 15, 1);
     await this.squares.all('#3333FF');
-    await this.squares.allFade('#000080', 5000);
+    await this.squares.allFade('#000080', 500);
   }
 }

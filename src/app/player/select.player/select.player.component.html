@@ -1,0 +1,11 @@
+<div class="background">
+  @if (selected) {
+    <span class="element"> Ausgewählt: {{ selected }}</span>
+    <br>
+  }
+  <div class="selector-list">
+    @for (selection of toSelect; track selection) {
+      <button class="selector-button" [ngStyle]="{'background': selected === selection ? '#FFFF00' : ''}" (click)="select(selection)">{{ selection }}</button>
+    }
+  </div>
+</div>

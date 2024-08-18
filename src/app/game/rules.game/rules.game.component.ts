@@ -46,7 +46,7 @@ export class RulesGameComponent {
     await new Promise(resolve => setTimeout(resolve, 250));
     this.displayHints = true;
     await this.squares.all('#3333FF');
-    await this.squares.allFade('#000080', 5000);
+    await this.squares.allFade('#000080', 500);
   }
 
   skipToNext() {

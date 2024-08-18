@@ -8,6 +8,7 @@ import { MemoryGameService } from "../../service/memory/memory.game.service";
 import { SquaresService } from "../../squares/squares.service";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { NgStyle } from "@angular/common";
+import { PlayerReqService } from "../../service/request/player.req.service";
 
 @Component({
   selector: 'app-first.round.game',
@@ -52,6 +53,7 @@ export class FirstRoundGameComponent {
     private gameService: GameReqService,
     private scoreboard: ScoreboardService,
     private squares: SquaresService,
+    private playerService: PlayerReqService,
   ) {
     gameService.modifyData(memory.gameId, '/idle').subscribe(game => {
       this.game = game;
@@ -90,6 +92,10 @@ export class FirstRoundGameComponent {
     this.squares.line(9, '#3333FF', 1000, 1, 1, false, true)
     await new Promise(resolve => setTimeout(resolve, 10000))
 
+    this.gameService.modifyData(this.memory.gameId, "/idle", '').subscribe(game => {
+      this.game = game;
+    });
+
     this.squares.all('#5555FF')
     this.squares.allFade('#000080', 250)
 
@@ -102,6 +108,8 @@ export class FirstRoundGameComponent {
     this.music.play();
 
     this.questionModel.question = "FRAGE " + (questionNumber + 1);
+
+    this.playerService.deleteInputs().subscribe(() => {})
 
     await new Promise(resolve => setTimeout(resolve, 1000))
 
@@ -118,6 +126,16 @@ export class FirstRoundGameComponent {
       this.questionModel.answers.push(answer);
       await new Promise(resolve => setTimeout(resolve, 25));
     }
+
+    let selectable = '';
+
+    for (let ans of this.questionModel.answers) {
+      selectable = selectable + '§' + ans.answer;
+    }
+
+    this.gameService.modifyData(this.memory.gameId, '/select', selectable.substring(1)).subscribe(game => {
+      this.game = game;
+    });
 
     await new Promise(resolve => setTimeout(resolve, 3000));
   }
