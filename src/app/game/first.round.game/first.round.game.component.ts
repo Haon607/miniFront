@@ -129,6 +129,8 @@ export class FirstRoundGameComponent {
 
     let currentAnswers = this.game!.questionFirsts[0].answers;
 
+    currentAnswers = this.squares.shuffleArray(currentAnswers);
+
     currentAnswers = currentAnswers.filter(ans => ans.likely > questionNumber);
 
     for (let answer of currentAnswers) {
@@ -182,16 +184,22 @@ export class FirstRoundGameComponent {
     sfx.src = "/audio/right_or_wrong.mp3";
     sfx.play();
 
+    let allRight = true;
+    let allWrong = true;
+
     for (let player of this.memory.players) {
       let selectedAnswer = this.questionModel.answers.find(ans => ans.answer === player.input);
       if (selectedAnswer && selectedAnswer.isCorrect) {
         this.awardPoint(player, questionNumber)
+        allWrong = false;
+      } else {
+        allRight = false;
       }
     }
 
     this.setAnswerColors();
 
-    await this.squares.allLine('#008000', 250, 5, 2, true, false, '#800000');
+    await this.squares.allLine(allWrong ? '#800000' : '#008000', 250, 5, 2, true, false, allRight ? '#008000' :'#800000');
 
     await new Promise(resolve => setTimeout(resolve, 4000));
     this.scoreboard.sortSubject.next();

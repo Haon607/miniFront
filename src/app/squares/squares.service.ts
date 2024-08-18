@@ -91,7 +91,7 @@ export class SquaresService {
     });
   }
 
-  private shuffleArray<T>(array: T[]): T[] {
+  shuffleArray<T>(array: T[]): T[] {
     for (let i = array.length - 1; i > 0; i--) {
       // Generate a random index
       const j = Math.floor(Math.random() * (i + 1));
