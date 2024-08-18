@@ -34,7 +34,6 @@ export class JoinGameComponent implements OnDestroy {
     //   this.joinAble = true;
     //   this.getPlayers();
     // });
-
     this.joinAble = true; //DEBUG
     this.getPlayers(); //DEBUG
 
