@@ -6,7 +6,7 @@
     }
     <div id="answersContainer">
       @for (answer of questionModel.answers; track questionModel.answers) {
-        <div class="answer" @slide>{{ answer.answer }}</div>
+        <div class="answer" [ngStyle]="{'background': answer.color}" @slide>{{ answer.answer }}</div>
       }
     </div>
   </div>

@@ -30,7 +30,7 @@ export class RulesGameComponent {
         this.rulesMusic.play();
         this.startAnimation1();
         this.rulesMusic.addEventListener('ended', () => {
-          this.skipToNext();
+          // this.skipToNext();
         });
         break;
       case '2':
