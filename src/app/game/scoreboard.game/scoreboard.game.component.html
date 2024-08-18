@@ -1,1 +1,9 @@
-<p>scoreboard.game works!</p>
+<div class="background" (click)="skipToNext()">
+  @for (player of players; track player.id) {
+    <div class="player-container" @slide>
+      <span class="player-name">{{ player.name }}</span>
+      <span class="player-score">{{ player.gameScore }}</span>
+      <span class="player-score">{{ player.totalScore + player.gameScore }}</span>
+    </div>
+  }
+</div>

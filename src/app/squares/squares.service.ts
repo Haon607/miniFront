@@ -27,6 +27,23 @@ export class SquaresService {
     });
   }
 
+  async allVerticalLine(color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true, alt: boolean = false, altColor: string = color) {
+    for (let col = 0; col < 10; col++) {
+      this.verticalLine(col, col % 2 === 0 ? color : altColor, time, tailLength, repeats, fadeBack, alt);
+    }
+  }
+
+  async verticalLine(col: number, color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true, alt: boolean = false) {
+    let path = [
+      [0, col], [1, col], [2, col], [3, col], [4, col], [5, col], [6, col], [7, col], [8, col], [9, col]
+    ]
+    if (alt) {
+      path = path.reverse();
+    }
+    await this.anyPath(path, color, time, tailLength, repeats, fadeBack);
+  }
+
+
   async allLine(color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true, alt: boolean = false, altColor: string = color){
     for (let row = 0; row < 10; row++) {
       this.line(row, row % 2 === 0 ? color : altColor, time, tailLength, repeats, fadeBack, alt && row % 2 ===0);

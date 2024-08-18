@@ -80,7 +80,7 @@ export class FirstRoundGameComponent {
         await this.eliminateAnswers(i);
       }
     }
-    // this.router.navigateByUrl("/rules/2")
+    this.router.navigateByUrl("/scoreboard/1")
   }
 
   private async startTimer(questionNumber: number) {

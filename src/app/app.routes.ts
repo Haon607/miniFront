@@ -8,16 +8,20 @@ import { RulesGameComponent } from "./game/rules.game/rules.game.component";
 import { RulesPlayerComponent } from "./player/rules.player/rules.player.component";
 import { FirstRoundGameComponent } from "./game/first.round.game/first.round.game.component";
 import { SelectPlayerComponent } from "./player/select.player/select.player.component";
+import {ScoreboardPlayerComponent} from "./player/scoreboard.player/scoreboard.player.component";
+import {ScoreboardGameComponent} from "./game/scoreboard.game/scoreboard.game.component";
 
 export const routes: Routes = [
   {path: "", component: JoinPlayerComponent},
   {path: "idle", component: IdlePlayerComponent},
   {path: "rules/:round", component: RulesPlayerComponent},
   {path: "select", component: SelectPlayerComponent},
+  {path: "scoreboard/:round", component: ScoreboardPlayerComponent},
   //---{atop: player routes | below: game routes}---
   {path: "game", component: LaunchGameComponent},
   {path: "game/join", component: JoinGameComponent},
   {path: "game/players", component: PlayerIntroGameComponent},
   {path: "game/rules/:round", component: RulesGameComponent},
   {path: "game/round1", component: FirstRoundGameComponent},
+  {path: "game/scoreboard/:round", component: ScoreboardGameComponent},
 ];
