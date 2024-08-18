@@ -27,17 +27,17 @@ export class SquaresService {
     });
   }
 
-  async circle(color: string, time: number, tailLength: number, repeats: number = 1) {
+  async circle(color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true) {
     let path = [
       [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8], [0, 9],
       [1, 9], [2, 9], [3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9],
       [9, 8], [9, 7], [9, 6], [9, 5], [9, 4], [9, 3], [9, 2], [9, 1], [9, 0],
       [8, 0], [7, 0], [6, 0], [5, 0], [4, 0], [3, 0], [2, 0], [1, 0]
     ]
-    await this.anyPath(path, color, time, tailLength, repeats);
+    await this.anyPath(path, color, time, tailLength, repeats, fadeBack);
   }
 
-  async randomPath(color: string, time: number, tailLength: number, repeats: number = 1) {
+  async randomPath(color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true) {
     let path = [
       [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8], [0, 9],
       [1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [1, 6], [1, 7], [1, 8], [1, 9],
@@ -51,15 +51,17 @@ export class SquaresService {
       [9, 0], [9, 1], [9, 2], [9, 3], [9, 4], [9, 5], [9, 6], [9, 7], [9, 8], [9, 9]
     ]
     path = this.shuffleArray(path);
-    await this.anyPath(path, color, time, tailLength, repeats);
+    await this.anyPath(path, color, time, tailLength, repeats, fadeBack);
   }
 
-  async anyPath(path: number[][], color: string, time: number, tailLength: number, repeats: number = 1) {
+  async anyPath(path: number[][], color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true) {
     for (let i = 0; i < repeats; i++) {
       for (const coords of path) {
         let prevColor = this.squaresData[coords[0]][coords[1]];
         this.squaresData[coords[0]][coords[1]] = color;
-        this.fadeAndUpdate(coords[0], coords[1], prevColor, time)
+        if (fadeBack) {
+          this.fadeAndUpdate(coords[0], coords[1], prevColor, time)
+        }
         await new Promise(resolve => setTimeout(resolve, time / tailLength));
       }
     }

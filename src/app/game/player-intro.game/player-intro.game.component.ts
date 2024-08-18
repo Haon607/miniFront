@@ -54,7 +54,6 @@ export class PlayerIntroGameComponent {
           player.gameScore = 0
         });
         memory.players = players;
-        console.log(players);
         this.populatePlayers(players);
         this.animate()
       }

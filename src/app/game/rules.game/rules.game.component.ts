@@ -41,7 +41,6 @@ export class RulesGameComponent {
 
   }
 
-
   private async startAnimation1() {
     await this.squares.circle('#3333FF', 200, 10, 2);
     await new Promise(resolve => setTimeout(resolve, 250));
@@ -51,6 +50,8 @@ export class RulesGameComponent {
   }
 
   skipToNext() {
+    this.rulesMusic.pause();
+    this.rulesMusic.currentTime = 0;
     switch (this.activatedRoute.snapshot.paramMap.get('round')) {
       case '1':
         this.router.navigateByUrl('/game/round1')
