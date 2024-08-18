@@ -14,6 +14,7 @@ import { GameReqService } from "../../service/request/game.req.service";
 export class RulesGameComponent {
   displayHints: boolean = false;
   rulesMusic = new Audio();
+  roundNumber = '';
 
   constructor(
     private squares: SquaresService,
@@ -22,9 +23,10 @@ export class RulesGameComponent {
     private memory: MemoryGameService,
     private gameService: GameReqService,
   ) {
-    gameService.modifyData(memory.gameId, '/rules/' + activatedRoute.snapshot.paramMap.get('round')).subscribe();
+    gameService.modifyData(memory.gameId, '/rules/' + this.roundNumber).subscribe();
     this.displayHints = false;
-    switch (activatedRoute.snapshot.paramMap.get('round')) {
+    this.roundNumber = activatedRoute.snapshot.paramMap.get('round')!;
+    switch (this.roundNumber) {
       case '1':
         this.rulesMusic.src = '/audio/rules1.mp3';
         this.rulesMusic.play();
@@ -52,7 +54,7 @@ export class RulesGameComponent {
   skipToNext() {
     this.rulesMusic.pause();
     this.rulesMusic.currentTime = 0;
-    switch (this.activatedRoute.snapshot.paramMap.get('round')) {
+    switch (this.roundNumber) {
       case '1':
         this.router.navigateByUrl('/game/round1')
         break;
