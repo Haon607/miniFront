@@ -80,10 +80,17 @@ export class FirstRoundGameComponent {
         await this.eliminateAnswers(i);
       }
     }
-    this.router.navigateByUrl("/scoreboard/1")
+    this.music.pause();
+    this.router.navigateByUrl("/game/scoreboard/1")
   }
 
   private async startTimer(questionNumber: number) {
+    let selectable = '';
+    for (let ans of this.questionModel.answers) {
+      selectable = selectable + '§' + ans.answer;
+    }
+    this.gameService.modifyData(this.memory.gameId, '/select', selectable.substring(1)).subscribe(game => {});
+
     this.music.pause();
     this.music.src = "/audio/round1timer" + (questionNumber + 1) + ".mp3";
     this.music.play();
@@ -117,6 +124,9 @@ export class FirstRoundGameComponent {
     this.music.src = "/audio/round1question.mp3";
     this.music.play();
 
+    this.squares.colorEdges('#5555FF');
+    this.squares.fadeEdges('#000080', 4000);
+
     this.questionModel.question = "FRAGE " + (questionNumber + 1);
 
     this.playerService.deleteInputs().subscribe(() => {})
@@ -140,14 +150,6 @@ export class FirstRoundGameComponent {
       await new Promise(resolve => setTimeout(resolve, 25));
     }
 
-    let selectable = '';
-
-    for (let ans of this.questionModel.answers) {
-      selectable = selectable + '§' + ans.answer;
-    }
-
-    this.gameService.modifyData(this.memory.gameId, '/select', selectable.substring(1)).subscribe(game => {});
-
     await new Promise(resolve => setTimeout(resolve, 3000));
   }
 
@@ -156,7 +158,7 @@ export class FirstRoundGameComponent {
     this.music.play();
     await this.squares.randomPath('#3333FF', 15, 1, 1, false);
     await this.squares.all('#5555FF');
-    await this.squares.allFade('#000080', 5000);
+    await this.squares.allFade('#000080', 2500);
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
 

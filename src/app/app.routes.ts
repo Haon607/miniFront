@@ -22,6 +22,6 @@ export const routes: Routes = [
   {path: "game/join", component: JoinGameComponent},
   {path: "game/players", component: PlayerIntroGameComponent},
   {path: "game/rules/:round", component: RulesGameComponent},
-  {path: "game/round1", component: FirstRoundGameComponent},
+  {path: "game/round/1", component: FirstRoundGameComponent},
   {path: "game/scoreboard/:round", component: ScoreboardGameComponent},
 ];

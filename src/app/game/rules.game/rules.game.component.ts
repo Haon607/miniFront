@@ -23,9 +23,10 @@ export class RulesGameComponent {
     private memory: MemoryGameService,
     private gameService: GameReqService,
   ) {
-    gameService.modifyData(memory.gameId, '/rules/' + this.roundNumber).subscribe();
-    this.displayHints = false;
     this.roundNumber = activatedRoute.snapshot.paramMap.get('round')!;
+
+    gameService.modifyData(memory.gameId, '/rules/' + this.roundNumber).subscribe(() => {});
+    this.displayHints = false;
 
     this.rulesMusic.src = '/audio/rules.mp3';
     this.rulesMusic.play();

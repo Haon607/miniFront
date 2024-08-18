@@ -27,6 +27,55 @@ export class SquaresService {
     });
   }
 
+  async colorSquares(coords: number[][], color: string) {
+    coords.forEach(([rowIndex, colIndex]) => {
+      this.squaresData[rowIndex][colIndex] = color;
+    });
+    this.squares.next([...this.squaresData]);
+  }
+
+  async fadeSquares(coords: number[][], color: string, time: number) {
+    coords.forEach(([rowIndex, colIndex]) => {
+      this.fadeAndUpdate(rowIndex, colIndex, color, time);
+    });
+  }
+
+  colorEdges(color: string) {
+    const edgeCoords = this.getEdgeCoords();
+    this.colorSquares(edgeCoords, color);
+  }
+
+  fadeEdges(color: string, time: number) {
+    const edgeCoords = this.getEdgeCoords();
+    this.fadeSquares(edgeCoords, color, time);
+  }
+
+  private getEdgeCoords(): number[][] {
+    let coords: number[][] = [];
+
+    // Top edge
+    for (let col = 0; col < 10; col++) {
+      coords.push([0, col]);
+    }
+
+    // Bottom edge
+    for (let col = 0; col < 10; col++) {
+      coords.push([9, col]);
+    }
+
+    // Left edge
+    for (let row = 1; row < 9; row++) {
+      coords.push([row, 0]);
+    }
+
+    // Right edge
+    for (let row = 1; row < 9; row++) {
+      coords.push([row, 9]);
+    }
+
+    return coords;
+  }
+
   async allVerticalLine(color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true, alt: boolean = false, altColor: string = color) {
     for (let col = 0; col < 10; col++) {
       this.verticalLine(col, col % 2 === 0 ? color : altColor, time, tailLength, repeats, fadeBack, alt);
