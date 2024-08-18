@@ -27,6 +27,34 @@ export class SquaresService {
     });
   }
 
+  async allLine(color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true){
+    for (let row = 0; row < 10; row++) {
+      let path = [
+        [row, 0], [row, 1], [row, 2], [row, 3], [row, 4], [row, 5], [row, 6], [row, 7], [row, 8], [row, 9]
+      ]
+      this.anyPath(path, color, time, tailLength, repeats, fadeBack);
+    }
+  }
+
+  async allLineAlt(color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true){
+    for (let row = 0; row < 10; row++) {
+      let path = [
+        [row, 0], [row, 1], [row, 2], [row, 3], [row, 4], [row, 5], [row, 6], [row, 7], [row, 8], [row, 9]
+      ]
+      if (row % 2 === 0) {
+        path = path.reverse();
+      }
+      this.anyPath(path, color, time, tailLength, repeats, fadeBack);
+    }
+  }
+
+  async line(row: number, color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true){
+    let path = [
+      [row, 0], [row, 1], [row, 2], [row, 3], [row, 4], [row, 5], [row, 6], [row, 7], [row, 8], [row, 9]
+    ]
+    await this.anyPath(path, color, time, tailLength, repeats, fadeBack);
+  }
+
   async circle(color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true) {
     let path = [
       [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8], [0, 9],
