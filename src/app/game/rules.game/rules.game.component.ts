@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { SquaresService } from "../../squares/squares.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { MemoryGameService } from "../../service/memory/memory.game.service";
-import { GameReqService } from "../../service/request/game.req.service";
+import {Component} from '@angular/core';
+import {SquaresService} from "../../squares/squares.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {MemoryGameService} from "../../service/memory/memory.game.service";
+import {GameReqService} from "../../service/request/game.req.service";
 
 @Component({
   selector: 'app-rules.game',
@@ -26,24 +26,17 @@ export class RulesGameComponent {
     gameService.modifyData(memory.gameId, '/rules/' + this.roundNumber).subscribe();
     this.displayHints = false;
     this.roundNumber = activatedRoute.snapshot.paramMap.get('round')!;
-    switch (this.roundNumber) {
-      case '1':
-        this.rulesMusic.src = '/audio/rules1.mp3';
-        this.rulesMusic.play();
-        this.startAnimation1();
-        this.rulesMusic.addEventListener('ended', () => {
-          // this.skipToNext();
-        });
-        break;
-      case '2':
-        break;
-      case '3':
-        break;
-    }
+
+    this.rulesMusic.src = '/audio/rules.mp3';
+    this.rulesMusic.play();
+    this.startAnimation();
+    this.rulesMusic.addEventListener('ended', () => {
+      // this.skipToNext();
+    });
 
   }
 
-  private async startAnimation1() {
+  private async startAnimation() {
     await this.squares.circle('#3333FF', 200, 10, 2);
     await new Promise(resolve => setTimeout(resolve, 250));
     this.displayHints = true;
@@ -54,14 +47,6 @@ export class RulesGameComponent {
   skipToNext() {
     this.rulesMusic.pause();
     this.rulesMusic.currentTime = 0;
-    switch (this.roundNumber) {
-      case '1':
-        this.router.navigateByUrl('/game/round1')
-        break;
-      case '2':
-        break;
-      case '3':
-        break;
-    }
+    this.router.navigateByUrl(`/game/round/${this.roundNumber}`)
   }
 }
