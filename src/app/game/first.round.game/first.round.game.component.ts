@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from "@angular/router";
 import { GameReqService } from "../../service/request/game.req.service";
-import { Game, QuestionFirst } from "../../models";
+import { Game, Player, QuestionFirst } from "../../models";
 import { ScoreboardComponent } from "../../scoreboard/scoreboard.component";
 import { ScoreboardService } from "../../scoreboard/scoreboard.service";
 import { MemoryGameService } from "../../service/memory/memory.game.service";
@@ -92,14 +92,24 @@ export class FirstRoundGameComponent {
     this.squares.line(9, '#3333FF', 1000, 1, 1, false, true)
     await new Promise(resolve => setTimeout(resolve, 10000))
 
-    this.gameService.modifyData(this.memory.gameId, "/idle", '').subscribe(game => {
-      this.game = game;
-    });
+    this.gameService.modifyData(this.memory.gameId, "/idle", '').subscribe(game => {});
+
 
     this.squares.all('#5555FF')
     this.squares.allFade('#000080', 250)
 
-    await new Promise(resolve => setTimeout(resolve, 2500))
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    this.gameService.getGame(this.memory.gameId).subscribe(game => {
+      game.players.forEach(gamePlayer => {
+        const memoryPlayer = this.memory.players.find(memoryPlayer => gamePlayer.id === memoryPlayer.id);
+        if (memoryPlayer) {
+          memoryPlayer.input = gamePlayer.input;
+        }
+      });
+    })
+
+    await new Promise(resolve => setTimeout(resolve, 1500))
   }
 
   private async introduceQuestion(questionNumber: number) {
@@ -113,16 +123,17 @@ export class FirstRoundGameComponent {
 
     await new Promise(resolve => setTimeout(resolve, 1000))
 
-    this.questionModel.question = this.game!.questionFirsts[questionNumber].question;
+    this.questionModel.question = this.game!.questionFirsts[0].question;
 
     await new Promise(resolve => setTimeout(resolve, 3000))
 
-    let currentAnswers = this.game!.questionFirsts[questionNumber].answers;
+    let currentAnswers = this.game!.questionFirsts[0].answers;
 
     currentAnswers = currentAnswers.filter(ans => ans.likely > questionNumber);
 
     for (let answer of currentAnswers) {
-      answer.color = "#FFFFFF88"
+      answer.color = "#FFFFFF88";
+      answer.players = [];
       this.questionModel.answers.push(answer);
       await new Promise(resolve => setTimeout(resolve, 25));
     }
@@ -133,9 +144,7 @@ export class FirstRoundGameComponent {
       selectable = selectable + '§' + ans.answer;
     }
 
-    this.gameService.modifyData(this.memory.gameId, '/select', selectable.substring(1)).subscribe(game => {
-      this.game = game;
-    });
+    this.gameService.modifyData(this.memory.gameId, '/select', selectable.substring(1)).subscribe(game => {});
 
     await new Promise(resolve => setTimeout(resolve, 3000));
   }
@@ -153,6 +162,19 @@ export class FirstRoundGameComponent {
     let sfx = new Audio("/audio/answer_reveal.mp3");
     sfx.play();
 
+    this.questionModel.answers.forEach(ans => ans.players = []);
+
+    for (let player of this.memory.players) {
+      if (player) {
+        let selectedAnswer = this.questionModel.answers.filter(ans => ans.answer === player.input)[0];
+        if (selectedAnswer) {
+          selectedAnswer.players.push(player);
+          selectedAnswer.color = '#FFAA0088'
+          this.questionModel.answers.filter(ans => ans.answer === player.input)[0] = selectedAnswer;
+        }
+      }
+    }
+
     this.squares.allLine('#3333FF', 500, 5, 1, true, true);
 
     await new Promise(resolve => setTimeout(resolve, 5000));
@@ -160,12 +182,41 @@ export class FirstRoundGameComponent {
     sfx.src = "/audio/right_or_wrong.mp3";
     sfx.play();
 
+    for (let player of this.memory.players) {
+      let selectedAnswer = this.questionModel.answers.find(ans => ans.answer === player.input);
+      if (selectedAnswer && selectedAnswer.isCorrect) {
+        this.awardPoint(player, questionNumber)
+      }
+    }
+
     this.setAnswerColors();
 
-    await this.squares.allLine('#008000', 250, 5, 2, true, false, '#800000'); //TODO, all one color when all right or all wrong
+    await this.squares.allLine('#008000', 250, 5, 2, true, false, '#800000');
 
-    await new Promise(resolve => setTimeout(resolve, 8000));
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    this.scoreboard.sortSubject.next();
+    await new Promise(resolve => setTimeout(resolve, 4000));
   }
+
+  private calculatePoints(questionNumber: number): number {
+    switch (questionNumber + 1) {
+      case 1:
+        return 10;
+      case 2:
+        return 25;
+      case 3:
+        return 50;
+      case 4:
+        return 75;
+      case 5:
+        return 125;
+      case 6:
+        return 200;
+      default:
+        return 0;
+    }
+  }
+
 
   private async eliminateAnswers(questionNumber: number) {
     let sfx = new Audio("/audio/elimination.mp3");
@@ -183,5 +234,24 @@ export class FirstRoundGameComponent {
       answer.color = answer.isCorrect ? '#00FF0088' : '#FF000088';
       await new Promise(resolve => setTimeout(resolve, 1500 / this.questionModel.answers.length));
     }
+  }
+
+  playersToString(players: Player[]) {
+    let playerString = '';
+
+    for (let player of players) {
+      playerString = playerString + ', ' + player.name;
+    }
+
+    return playerString.substring(2);
+  }
+
+  private async awardPoint(player: Player, questionNumber: number) {
+    const goal = player.gameScore + this.calculatePoints(questionNumber);
+    while (player.gameScore < goal) {
+      player.gameScore += 1;
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }
+    player.gameScore = goal;
   }
 }

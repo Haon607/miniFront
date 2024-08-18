@@ -5,8 +5,11 @@
       <h1 id="question">{{ questionModel.question }}</h1>
     }
     <div id="answersContainer">
-      @for (answer of questionModel.answers; track questionModel.answers) {
-        <div class="answer" [ngStyle]="{'background': answer.color}" @slide>{{ answer.answer }}</div>
+      @for (answer of questionModel.answers; track answer.id) {
+        <div class="answer" [ngStyle]="{'background': answer.color}" @slide>
+          <span class="answerAnswer">{{ answer.answer }}</span>
+          <span class="answerPlayers">{{ playersToString(answer.players) }}</span>
+        </div>
       }
     </div>
   </div>

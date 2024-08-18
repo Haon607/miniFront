@@ -53,12 +53,14 @@ export class Answer {
   isCorrect: boolean;
   likely: number;
   color: string;
+  players: Player[];
 
   constructor(id: number, answer: string, isCorrect: boolean, likely: number) {
     this.id = id;
     this.answer = answer;
     this.isCorrect = isCorrect;
     this.likely = likely;
-    this.color = "#000000"
+    this.color = "#000000";
+    this.players = [];
   }
 }

@@ -27,13 +27,13 @@ export class JoinGameComponent implements OnDestroy {
     private router: Router,
     private squares: SquaresService
   ) {
-    let startMusic = new Audio('/audio/start.mp3');
-    startMusic.play();
-    this.startAnimation(9);
-    startMusic.addEventListener('ended', () => {
-      this.joinAble = true;
-      this.getPlayers();
-    });
+    // let startMusic = new Audio('/audio/start.mp3');
+    // startMusic.play();
+    // this.startAnimation(9);
+    // startMusic.addEventListener('ended', () => {
+    //   this.joinAble = true;
+    //   this.getPlayers();
+    // });
 
     this.joinAble = true; //DEBUG
     this.getPlayers(); //DEBUG
