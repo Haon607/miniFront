@@ -120,78 +120,28 @@ export class FirstRoundGameComponent {
   }
 
   private async introduceQuestion(questionNumber: number) {
-    for (let i = 1; i < 4; i++) {
-      this.squares.colorSquares([
-          [i, 1], [9-i, 1],
-          [i, 2], [9-i, 2],
-          [i, 3], [9-i, 3],
-          [i, 4], [9-i, 4],
-          [i, 5], [9-i, 5],
-          [i, 6], [9-i, 6],
-          [i, 7], [9-i, 7],
-          [i, 8], [9-i, 8],
-        ], '#5555FF');
-      this.squares.fadeSquares([
-        [i, 1], [9-i, 1],
-        [i, 2], [9-i, 2],
-        [i, 3], [9-i, 3],
-        [i, 4], [9-i, 4],
-        [i, 5], [9-i, 5],
-        [i, 6], [9-i, 6],
-        [i, 7], [9-i, 7],
-        [i, 8], [9-i, 8],
-      ], '#000080', 500)
-      await new Promise(resolve => setTimeout(resolve, 250))
-    }
+    this.questionModel.question = "FRAGE " + (questionNumber + 1);
+    this.squares.circle('#3333FF', 200, 5);
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
     this.music.pause();
     this.music.src = "/audio/round1question.mp3";
     this.music.play();
-    this.squares.colorSquares([
-      [4,1],[5,1],
-      [4,2],[5,2],
-      [4,3],[5,3],
-      [4,4],[5,4],
-      [4,5],[5,5],
-      [4,6],[5,6],
-      [4,7],[5,7],
-      [4,8],[5,8],
-    ], '#5555FF')
-    this.squares.fadeSquares([
-      [4,1],[5,1],
-      [4,2],[5,2],
-      [4,3],[5,3],
-      [4,4],[5,4],
-      [4,5],[5,5],
-      [4,6],[5,6],
-      [4,7],[5,7],
-      [4,8],[5,8],
-    ], '#000080', 4000)
     this.squares.colorEdges('#5555FF');
     this.squares.fadeEdges('#000080', 4000);
-
-    this.questionModel.question = "FRAGE " + (questionNumber + 1);
-
     this.playerService.deleteInputs().subscribe(() => {})
-
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
     this.questionModel.question = this.game!.questionFirsts[0].question;
-
     await new Promise(resolve => setTimeout(resolve, 3000))
 
     let currentAnswers = this.game!.questionFirsts[0].answers;
-
     currentAnswers = this.squares.shuffleArray(currentAnswers);
-
     currentAnswers = currentAnswers.filter(ans => ans.likely > questionNumber);
-
     for (let answer of currentAnswers) {
       answer.color = "#FFFFFF88";
       answer.players = [];
       this.questionModel.answers.push(answer);
       await new Promise(resolve => setTimeout(resolve, 25));
     }
-
     await new Promise(resolve => setTimeout(resolve, 3000));
   }
 

@@ -2,7 +2,7 @@
   <app-scoreboard></app-scoreboard>
   <div class="content">
     @if (questionModel.question) {
-      <h1 id="question">{{ questionModel.question }}</h1>
+      <h1 id="question" @slide>{{ questionModel.question }}</h1>
     }
     <div id="answersContainer">
       @for (answer of questionModel.answers; track answer.id) {
