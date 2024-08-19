@@ -76,7 +76,6 @@ export class ScoreboardGameComponent {
     for (let player of players) {
       playerString = playerString + '§' + player.name;
       playerString = playerString + ';' + player.gameScore;
-      playerString = playerString + ';' + player.totalScore;
     }
 
     this.gameService.modifyData(this.memory.gameId, `/scoreboard/${this.roundNumber}`, playerString.substring(1)).subscribe(() => {});

@@ -1,0 +1,21 @@
+.background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  overflow: auto;
+}
+
+table {
+  width: 80%;
+  height: 80%;
+}
+
+th, td {
+  text-align: center;
+  color: white;
+}
+
+tr {
+  background: #FFFFFF30;
+}

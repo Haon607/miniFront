@@ -1,1 +1,21 @@
-<p>scoreboard.player works!</p>
+<div class="background">
+  <table>
+    <tr>
+      <th>
+        Spieler
+      </th>
+      <th>
+        Spielpunkte
+      </th>
+    </tr>
+    @for (element of data; track element) {
+      <tr>
+        @for (info of element; track info) {
+          <td>
+            {{ info }}
+          </td>
+        }
+      </tr>
+    }
+  </table>
+</div>
