@@ -6,7 +6,7 @@ import { IdlePlayerComponent } from "./player/idle.player/idle.player.component"
 import { PlayerIntroGameComponent } from "./game/player-intro.game/player-intro.game.component";
 import { RulesGameComponent } from "./game/rules.game/rules.game.component";
 import { RulesPlayerComponent } from "./player/rules.player/rules.player.component";
-import { FirstRoundGameComponent } from "./game/first.round.game/first.round.game.component";
+import { FirstRoundGameComponent } from "./game/rounds/first.round.game/first.round.game.component";
 import { SelectPlayerComponent } from "./player/select.player/select.player.component";
 import {ScoreboardPlayerComponent} from "./player/scoreboard.player/scoreboard.player.component";
 import {ScoreboardGameComponent} from "./game/scoreboard.game/scoreboard.game.component";

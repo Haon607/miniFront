@@ -27,4 +27,9 @@ export class GameReqService {
   modifyData(id: number, route: string, data: string = ''): Observable<Game> {
     return this.http.put<Game>(`${this.url}/${id}`, [route, data]);
   }
+
+  setQuestions(id: number): Observable<Game> {
+    return this.http.post<Game>(`${this.url}/${id}/questions`, {});
+
+  }
 }

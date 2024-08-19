@@ -62,6 +62,8 @@ export class JoinGameComponent implements OnDestroy {
     this.joinAble = false
     this.memory.gameId = this.game.id;
 
+    this.gameService.setQuestions(this.game.id).subscribe(() => {})
+
     let playMusic = new Audio('/audio/play.mp3');
     playMusic.play();
     this.startAnimation(4);

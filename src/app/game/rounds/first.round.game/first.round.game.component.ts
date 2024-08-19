@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { Router } from "@angular/router";
-import { GameReqService } from "../../service/request/game.req.service";
-import { Game, Player, QuestionFirst } from "../../models";
-import { ScoreboardComponent } from "../../scoreboard/scoreboard.component";
-import { ScoreboardService } from "../../scoreboard/scoreboard.service";
-import { MemoryGameService } from "../../service/memory/memory.game.service";
-import { SquaresService } from "../../squares/squares.service";
+import { GameReqService } from "../../../service/request/game.req.service";
+import { Game, Player, QuestionFirst } from "../../../models";
+import { ScoreboardComponent } from "../../../scoreboard/scoreboard.component";
+import { ScoreboardService } from "../../../scoreboard/scoreboard.service";
+import { MemoryGameService } from "../../../service/memory/memory.game.service";
+import { SquaresService } from "../../../squares/squares.service";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { NgStyle } from "@angular/common";
-import { PlayerReqService } from "../../service/request/player.req.service";
+import { PlayerReqService } from "../../../service/request/player.req.service";
 
 @Component({
   selector: 'app-first.round.game',
@@ -131,10 +131,10 @@ export class FirstRoundGameComponent {
     this.squares.colorEdges('#5555FF');
     this.squares.fadeEdges('#000080', 4000);
     this.playerService.deleteInputs().subscribe(() => {})
-    this.questionModel.question = this.game!.questionFirsts[0].question;
+    this.questionModel.question = this.game!.questionFirsts[questionNumber].question;
     await new Promise(resolve => setTimeout(resolve, 3000))
 
-    let currentAnswers = this.game!.questionFirsts[0].answers;
+    let currentAnswers = this.game!.questionFirsts[questionNumber].answers;
     currentAnswers = this.squares.shuffleArray(currentAnswers);
     currentAnswers = currentAnswers.filter(ans => ans.likely > questionNumber);
     for (let answer of currentAnswers) {
