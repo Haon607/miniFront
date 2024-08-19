@@ -143,7 +143,7 @@ export class FirstRoundGameComponent {
       this.questionModel.answers.push(answer);
       await new Promise(resolve => setTimeout(resolve, 25));
     }
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 2000 * ((5-questionNumber)+1)));
   }
 
   private async startRound() {
