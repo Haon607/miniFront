@@ -1,7 +1,7 @@
 <div class="body" #bodyElement [ngClass]="{'no-scroll': !isOverflowing, 'scroll': isOverflowing}">
   @for (player of players; track player.id) {
     @if (!player.hidden) {
-      <div class="player-container" [ngStyle]="{'color': player.color}" @slide-to-right>
+      <div class="player-container" [ngClass]="{'no-scroll': !isOverflowing, 'scroll': isOverflowing}" [ngStyle]="{'color': player.color}" @slide-to-right>
         <span class="player-name">{{ player.name }}</span>
         <span class="player-score">{{ totalScore ? player.totalScore : player.gameScore }}</span>
       </div>

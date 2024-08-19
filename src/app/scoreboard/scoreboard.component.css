@@ -8,6 +8,10 @@
   overflow-y: auto;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 .body.no-scroll {
   justify-content: space-around;
 }
@@ -27,4 +31,9 @@
   padding: 10px;
   border-radius: 10px;
   width: 75%;
+}
+
+.player-container.scroll {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

@@ -55,6 +55,8 @@ export class ScoreboardComponent {
   async sort() {
     const previousOrder = this.players.map(player => player.id);
 
+    this.checkOverflow()
+
     for (let player of this.players) {
       player.hidden = true;
       await new Promise(resolve => setTimeout(resolve, 50));

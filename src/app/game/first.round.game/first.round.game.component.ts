@@ -66,8 +66,9 @@ export class FirstRoundGameComponent {
   async initScoreboard() {
     await new Promise(resolve => setTimeout(resolve, 500));
     this.scoreboard.playerSubject.next(this.memory.players);
-    this.scoreboard.sortSubject.next();
     this.scoreboard.totalSubject.next(false);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    this.scoreboard.sortSubject.next();
   }
 
   async roundController() {
