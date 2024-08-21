@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } 
 import { Player } from "../models";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { NgClass, NgStyle } from "@angular/common";
-import { ColorFader } from "../colorfader";
+import { ColorFader } from "../utils";
 import { ScoreboardService } from "./scoreboard.service";
 
 @Component({

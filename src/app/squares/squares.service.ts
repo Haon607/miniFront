@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ColorFader } from "../colorfader";
+import { ColorFader } from "../utils";
 
 @Injectable({
   providedIn: 'root',

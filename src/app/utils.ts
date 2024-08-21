@@ -1,5 +1,3 @@
-import { animate } from "@angular/animations";
-
 export class ColorFader {
   // Convert hex to RGB
   private hexToRgb(hex: string): [number, number, number] {
@@ -95,5 +93,15 @@ export class ColorFader {
       b: bigint & 255,
     };
   }
+}
 
+export class MusicFader {
+  async fadeOut(audio: HTMLAudioElement, time: number) {
+    for (let i = 99; i > 0; i--) {
+      audio.volume = i/100;
+      await new Promise(resolve => setTimeout(resolve, time / 100));
+    }
+    audio.pause();
+    audio.volume = 1;
+  }
 }

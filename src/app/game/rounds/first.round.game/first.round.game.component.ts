@@ -9,6 +9,7 @@ import { SquaresService } from "../../../squares/squares.service";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { NgStyle } from "@angular/common";
 import { PlayerReqService } from "../../../service/request/player.req.service";
+import {MusicFader} from "../../../utils";
 
 @Component({
   selector: 'app-first.round.game',
@@ -122,10 +123,10 @@ export class FirstRoundGameComponent {
 
   private async introduceQuestion(questionNumber: number) {
     this.questionModel.question = "FRAGE " + (questionNumber + 1);
+    new MusicFader().fadeOut(this.music, 1750);
     this.squares.circle('#3333FF', 200, 5);
     await new Promise(resolve => setTimeout(resolve, 2000))
 
-    this.music.pause();
     this.music.src = "/audio/round1question.mp3";
     this.music.play();
     this.squares.colorEdges('#5555FF');
