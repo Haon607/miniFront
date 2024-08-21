@@ -1,0 +1,54 @@
+table {
+  width: 100%;
+  height: 100%;
+}
+
+td {
+  border-radius: 10px;
+  font-size: 35px;
+  padding: 20px;
+  margin: 20px;
+  width: 25%;
+}
+
+th {
+  border-radius: 10px;
+  font-size: 35px;
+  padding: 20px;
+  margin: 20px;
+}
+
+.time-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  span {
+    color: white;
+  }
+}
+
+#time-bar-container {
+  flex-grow: 1;
+  height: 25px;
+  background-color: #000000;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+#time-bar {
+  height: 100%;
+  background-color: #FFFFFF;
+  border-radius: 15px;
+  transition: width 1s linear;
+}
+
+.unsolved {
+}
+
+.background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}

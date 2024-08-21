@@ -24,6 +24,7 @@ export class Game {
   route: string;
   data: string;
   questionFirsts: QuestionFirst[];
+  questionSecond: QuestionSecond;
 
 
   constructor(id: number, players: Player[], route: string, data: string) {
@@ -32,6 +33,7 @@ export class Game {
     this.route = route;
     this.data = data;
     this.questionFirsts = [];
+    this.questionSecond = new QuestionSecond(NaN, [], [])
   }
 }
 
@@ -47,19 +49,43 @@ export class QuestionFirst {
   }
 }
 
+export class QuestionSecond {
+  id: number;
+  answers: Answer[];
+  connections: Connection[];
+
+  constructor(id: number, answers: Answer[], connections: Connection[]) {
+    this.id = id;
+    this.answers = answers;
+    this.connections = connections;
+  }
+}
+
+export class Connection {
+  id: number;
+  explanation: string;
+  groupNumber: number;
+
+  constructor(id: number, explanation: string, groupNumber: number) {
+    this.id = id;
+    this.explanation = explanation;
+    this.groupNumber = groupNumber;
+  }
+}
+
 export class Answer {
   id: number;
   answer: string;
   isCorrect: boolean;
-  likely: number;
+  groupNumber: number;
   color: string;
   players: Player[];
 
-  constructor(id: number, answer: string, isCorrect: boolean, likely: number) {
+  constructor(id: number, answer: string, isCorrect: boolean, groupNumber: number) {
     this.id = id;
     this.answer = answer;
     this.isCorrect = isCorrect;
-    this.likely = likely;
+    this.groupNumber = groupNumber;
     this.color = "#000000";
     this.players = [];
   }

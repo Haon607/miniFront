@@ -137,7 +137,7 @@ export class FirstRoundGameComponent {
 
     let currentAnswers = this.game!.questionFirsts[questionNumber].answers;
     currentAnswers = this.squares.shuffleArray(currentAnswers);
-    currentAnswers = currentAnswers.filter(ans => ans.likely > questionNumber);
+    currentAnswers = currentAnswers.filter(ans => ans.groupNumber > questionNumber);
     for (let answer of currentAnswers) {
       answer.color = "#FFFFFF88";
       answer.players = [];
@@ -225,7 +225,7 @@ export class FirstRoundGameComponent {
   private async eliminateAnswers(questionNumber: number) {
     let sfx = new Audio("/audio/elimination.mp3");
     sfx.play();
-    this.questionModel.answers = this.questionModel.answers.filter(ans => ans.likely > questionNumber + 1);
+    this.questionModel.answers = this.questionModel.answers.filter(ans => ans.groupNumber > questionNumber + 1);
     this.questionModel.answers.forEach(ans => ans.color = '#FFFFFF88');
     await new Promise(resolve => setTimeout(resolve, 3000));
     this.questionModel.question = "";

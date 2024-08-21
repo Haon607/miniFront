@@ -1,1 +1,23 @@
-<p>second.round.game works!</p>
+<div class="background">
+  <app-scoreboard></app-scoreboard>
+  <table @slide>
+    <tr>
+      <th colspan="4">
+        <div class="time-container">
+          <div id="time-bar-container">
+            <div id="time-bar" [ngStyle]="{'width': (timer / maxTime) * 100 + '%'}"></div>
+          </div>
+        </div>
+      </th>
+    </tr>
+    @for (answerGroup of answerGroups; track answerGroup) {
+      <tr>
+        @for (answer of answerGroup; track answer.id) {
+          <td class="unsolved" [ngStyle]="{'background': answer.color}">
+            {{ answer.answer }}
+          </td>
+        }
+      </tr>
+    }
+  </table>
+</div>
