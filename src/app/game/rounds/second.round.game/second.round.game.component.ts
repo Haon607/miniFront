@@ -48,6 +48,7 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
   questionModel: QuestionSecond;
   topQuestionModel: QuestionSecond;
   answerGroups: Answer[][] = [];
+  answeredGroups: Answer[][] = [];
   groupColors = [
     '#FF000088',
     '#FFFF0088',
@@ -56,8 +57,8 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
     '#0000FF88',
     '#FF00FF88'
   ];
-  timer: number = 0;
-  maxTime: number = 0;
+  timer: number = 100;
+  maxTime: number = 100;
 
   constructor(
     private memory: MemoryGameService,
@@ -123,18 +124,7 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
   async roundController() {
     this.introduceQuestion();
     this.startRound();
-
-    for (let i = 0; i < 5; i++) {
-      await this.startRotation(i);
-      //   await this.introduceQuestion(i);
-      //   await this.startTimer(i);
-      //   await this.revealAnswers(i);
-      //   if (i < 5) {
-      //     await this.eliminateAnswers(i);
-      //   }
-    }
-    // this.music.pause();
-    // this.router.navigateByUrl("/game/scoreboard/1")
+    await this.startRotation(0);
   }
 
   private async startRound() {
@@ -157,6 +147,7 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
   private async introduceQuestion() {
     let answers = this.game.questionSecond.answers;
     answers = this.squares.shuffleArray(answers);
+    this.questionModel.connections = this.game.questionSecond.connections;
     for (let answer of answers) {
       await new Promise(resolve => setTimeout(resolve, 2250 / answers.length));
       answers.forEach(ans => ans.color = this.groupColors[Math.floor(Math.random() * (5 + 1))]);
@@ -174,23 +165,52 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
   }
 
   private async startRotation(rotation: number) {
+    if (rotation === 5) {
+      this.endRound();
+      return;
+    }
     this.music.src = `/audio/round2bgm${rotation + 1}.mp3`;
     this.music.play();
-    await new Promise(resolve => setTimeout(resolve, rotation === 0 ? 5000 : 1000));
-    await this.startTimer(16);
-    await new Promise(resolve => setTimeout(resolve, 100000));
-
+    await new Promise(resolve => setTimeout(resolve, rotation === 0 ? 4000 : 1000));
+    this.maxTime = 45;
+    this.timer = 45;
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await this.startTimer(16, rotation);
   }
 
-  startTimer(time: number) {
+  private async endRound() {
+    this.music.src = `/audio/round2end.mp3`;
+    this.music.play();
+    this.squares.randomPath('#FFFFFF', 500, 10, 1, true)
+    await new Promise(resolve => setTimeout(resolve, 7500));
+    // this.router.navigateByUrl("/game/scoreboard/2")
+  }
+
+  private async revealAnswers(groupNumber: number, rotation: number) {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    let correctAnswers = this.questionModel.answers.filter(ans => ans.groupNumber === groupNumber);
+    this.answeredGroups.push([]);
+    for (let i = 0; i < 4; i++) {
+      this.topQuestionModel.answers.push(correctAnswers[i]);
+      this.answeredGroups[this.answeredGroups.length-1].push(correctAnswers[i]);
+      console.log(this.answeredGroups)
+      this.questionModel.answers = this.questionModel.answers.filter(ans => ans.id !== correctAnswers[i].id);
+      this.answerGroups = this.splitAnswersInGroupsOf4;
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    this.startRotation(rotation+1);
+  }
+
+  startTimer(time: number, rotation: number) {
     this.timer = time;
     this.maxTime = time;
     const interval = setInterval(() => {
       if (this.timer > 0) {
         this.timer--;
-        console.log(this.timer)
         if (this.timer === 15) {
-          this.startLastTime();
+          this.lastTime(NaN, rotation);
         }
       } else {
         clearInterval(interval);
@@ -198,8 +218,13 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
     }, 1000);
   }
 
-  private async startLastTime() {
-    console.log(this.timer)
+  private async lastTime(groupNumber: number, rotation: number) {
+    if (isNaN(groupNumber)) {
+      groupNumber = this.squares.shuffleArray(this.questionModel.connections)[0].groupNumber;
+    }
+    this.topQuestionModel.connections.push(this.questionModel.connections.filter(con => con.groupNumber === groupNumber)[0]);
+    this.questionModel.connections = this.questionModel.connections.filter(con => con.id !== this.questionModel.connections.filter(con => con.groupNumber === groupNumber)[0].id);
+
     let timer = new Audio("/audio/round2timer.mp3");
     timer.play();
     this.squares.line(0, '#FFFFFF', 1000, 10, 1, false)
@@ -207,20 +232,28 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
     await new Promise(resolve => setTimeout(resolve, 1000));
     this.squares.all('#000080')
     for (let i = 0; i < 14; i++) {
-      if (i%2===0) {
+      if (i % 2 === 0) {
         this.squares.verticalLine(0, '#FFFFFF', 0, 1, 1, false);
-        this.squares.verticalLine(9, '#FFFFFF', 0, 1, 1, false,true);
+        this.squares.verticalLine(9, '#FFFFFF', 0, 1, 1, false, true);
         await new Promise(resolve => setTimeout(resolve, 250));
-        this.squares.allFade('#000080', 500);
+        this.squares.allFade('#000080', 250);
       } else {
         this.squares.line(0, '#FFFFFF', 0, 1, 1, false);
         this.squares.line(9, '#FFFFFF', 0, 1, 1, false, true);
         await new Promise(resolve => setTimeout(resolve, 250));
-        this.squares.allFade('#000080', 500);
+        this.squares.allFade('#000080', 250);
       }
       await new Promise(resolve => setTimeout(resolve, 750));
     }
     this.squares.colorEdges('#FFFFFF');
     this.squares.allFade('#000080', 1000);
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    this.revealAnswers(groupNumber, rotation);
+  }
+
+  getAnsweredForGroup(groupNumber: number) {
+    return this.answeredGroups.filter(group => group[0].groupNumber === groupNumber)[0];
   }
 }
