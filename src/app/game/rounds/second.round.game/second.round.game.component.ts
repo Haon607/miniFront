@@ -71,42 +71,6 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
     gameService.modifyData(memory.gameId, '/idle').subscribe(game => {
       this.game = game;
     });
-    this.game.questionSecond = new QuestionSecond(NaN, [ //DEBUG
-      new Answer(0, "0", true, 0),
-      new Answer(1, "0", true, 0),
-      new Answer(2, "0", true, 0),
-      new Answer(3, "0", true, 0),
-      new Answer(4, "1", true, 1),
-      new Answer(5, "1", true, 1),
-      new Answer(6, "1", true, 1),
-      new Answer(7, "1", true, 1),
-      new Answer(8, "2", true, 2),
-      new Answer(9, "2", true, 2),
-      new Answer(10, "2", true, 2),
-      new Answer(11, "2", true, 2),
-      new Answer(12, "3", true, 3),
-      new Answer(13, "3", true, 3),
-      new Answer(14, "3", true, 3),
-      new Answer(15, "3", true, 3),
-      new Answer(16, "4", true, 4),
-      new Answer(17, "4", true, 4),
-      new Answer(18, "4", true, 4),
-      new Answer(19, "4", true, 4),
-      new Answer(20, "FLASE", false, NaN),
-      new Answer(21, "FLASE", false, NaN),
-      new Answer(22, "FLASE", false, NaN),
-      new Answer(23, "FLASE", false, NaN),
-      new Answer(24, "FLASE", false, NaN),
-      new Answer(25, "FLASE", false, NaN),
-      new Answer(26, "FLASE", false, NaN),
-      new Answer(27, "FLASE", false, NaN),
-    ], [
-      new Connection(0, "Ex0", 0),
-      new Connection(1, "Ex1", 1),
-      new Connection(2, "Ex2", 2),
-      new Connection(3, "Ex3", 3),
-      new Connection(4, "Ex4", 4),
-    ]);
     this.questionModel = new QuestionSecond(NaN, [], []);
     this.topQuestionModel = new QuestionSecond(NaN, [], []);
     this.initScoreboard();
@@ -145,11 +109,12 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
   }
 
   private async introduceQuestion() {
+    await new Promise(resolve => setTimeout(resolve, 250));
     let answers = this.game.questionSecond.answers;
     answers = this.squares.shuffleArray(answers);
     this.questionModel.connections = this.game.questionSecond.connections;
     for (let answer of answers) {
-      await new Promise(resolve => setTimeout(resolve, 2250 / answers.length));
+      await new Promise(resolve => setTimeout(resolve, 2000 / answers.length));
       answers.forEach(ans => ans.color = this.groupColors[Math.floor(Math.random() * (5 + 1))]);
       this.questionModel.answers.push(answer);
       this.answerGroups = this.splitAnswersInGroupsOf4;
@@ -172,15 +137,25 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
     this.music.src = `/audio/round2bgm${rotation + 1}.mp3`;
     this.music.play();
     await new Promise(resolve => setTimeout(resolve, rotation === 0 ? 4000 : 1000));
+    this.playerService.deleteInputs().subscribe(() => {});
+    let answerString = "";
+    for (let answerGroup of this.splitAnswersInGroupsOf4) {
+      answerString = answerString + '§';
+      for (let answer of answerGroup) {
+        answerString = answerString + ';' + answer.answer;
+      }
+    }
+    this.gameService.modifyData(this.memory.gameId, "/select/2", answerString.substring(1)).subscribe(() => {})
     this.maxTime = 45;
     this.timer = 45;
     await new Promise(resolve => setTimeout(resolve, 1000));
-    await this.startTimer(16, rotation);
+    await this.startTimer(45, rotation);
   }
 
   private async endRound() {
     this.music.src = `/audio/round2end.mp3`;
     this.music.play();
+    this.questionModel.answers.filter(ans => ans.groupNumber === -1).forEach(ans => ans.color = this.groupColors[5])
     this.squares.randomPath('#FFFFFF', 500, 10, 1, true)
     await new Promise(resolve => setTimeout(resolve, 7500));
     // this.router.navigateByUrl("/game/scoreboard/2")
