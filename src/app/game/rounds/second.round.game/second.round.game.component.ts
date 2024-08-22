@@ -193,14 +193,14 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
     this.answeredGroups.push([]);
     for (let i = 0; i < 4; i++) {
       this.topQuestionModel.answers.push(correctAnswers[i]);
-      this.answeredGroups[this.answeredGroups.length-1].push(correctAnswers[i]);
+      this.answeredGroups[this.answeredGroups.length - 1].push(correctAnswers[i]);
       console.log(this.answeredGroups)
       this.questionModel.answers = this.questionModel.answers.filter(ans => ans.id !== correctAnswers[i].id);
       this.answerGroups = this.splitAnswersInGroupsOf4;
       await new Promise(resolve => setTimeout(resolve, 500));
     }
     await new Promise(resolve => setTimeout(resolve, 5000));
-    this.startRotation(rotation+1);
+    this.startRotation(rotation + 1);
   }
 
   startTimer(time: number, rotation: number) {
@@ -229,18 +229,24 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
     timer.play();
     this.squares.line(0, '#FFFFFF', 1000, 10, 1, false)
     this.squares.line(9, '#FFFFFF', 1000, 10, 1, false, true)
+    let groupColor = this.groupColors[this.topQuestionModel.connections[this.topQuestionModel.connections.length - 1].groupNumber];
+    this.groupColors[this.topQuestionModel.connections[this.topQuestionModel.connections.length - 1].groupNumber] = '#FFFFFF';
     await new Promise(resolve => setTimeout(resolve, 1000));
     this.squares.all('#000080')
     for (let i = 0; i < 14; i++) {
       if (i % 2 === 0) {
         this.squares.verticalLine(0, '#FFFFFF', 0, 1, 1, false);
         this.squares.verticalLine(9, '#FFFFFF', 0, 1, 1, false, true);
+        this.groupColors[this.topQuestionModel.connections[this.topQuestionModel.connections.length - 1].groupNumber] = '#FFFFFF';
         await new Promise(resolve => setTimeout(resolve, 250));
+        this.groupColors[this.topQuestionModel.connections[this.topQuestionModel.connections.length - 1].groupNumber] = groupColor;
         this.squares.allFade('#000080', 250);
       } else {
         this.squares.line(0, '#FFFFFF', 0, 1, 1, false);
         this.squares.line(9, '#FFFFFF', 0, 1, 1, false, true);
+        this.groupColors[this.topQuestionModel.connections[this.topQuestionModel.connections.length - 1].groupNumber] = '#FFFFFF';
         await new Promise(resolve => setTimeout(resolve, 250));
+        this.groupColors[this.topQuestionModel.connections[this.topQuestionModel.connections.length - 1].groupNumber] = groupColor;
         this.squares.allFade('#000080', 250);
       }
       await new Promise(resolve => setTimeout(resolve, 750));
