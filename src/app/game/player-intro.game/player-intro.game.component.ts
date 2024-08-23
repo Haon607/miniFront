@@ -74,7 +74,7 @@ export class PlayerIntroGameComponent {
   skipToNext() {
     this.playerIntroMusic.pause();
     this.playerIntroMusic.currentTime = 0;
-    this.router.navigateByUrl("/game/rules/2");
+    this.router.navigateByUrl("/game/rules/");
   }
 
   private async animate() {

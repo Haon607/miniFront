@@ -301,8 +301,7 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
         answers.push(this.topQuestionModel.answers.filter(ans => ans.answer === answer)[0]);
       }
     }
-    console.log(answers)
-    let valid: boolean = true;
+    let valid: boolean = answers.length === 4;
     for (let i = 0; i < 3 && valid; i++) {
       if (isNaN(this.currentGroup)) {
         valid = answers[i].groupNumber === answers[i + 1].groupNumber && answers[i].groupNumber !== -1;
