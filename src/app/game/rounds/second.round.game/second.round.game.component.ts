@@ -50,12 +50,12 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
   answerGroups: Answer[][] = [];
   answeredGroups: Answer[][] = [];
   groupColors = [
-    '#FF000088',
-    '#FFFF0088',
-    '#00FF0088',
-    '#00FFFF88',
-    '#0000FF88',
-    '#FF00FF88'
+    '#FFAAFF88',
+    '#FFAAAA88',
+    '#FFFFAA88',
+    '#AAFFAA88',
+    '#AAFFFF88',
+    '#AAAAFF88',
   ];
   timer: number = 100;
   maxTime: number = 100;
@@ -149,7 +149,7 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
     this.maxTime = 45;
     this.timer = 45;
     await new Promise(resolve => setTimeout(resolve, 1000));
-    await this.startTimer(45, rotation);
+    await this.startTimer(16, rotation);
   }
 
   private async endRound() {
