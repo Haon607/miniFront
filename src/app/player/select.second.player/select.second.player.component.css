@@ -12,12 +12,15 @@ td {
 
 .answer {
   text-align: center;
+  word-break: break-all;
 }
 
 .background {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
+}
+
+#submit-button {
+  background: #FFFFFF80;
 }

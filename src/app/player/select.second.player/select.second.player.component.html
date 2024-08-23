@@ -3,7 +3,7 @@
     @for (answerGroup of toSelect; track answerGroup) {
       <tr>
         @for (answer of answerGroup; track answer) {
-          <td class="answer" (click)="select(answer)" [ngStyle]="{'background': this.selected.includes(answer) ? '#FFFF00' : '#FFFFFF80'}">
+          <td class="answer" (click)="select(answer)" [ngStyle]="{'background': getColorForAnswer(answer)}">
             {{ answer }}
           </td>
         }

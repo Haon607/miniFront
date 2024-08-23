@@ -1,24 +1,4 @@
 export class ColorFader {
-  // Convert hex to RGB
-  private hexToRgb(hex: string): [number, number, number] {
-    let r = 0, g = 0, b = 0;
-
-    // 3 digits
-    if (hex.length === 4) {
-      r = parseInt(hex[1] + hex[1], 16);
-      g = parseInt(hex[2] + hex[2], 16);
-      b = parseInt(hex[3] + hex[3], 16);
-    }
-    // 6 digits
-    else if (hex.length === 7) {
-      r = parseInt(hex[1] + hex[2], 16);
-      g = parseInt(hex[3] + hex[4], 16);
-      b = parseInt(hex[5] + hex[6], 16);
-    }
-
-    return [r, g, b];
-  }
-
   fadeColor(startColor: string, endColor: string, duration: number, callback: (color: string) => void) {
     const start = performance.now();
 
@@ -39,26 +19,6 @@ export class ColorFader {
     };
 
     requestAnimationFrame(animate);
-  }
-
-  // Convert RGB to hex
-  private rgbToHex(r: number, g: number, b: number): string {
-    return "#" + [r, g, b].map(x => {
-      const hex = x.toString(16);
-      return hex.length === 1 ? '0' + hex : hex;
-    }).join('');
-  }
-
-  // Interpolate between two colors
-  private interpolateColor(color1: string, color2: string, factor: number): string {
-    const [r1, g1, b1] = this.hexToRgb(color1);
-    const [r2, g2, b2] = this.hexToRgb(color2);
-
-    const r = Math.round(r1 + (r2 - r1) * factor);
-    const g = Math.round(g1 + (g2 - g1) * factor);
-    const b = Math.round(b1 + (b2 - b1) * factor);
-
-    return this.rgbToHex(r, g, b);
   }
 
   fadeColorSquare(startColor: string, endColor: string, duration: number, callback: (color: string) => void) {
@@ -84,6 +44,55 @@ export class ColorFader {
     }, 16);
   }
 
+  // Convert hex to RGB
+  private hexToRgba(hex: string): [number, number, number, number] {
+    let r = 0, g = 0, b = 0, a = 1;
+
+    if (hex.length === 5) { // #RGBA format
+      r = parseInt(hex[1] + hex[1], 16);
+      g = parseInt(hex[2] + hex[2], 16);
+      b = parseInt(hex[3] + hex[3], 16);
+      a = parseInt(hex[4] + hex[4], 16) / 255;
+    } else if (hex.length === 9) { // #RRGGBBAA format
+      r = parseInt(hex[1] + hex[2], 16);
+      g = parseInt(hex[3] + hex[4], 16);
+      b = parseInt(hex[5] + hex[6], 16);
+      a = parseInt(hex[7] + hex[8], 16) / 255;
+    } else if (hex.length === 4) { // #RGB format
+      r = parseInt(hex[1] + hex[1], 16);
+      g = parseInt(hex[2] + hex[2], 16);
+      b = parseInt(hex[3] + hex[3], 16);
+    } else if (hex.length === 7) { // #RRGGBB format
+      r = parseInt(hex[1] + hex[2], 16);
+      g = parseInt(hex[3] + hex[4], 16);
+      b = parseInt(hex[5] + hex[6], 16);
+    }
+
+    return [r, g, b, a];
+  }
+
+// Convert RGBA to hex
+  private rgbaToHex(r: number, g: number, b: number, a: number): string {
+    const hexAlpha = Math.round(a * 255).toString(16).padStart(2, '0');
+    return "#" + [r, g, b].map(x => {
+      const hex = x.toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    }).join('') + hexAlpha;
+  }
+
+// Interpolate between two colors, including opacity
+  private interpolateColor(color1: string, color2: string, factor: number): string {
+    const [r1, g1, b1, a1] = this.hexToRgba(color1);
+    const [r2, g2, b2, a2] = this.hexToRgba(color2);
+
+    const r = Math.round(r1 + (r2 - r1) * factor);
+    const g = Math.round(g1 + (g2 - g1) * factor);
+    const b = Math.round(b1 + (b2 - b1) * factor);
+    const a = a1 + (a2 - a1) * factor;
+
+    return this.rgbaToHex(r, g, b, a);
+  }
+
   private parseColor(color: string) {
     // Assuming color is in the form "#RRGGBB"
     const bigint = parseInt(color.slice(1), 16);
@@ -98,7 +107,7 @@ export class ColorFader {
 export class MusicFader {
   async fadeOut(audio: HTMLAudioElement, time: number) {
     for (let i = 99; i > 0; i--) {
-      audio.volume = i/100;
+      audio.volume = i / 100;
       await new Promise(resolve => setTimeout(resolve, time / 100));
     }
     audio.pause();

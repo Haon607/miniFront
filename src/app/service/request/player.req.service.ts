@@ -16,6 +16,10 @@ export class PlayerReqService {
     return this.http.get<Player[]>(`${this.url}`, {});
   }
 
+  getPlayer(id: number): Observable<Player> {
+    return this.http.get<Player>(`${this.url}/${id}`, {});
+  }
+
   createPlayer(body: Player): Observable<Player> {
     return this.http.post<Player>(`${this.url}`, body);
   }
@@ -26,5 +30,9 @@ export class PlayerReqService {
 
   deleteInputs(): Observable<Player[]> {
     return this.http.delete<Player[]>(`${this.url}`);
+  }
+
+  deleteInput(id: number): Observable<Player> {
+    return this.http.delete<Player>(`${this.url}/${id}`);
   }
 }

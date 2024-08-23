@@ -23,7 +23,7 @@
         </div>
       </th>
     </tr>
-    @for (answerGroup of answerGroups; track answerGroup) {
+    @for (answerGroup of answerGroups; track answerGroup[0].id) {
       <tr>
         @for (answer of answerGroup; track answer.id) {
           <td class="answer" [ngStyle]="{'background': answer.color}">
