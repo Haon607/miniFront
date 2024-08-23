@@ -73,6 +73,7 @@ export class ScoreboardComponent {
     });
 
     this.players.forEach((player, index) => {
+      player.correct = false;
       const previousIndex = previousOrder.indexOf(player.id);
       if (previousIndex > index) {
         player.color = '#99FF99';

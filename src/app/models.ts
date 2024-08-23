@@ -6,6 +6,7 @@ export class Player {
   hidden: boolean;
   color: string;
   input: string;
+  correct: boolean; //ONLY USE FOR SCOREBOARD!
 
   constructor(id: number, name: string, gameScore: number, totalScore: number) {
     this.id = id;
@@ -15,6 +16,7 @@ export class Player {
     this.hidden = false;
     this.color = 'white';
     this.input = '';
+    this.correct = false;
   }
 }
 

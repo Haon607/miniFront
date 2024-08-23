@@ -251,6 +251,7 @@ export class FirstRoundGameComponent {
   }
 
   private async awardPoint(player: Player, questionNumber: number) {
+    player.correct = true;
     const goal = player.gameScore + this.calculatePoints(questionNumber);
     while (player.gameScore < goal) {
       player.gameScore += 1;

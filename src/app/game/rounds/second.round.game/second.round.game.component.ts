@@ -217,7 +217,7 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
     this.questionModel.answers.filter(ans => ans.groupNumber === -1).forEach(ans => ans.color = this.groupColors[5])
     this.squares.randomPath('#FFFFFF', 500, 10, 1, true)
     await new Promise(resolve => setTimeout(resolve, 7500));
-    // this.router.navigateByUrl("/game/scoreboard/2")
+    this.router.navigateByUrl("/game/scoreboard/2")
   }
 
   private async revealAnswers(groupNumber: number, rotation: number) {
@@ -327,6 +327,7 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
   }
 
   private async awardPoint(player: Player, points: number) {
+    player.correct = true;
     const goal = player.gameScore + points;
     while (player.gameScore < goal) {
       player.gameScore += 1;
