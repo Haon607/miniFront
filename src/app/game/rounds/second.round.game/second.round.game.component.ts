@@ -43,7 +43,7 @@ import { ColorFader } from "../../../utils";
     ])
   ]
 })
-export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass board, with 30? answers. 5 paare mit 4 connections. sobalt jemand eine hat: 15 sekunden für den rest zum aufholen -> weniger punkte. dannach nechtse "runde".
+export class SecondRoundGameComponent {
   game: Game = new Game(NaN, [], "", "");
   music = new Audio();
   questionModel: QuestionSecond;
@@ -123,7 +123,13 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
 
   async checkAnswers(rotation: number) {
     this.gameService.getGame(this.memory.gameId).subscribe(game => {
-      for (let player of game.players) {
+      game.players.forEach(gamePlayer => {
+        const memoryPlayer = this.memory.players.find(memoryPlayer => gamePlayer.id === memoryPlayer.id);
+        if (memoryPlayer) {
+          memoryPlayer.input = gamePlayer.input;
+        }
+      });
+      for (let player of this.memory.players) {
         if (player.input && player.input !== 'valid') {
           let {answers, valid} = this.answersValid(player, 'before');
           if (valid) {
@@ -309,17 +315,20 @@ export class SecondRoundGameComponent { //TODO i want to have a OnlyConnect ass 
         valid = answers[i].groupNumber === answers[i + 1].groupNumber && answers[i].groupNumber !== -1 && answers[i].groupNumber === this.currentGroup;
       }
     }
+    if (valid) {
+      this.awardPoint(player, Math.floor(Math.max(1, Math.min(this.timer, 15) * 10)));
+    }
     return {answers, valid};
   }
 
   private allocatePoints(groupNumber: number) {
     for (let player of this.memory.players) {
       if (player.input === 'valid') {
-        this.awardPoint(player, 100);
+        // this.awardPoint(player, 100);
       } else {
         let {valid} = this.answersValid(player, 'after');
         if (valid) {
-          this.awardPoint(player, 100)
+          // this.awardPoint(player, 100)
         }
       }
     }
