@@ -316,7 +316,7 @@ export class SecondRoundGameComponent {
       }
     }
     if (valid) {
-      this.awardPoint(player, Math.floor(Math.max(1, Math.min(this.timer, 15) * 10)));
+      this.awardPoint(player, Math.floor(Math.max(25, Math.min(this.timer, 15) * 10)));
     }
     return {answers, valid};
   }
