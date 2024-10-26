@@ -1,6 +1,5 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Player } from "./models";
 import { ScoreboardComponent } from "./scoreboard/scoreboard.component";
 import { SquaresComponent } from "./squares/squares.component";
 
@@ -12,6 +11,6 @@ import { SquaresComponent } from "./squares/squares.component";
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'wlFront';
+  title = 'miniFront';
   protected readonly window = window;
 }

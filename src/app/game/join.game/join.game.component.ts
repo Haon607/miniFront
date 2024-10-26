@@ -18,7 +18,7 @@ import { SquaresService } from "../../squares/squares.service";
 })
 export class JoinGameComponent implements OnDestroy {
   joinAble = false;
-  game: Game = new Game(NaN, [], '', '')
+  game: Game = new Game();
 
   constructor(
     private gameService: GameReqService,

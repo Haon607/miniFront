@@ -76,11 +76,11 @@ export class ScoreboardComponent {
       player.correct = false;
       const previousIndex = previousOrder.indexOf(player.id);
       if (previousIndex > index) {
-        player.color = '#99FF99';
+        player.fontColor = '#99FF99';
       } else if (previousIndex < index) {
-        player.color = '#FF9999';
+        player.fontColor = '#FF9999';
       } else {
-        player.color = '#999999';
+        player.fontColor = '#999999';
       }
     });
 
@@ -92,7 +92,7 @@ export class ScoreboardComponent {
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     for (let player of this.players) {
-      new ColorFader().fadeColor(player.color, '#FFFFFF', 1000, (newColor) => player.color = newColor);
+      new ColorFader().fadeColor(player.fontColor, '#FFFFFF', 1000, (newColor) => player.fontColor = newColor);
     }
   }
 

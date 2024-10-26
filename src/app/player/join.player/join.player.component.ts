@@ -26,7 +26,7 @@ export class JoinPlayerComponent {
   }
 
   createPlayer(name: string) {
-    this.playerService.createPlayer(new Player(NaN, name, NaN, 0))
+    this.playerService.createPlayer(new Player())
       .subscribe(() => this.playerService.getPlayers()
         .subscribe(players => {
             this.players = players;

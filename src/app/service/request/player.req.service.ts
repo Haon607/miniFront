@@ -28,6 +28,11 @@ export class PlayerReqService {
     return this.http.post<Player>(`${this.url}/${id}`, input);
   }
 
+  setColor(id: number, color: string): Observable<Player> {
+    return this.http.put<Player>(`${this.url}/${id}`, color);
+
+  }
+
   deleteInputs(): Observable<Player[]> {
     return this.http.delete<Player[]>(`${this.url}`);
   }
