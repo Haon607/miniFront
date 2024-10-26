@@ -102,6 +102,23 @@ export class ColorFader {
       b: bigint & 255,
     };
   }
+
+  getContrastColor(hexColor: string): string {
+    // Remove the '#' if it's present
+    const color = hexColor.replace(/^#/, '');
+
+    // Parse r, g, b values
+    const r = parseInt(color.slice(0, 2), 16) / 255;
+    const g = parseInt(color.slice(2, 4), 16) / 255;
+    const b = parseInt(color.slice(4, 6), 16) / 255;
+
+    // Calculate the relative luminance
+    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+    // If luminance is greater than 0.5, return black; otherwise, return white
+    return luminance > 0.5 ? '#000000' : '#FFFFFF';
+  }
+
 }
 
 export class MusicFader {

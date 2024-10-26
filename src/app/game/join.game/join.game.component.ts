@@ -56,6 +56,9 @@ export class JoinGameComponent implements OnDestroy {
         for (let coord of this.squares.shuffleArray(this.squares.allPath)) {
           if (colors[i] === undefined) {
             i = 0;
+            if (colors[0] === undefined) {
+              colors[0] = '#000080';
+            }
           }
           this.squares.fadeSquares([coord], colors[i], 250);
           i++;
