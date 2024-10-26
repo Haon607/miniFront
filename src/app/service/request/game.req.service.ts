@@ -28,7 +28,7 @@ export class GameReqService {
     return this.http.put<Game>(`${this.url}/${id}`, [route, data]);
   }
 
-  setQuestions(id: number): Observable<Game> {
+  setRounds(id: number): Observable<Game> {
     return this.http.post<Game>(`${this.url}/${id}/questions`, {});
 
   }

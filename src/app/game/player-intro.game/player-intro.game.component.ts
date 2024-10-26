@@ -37,8 +37,7 @@ import { SquaresService } from "../../squares/squares.service";
 })
 export class PlayerIntroGameComponent {
   players: Player[] = [];
-  playerIntroMusic = new Audio('/audio/player_intro.mp3');
-
+  spin = true;
 
   constructor(
     private gameService: GameReqService,
@@ -58,10 +57,6 @@ export class PlayerIntroGameComponent {
         this.animate()
       }
     );
-    this.playerIntroMusic.play();
-    this.playerIntroMusic.addEventListener('ended', () => {
-      this.skipToNext()
-    });
   }
 
   async populatePlayers(players: Player[]) {
@@ -71,15 +66,21 @@ export class PlayerIntroGameComponent {
     }
   }
 
-  skipToNext() {
-    this.playerIntroMusic.pause();
-    this.playerIntroMusic.currentTime = 0;
+  async skipToNext() {
+    this.spin = false;
+    await new Promise(resolve => setTimeout(resolve, 1500));
     this.router.navigateByUrl("/game/rules/1");
   }
 
   private async animate() {
-    await this.squares.randomPath('#3333FF', 15, 1);
-    await this.squares.all('#3333FF');
-    await this.squares.allFade('#000080', 500);
+    let oldColor = "";
+    let newColor = "";
+    while (this.spin) {
+      do {
+        newColor = this.squares.shuffleArray(this.players.map(player => player.color))[0];
+      } while (newColor === oldColor && this.players.length > 1);
+      await this.squares.circle(newColor, 250, 10, 1, this.players.length < 2);
+      oldColor = newColor;
+    }
   }
 }

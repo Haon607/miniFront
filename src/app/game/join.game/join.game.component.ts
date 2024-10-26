@@ -19,6 +19,7 @@ import { SquaresService } from "../../squares/squares.service";
 export class JoinGameComponent implements OnDestroy {
   joinAble = false;
   game: Game = new Game();
+  colors: string[] = [];
 
   constructor(
     private gameService: GameReqService,
@@ -56,6 +57,7 @@ export class JoinGameComponent implements OnDestroy {
         if (colors[1] === undefined) {
           colors.push('#000080');
         }
+        this.colors = colors;
         for (let coord of this.squares.shuffleArray(this.squares.allPath)) {
           if (colors[i] === undefined) {
             i = 0;
@@ -71,21 +73,48 @@ export class JoinGameComponent implements OnDestroy {
     this.joinAble = false;
   }
 
-  startGame() {
-    this.joinAble = false
-    this.memory.gameId = this.game.id;
+  async startGame() {
+    if (this.joinAble) {
+      this.joinAble = false
+      this.memory.gameId = this.game.id;
 
-    this.gameService.setQuestions(this.game.id).subscribe(() => {})
+      // this.gameService.setRounds(this.game.id).subscribe(() => {}) TODO
 
-    let playMusic = new Audio('/audio/play.mp3');
-    playMusic.play();
-    this.startAnimation(4);
-    playMusic.addEventListener('ended', () => {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      let playMusic = new Audio('/audio/start.mp3');
+      playMusic.play();
+      this.startAnimation();
+
+      await new Promise(resolve => setTimeout(resolve, 5000));
       this.router.navigateByUrl("/game/players");
-    });
+    }
   }
 
-  async startAnimation(repeats: number) {
-    await this.squares.randomPath('#FFFFFF', 250, 10, repeats);
+  async startAnimation(loops = 8) {
+    let path = this.squares.shuffleArray(this.squares.allPath)
+    let i = 0;
+    if (this.colors[1] === undefined) {
+      this.colors.push('#FFFFFF');
+      this.colors.push('#FF0000');
+      this.colors.push('#FFFF00');
+      this.colors.push('#00FF00');
+      this.colors.push('#00FFFF');
+      this.colors.push('#0000FF');
+      this.colors.push('#FF00FF');
+    }
+    for (let o = 0; o < loops; o++) {
+      for (let coord of path) {
+        if (this.colors[i] === undefined) {
+          i = 0;
+        }
+        this.squares.fadeSquares([coord], this.colors[i], 100);
+        await new Promise(resolve => setTimeout(resolve, 1));
+        i++;
+      }
+      this.colors = this.squares.shuffleArray(this.colors);
+    }
+    await new Promise(resolve => setTimeout(resolve, 100));
+    this.squares.allFade('#000080', 250);
   }
 }
