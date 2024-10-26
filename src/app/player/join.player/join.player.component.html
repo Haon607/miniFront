@@ -14,7 +14,7 @@
     <input class="element" type="number" #gameId>
     <div class="player-list">
       @for (player of players; track player.id) {
-        <button class="player-button" (click)="selectPlayer(gameId.value, player.id!)">{{ player.name }}</button>
+        <button class="player-button" (click)="selectPlayer(gameId.value, player.id!)" [ngStyle]="{'color': player.fontColor, 'background': player.correct ? '#00FF0088' : player.color + 'FF'}">{{ player.name }}</button>
       }
     </div>
   }

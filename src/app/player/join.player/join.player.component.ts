@@ -4,11 +4,15 @@ import { PlayerReqService } from "../../service/request/player.req.service";
 import { GameReqService } from "../../service/request/game.req.service";
 import { MemoryPlayerService } from "../../service/memory/memory.player.service";
 import { Router } from "@angular/router";
+import { NgStyle } from "@angular/common";
+import { ColorFader } from "../../utils";
 
 @Component({
   selector: 'app-join.player',
   standalone: true,
-  imports: [],
+  imports: [
+    NgStyle
+  ],
   templateUrl: './join.player.component.html',
   styleUrl: './join.player.component.css'
 })
@@ -22,7 +26,12 @@ export class JoinPlayerComponent {
     private memory: MemoryPlayerService,
     private router: Router
   ) {
-    this.playerService.getPlayers().subscribe(players => this.players = players);
+    this.playerService.getPlayers().subscribe(players =>
+      this.players = players.map(player => {
+        player.fontColor = new ColorFader().getContrastColor(player.color);
+        return player;
+      })
+    );
   }
 
   createPlayer(name: string) {
