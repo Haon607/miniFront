@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class MemoryPlayerService {
   gameId: number = NaN;
   playerId: number = NaN;
+  color: string = '';
 
   constructor() { }
 }

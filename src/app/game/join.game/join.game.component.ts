@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Game } from "../../models";
+import { Game, Player } from "../../models";
 import { ScoreboardComponent } from "../../scoreboard/scoreboard.component";
 import { GameReqService } from "../../service/request/game.req.service";
 import { ScoreboardService } from "../../scoreboard/scoreboard.service";
@@ -45,11 +45,21 @@ export class JoinGameComponent implements OnDestroy {
 
   async getPlayers() {
     while (this.joinAble) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       this.gameService.getGame(this.game.id).subscribe(game => {
         this.scoreboardService.playerSubject.next(game.players);
         this.game = game;
+        let colors = game.players.map((player: Player) => player.color);
+        colors = this.squares.shuffleArray(colors);
+        let i = 0;
+        for (let coord of this.squares.shuffleArray(this.squares.allPath)) {
+          if (colors[i] === undefined) {
+            i = 0;
+          }
+          this.squares.fadeSquares([coord], colors[i], 250);
+          i++;
+        }
       });
     }
   }

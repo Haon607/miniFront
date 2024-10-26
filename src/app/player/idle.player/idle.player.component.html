@@ -1,6 +1,10 @@
-<div class="background">
+<div class="background" [ngStyle]="{'background-color': bgc}">
   @if (initial) {
-
+    <div class="color-list">
+      @for (color of colorList; track color) {
+        <button class="color-button" [ngStyle]="{'background-color': color}" (click)="select(color)"></button>
+      }
+    </div>
   } @else {
     <span>Warten auf Daten</span>
   }
