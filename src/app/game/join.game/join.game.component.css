@@ -7,9 +7,11 @@
 
 .content {
   text-align: center;
-  h1, p, button {
+  h1, p {
     font-size: 100px;
   }
+  width: 45vw;
+  margin-left: 20vw;
 }
 
 #title {

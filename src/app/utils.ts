@@ -118,7 +118,6 @@ export class ColorFader {
     // If luminance is greater than 0.5, return black; otherwise, return white
     return luminance > 0.5 ? '#000000' : '#FFFFFF';
   }
-
 }
 
 export class MusicFader {

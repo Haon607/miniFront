@@ -60,7 +60,7 @@ export class JoinGameComponent implements OnDestroy {
           if (colors[i] === undefined) {
             i = 0;
           }
-          this.squares.fadeSquares([coord], colors[i], 250);
+          this.squares.fadeSquares([coord], colors[i], 500);
           i++;
         }
       });
