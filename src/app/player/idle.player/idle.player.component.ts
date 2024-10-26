@@ -18,7 +18,7 @@ import { PlayerReqService } from "../../service/request/player.req.service";
 export class IdlePlayerComponent {
 initial: boolean = false;
 bgc: string = '';
-colorList = ["#D2042D", "#0047AB", "#50C878", "#FFD300", "#F28500", "#7851A9", "#00FFFF", "#FF6F61", "#98FF98", "#800000", "#DAA520", "#40E0D0", "#E6E6FA", "#708090", "#008080", "#FF00FF", "#000080", "#808000", "#E97451", "#FF0090"]
+colorList = ["#D2042D", "#0047AB", "#50C878", "#FFD300", "#F28500", "#7851A9", "#00FFFF", "#FF6F61", "#98FF98", "#800000", "#DAA520", "#40E0D0", "#E6E6FA", "#708090", "#008080", "#FF00FF", "#8888FF", "#808000", "#E97451", "#FF0090"]
 
   constructor(
     private gameService: GameReqService,
