@@ -1,6 +1,6 @@
 <div class="background" (click)="skipToNext()">
   @for (player of players; track player.id) {
-    <div class="player-container" @slide>
+    <div class="player-container" [ngStyle]="{'color': player.fontColor, 'background': player.color + 'FF'}" @slide>
       <span class="player-name">{{ player.name }}</span>
       <span class="player-score">{{ player.totalScore }}</span>
     </div>

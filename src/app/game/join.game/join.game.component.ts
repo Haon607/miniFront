@@ -84,6 +84,7 @@ export class JoinGameComponent implements OnDestroy {
 
       let playMusic = new Audio('/audio/start.mp3');
       playMusic.play();
+      this.memory.music = playMusic;
       this.startAnimation();
 
       await new Promise(resolve => setTimeout(resolve, 5000));
@@ -112,7 +113,8 @@ export class JoinGameComponent implements OnDestroy {
         await new Promise(resolve => setTimeout(resolve, 1));
         i++;
       }
-      this.colors = this.squares.shuffleArray(this.colors);
+        // this.colors = this.squares.shuffleArray(this.colors);
+      this.colors = this.colors.reverse();
     }
     await new Promise(resolve => setTimeout(resolve, 100));
     this.squares.allFade('#000080', 250);

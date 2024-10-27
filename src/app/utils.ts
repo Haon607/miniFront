@@ -44,6 +44,49 @@ export class ColorFader {
     }, 16);
   }
 
+  getContrastColor(hexColor: string): string {
+    // Remove the '#' if it's present
+    const color = hexColor.replace(/^#/, '');
+
+    // Parse r, g, b values
+    const r = parseInt(color.slice(0, 2), 16) / 255;
+    const g = parseInt(color.slice(2, 4), 16) / 255;
+    const b = parseInt(color.slice(4, 6), 16) / 255;
+
+    // Calculate the relative luminance
+    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+    // If luminance is greater than 0.5, return black; otherwise, return white
+    return luminance > 0.5 ? '#000000' : '#FFFFFF';
+  }
+
+  /**
+   * Adjusts the brightness of a hex color by a given percentage.
+   * @param hexColor - The hex color string (e.g., "#FF5733").
+   * @param percent - The percentage to adjust brightness (-100 to 100).
+   *                   Positive values increase brightness, negative decrease.
+   * @returns The adjusted hex color string.
+   */
+  adjustBrightness(hexColor: string, percent: number): string {
+    // Ensure percent is clamped between -100 and 100
+    percent = Math.max(-100, Math.min(100, percent));
+
+    // Remove the "#" if present and parse the hex color into RGB components
+    let r = parseInt(hexColor.slice(1, 3), 16);
+    let g = parseInt(hexColor.slice(3, 5), 16);
+    let b = parseInt(hexColor.slice(5, 7), 16);
+
+    // Adjust each color component by the percentage
+    r = Math.min(255, Math.max(0, Math.round(r + (r * percent) / 100)));
+    g = Math.min(255, Math.max(0, Math.round(g + (g * percent) / 100)));
+    b = Math.min(255, Math.max(0, Math.round(b + (b * percent) / 100)));
+
+    // Convert back to hex and pad with zeros if needed
+    const newHex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+
+    return newHex;
+  }
+
   // Convert hex to RGB
   private hexToRgba(hex: string): [number, number, number, number] {
     let r = 0, g = 0, b = 0, a = 1;
@@ -101,22 +144,6 @@ export class ColorFader {
       g: (bigint >> 8) & 255,
       b: bigint & 255,
     };
-  }
-
-  getContrastColor(hexColor: string): string {
-    // Remove the '#' if it's present
-    const color = hexColor.replace(/^#/, '');
-
-    // Parse r, g, b values
-    const r = parseInt(color.slice(0, 2), 16) / 255;
-    const g = parseInt(color.slice(2, 4), 16) / 255;
-    const b = parseInt(color.slice(4, 6), 16) / 255;
-
-    // Calculate the relative luminance
-    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-
-    // If luminance is greater than 0.5, return black; otherwise, return white
-    return luminance > 0.5 ? '#000000' : '#FFFFFF';
   }
 }
 
