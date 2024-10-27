@@ -4,11 +4,15 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MemoryGameService } from "../../service/memory/memory.game.service";
 import { GameReqService } from "../../service/request/game.req.service";
 import { Game } from "../../models";
+import {ColorFader, RandomText} from "../../utils";
+import {NgStyle} from "@angular/common";
 
 @Component({
   selector: 'app-select.game',
   standalone: true,
-  imports: [],
+  imports: [
+    NgStyle
+  ],
   templateUrl: './select.game.component.html',
   styleUrl: './select.game.component.css'
 })
@@ -17,6 +21,8 @@ export class SelectGameComponent {
   roundNumber = '';
   roundName = '#######'
   game: Game = new Game();
+  size = 250;
+  color = '#FFFFFF'
 
   constructor(
     private squares: SquaresService,
@@ -54,6 +60,15 @@ export class SelectGameComponent {
     this.squares.allFade('#000000', 250)
     await new Promise(resolve => setTimeout(resolve, 250));
     this.startLines();
+    for (; this.size > 25; this.size-=1) {
+      if (this.size % 4 === 0 && this.size <= 100) {
+        this.roundName = RandomText.generateRandomText(this.game.rounds[0].name.length)
+        new Audio("/audio/select_roulette_tick.mp3").play();
+      }
+      await new Promise(resolve => setTimeout(resolve, 25));
+    }
+    this.size = 0;
+    new Audio("/audio/selected.mp3").play();
     this.roundName = this.game.rounds[0].name;
   }
 
@@ -65,9 +80,21 @@ export class SelectGameComponent {
       for(let j = 0; j < 10; j++) {
         this.squares.line(lineNumber[j], color, 250, 10, 1, false);
         await new Promise(resolve => setTimeout(resolve, 100));
+        // if (lineNumber[j] === 3 || lineNumber[j] === 5 || lineNumber[j] === 6) {
+        //   new ColorFader().fadeColor(this.color, new ColorFader().getContrastColor(color), 250, col => this.color = col);
+        // }
       }
       lineNumber = this.squares.shuffleArray(lineNumber)
     }
+    this.selectMusic.pause()
+    new Audio("/audio/transition_to_rules.mp3").play();
+    lineNumber = [0,1,2,3,4,5,6,7,8,9].reverse();
+    for(let j = 0; j < 10; j++) {
+      this.squares.line(lineNumber[j], '#000000', 250, 10, 1, false);
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    this.router.navigateByUrl("/game/rules/1")
   }
 
   skipToNext() {

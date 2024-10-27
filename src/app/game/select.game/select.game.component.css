@@ -6,6 +6,13 @@
 }
 
 .content {
-  color: white;
+  background: unset;
+  border: unset;
   margin: 0;
+  text-align: center;
+  width: 85vw;
+  height: 50vh;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
 }
