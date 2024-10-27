@@ -59,7 +59,6 @@ export class SelectGameComponent {
 
   private async startLines() {
     let lineNumber = [0,1,2,3,4,5,6,7,8,9];
-    lineNumber = this.squares.shuffleArray(lineNumber)
     for (let i = 0; i < 10; i++) { //TODO TIME THIS WITH
                                             //TODO ROULETTE
       let color = this.game.players[i % this.game.players.length].color;
@@ -67,6 +66,7 @@ export class SelectGameComponent {
         this.squares.line(lineNumber[j], color, 250, 10, 1, false);
         await new Promise(resolve => setTimeout(resolve, 100));
       }
+      lineNumber = this.squares.shuffleArray(lineNumber)
     }
   }
 

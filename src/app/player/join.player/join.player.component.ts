@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-import { Player } from "../../models";
-import { PlayerReqService } from "../../service/request/player.req.service";
-import { GameReqService } from "../../service/request/game.req.service";
-import { MemoryPlayerService } from "../../service/memory/memory.player.service";
-import { Router } from "@angular/router";
-import { NgStyle } from "@angular/common";
-import { ColorFader } from "../../utils";
+import {Component} from '@angular/core';
+import {Player} from "../../models";
+import {PlayerReqService} from "../../service/request/player.req.service";
+import {GameReqService} from "../../service/request/game.req.service";
+import {MemoryPlayerService} from "../../service/memory/memory.player.service";
+import {Router} from "@angular/router";
+import {NgStyle} from "@angular/common";
+import {ColorFader} from "../../utils";
 
 @Component({
   selector: 'app-join.player',
@@ -36,13 +36,20 @@ export class JoinPlayerComponent {
 
   createPlayer(name: string) {
     this.playerService.createPlayer(new Player(NaN, name))
-      .subscribe(() => this.playerService.getPlayers()
-        .subscribe(players => {
-            this.players = players;
-            this.create = false;
-          }
-        )
-      );
+      .subscribe(player => {
+        this.playerService.setColor(player.id, '#000000')
+          .subscribe(() => {
+            this.playerService.getPlayers()
+              .subscribe(players => {
+                  this.players = players.map(player => {
+                    player.fontColor = new ColorFader().getContrastColor(player.color);
+                    return player;
+                  });
+                  this.create = false;
+                }
+              );
+          });
+      });
   }
 
   selectPlayer(gId: string, pId: number) {
