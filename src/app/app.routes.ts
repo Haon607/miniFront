@@ -9,6 +9,7 @@ import { RulesPlayerComponent } from "./player/rules.player/rules.player.compone
 import { SelectPlayerComponent } from "./player/select.player/select.player.component";
 import { ScoreboardPlayerComponent } from "./player/scoreboard.player/scoreboard.player.component";
 import { ScoreboardGameComponent } from "./game/scoreboard.game/scoreboard.game.component";
+import { SelectGameComponent } from "./game/select.game/select.game.component";
 
 export const routes: Routes = [
   {path: "", component: JoinPlayerComponent},
@@ -21,6 +22,7 @@ export const routes: Routes = [
   {path: "game", component: LaunchGameComponent},
   {path: "game/join", component: JoinGameComponent},
   {path: "game/players", component: PlayerIntroGameComponent},
+  {path: "game/select/:round", component: SelectGameComponent},
   {path: "game/rules/:round", component: RulesGameComponent},
   {path: "game/scoreboard/:round", component: ScoreboardGameComponent},
 ];

@@ -7,6 +7,7 @@ import { Player } from "../../models";
 export class MemoryGameService {
   gameId: number = NaN;
   music = new Audio();
+  rounds: number = 0;
   players: Player[] = [
     // new Player(0, "P0", 0, 0),
     // new Player(1, "P1", 1, 1),

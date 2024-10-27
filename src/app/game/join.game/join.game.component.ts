@@ -78,7 +78,11 @@ export class JoinGameComponent implements OnDestroy {
       this.joinAble = false
       this.memory.gameId = this.game.id;
 
-      // this.gameService.setRounds(this.game.id).subscribe(() => {}) TODO
+      this.gameService.modifyData(this.memory.gameId, "/idle").subscribe(() => {})
+
+      let rounds = 3;
+      this.gameService.setRounds(this.game.id, rounds).subscribe(() =>{})
+      this.memory.rounds = rounds;
 
       await new Promise(resolve => setTimeout(resolve, 1000));
 
