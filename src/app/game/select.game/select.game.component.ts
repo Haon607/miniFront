@@ -37,30 +37,35 @@ export class SelectGameComponent {
       this.game = game;
     });
 
+    this.startSequence();
+  }
+
+  private async startSequence() {
+    this.squares.allFade('#000000', 100)
+    await new Promise(resolve => setTimeout(resolve, 250));
+
     switch (this.roundNumber) {
       case "1":
         this.selectMusic.src = '/audio/select_first.mp3';
         this.startFirstAnimation();
         break;
       case this.memory.rounds.toString():
-        this.selectMusic.src = '/audio/select_last.mp3';
+        this.selectMusic.src = '/audio/select_last.mp3'; //TODO THIS SHOULD JUST BE A STINGER
         break;
       default:
-        this.selectMusic.src = '/audio/select_game.mp3';
+        if (this.game.rounds[Number(this.roundNumber)-1].large) {
+          this.selectMusic.src = '/audio/select_small.mp3'; //TODO animation should go up i think and theme should be duell and animation could be longer
+          this.startSmallAnimation();
+        } else {
+          this.selectMusic.src = '/audio/select_small.mp3';
+          this.startSmallAnimation();
+        }
         break;
     }
     this.selectMusic.play();
   }
 
-  skipToNext() {
-    this.selectMusic.pause();
-    this.selectMusic.currentTime = 0;
-    this.router.navigateByUrl(`/game/round/${this.roundNumber}`)
-  }
-
   private async startFirstAnimation() {
-    this.squares.allFade('#000000', 100)
-    await new Promise(resolve => setTimeout(resolve, 250));
     this.startLines();
     for (; this.size > 25; this.size -= 1) {
       if (this.size % 4 === 0 && this.size <= 100) {
@@ -74,12 +79,26 @@ export class SelectGameComponent {
     this.roundName = this.game.rounds[0].name;
   }
 
-  private async startLines() {
+  private async startSmallAnimation() {
+    this.startLines(true);
+    for (; this.size > 25; this.size -= 1) {
+      if (this.size % 4 === 0 && this.size <= 100) {
+        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)].name.length)
+        new Audio("/audio/select_roulette_tick.mp3").play();
+      }
+      await new Promise(resolve => setTimeout(resolve, 25));
+    }
+    this.size = 0;
+    new Audio("/audio/selected.mp3").play();
+    this.roundName = this.game.rounds[0].name;
+  }
+
+  private async startLines(alt = false) {
     let lineNumber = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     for (let i = 0; i < 10; i++) {
       let color = this.game.players[i % this.game.players.length].color;
       for (let j = 0; j < 10; j++) {
-        this.squares.line(lineNumber[j], color, 250, 10, 1, false);
+        this.squares.line(lineNumber[j], color, 250, 10, 1, false, alt);
         await new Promise(resolve => setTimeout(resolve, 100));
       }
       lineNumber = this.squares.shuffleArray(lineNumber)
@@ -92,6 +111,6 @@ export class SelectGameComponent {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    this.router.navigateByUrl("/game/rules/1")
+    this.router.navigateByUrl("/game/rules/" + this.roundNumber);
   }
 }
