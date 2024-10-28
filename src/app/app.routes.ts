@@ -15,6 +15,7 @@ export const routes: Routes = [
   {path: "", component: JoinPlayerComponent},
   {path: "idle", component: IdlePlayerComponent},
   {path: "initial", component: IdlePlayerComponent},
+  {path: "selectgame", component: IdlePlayerComponent},
   {path: "rules/:round", component: RulesPlayerComponent},
   {path: "select", component: SelectPlayerComponent},
   {path: "scoreboard/:round", component: ScoreboardPlayerComponent},
