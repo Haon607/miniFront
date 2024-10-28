@@ -17,6 +17,7 @@ import { PlayerReqService } from "../../service/request/player.req.service";
 })
 export class IdlePlayerComponent {
 initial: boolean = false;
+selectgame: boolean = false;
 bgc: string = '';
 colorList = ["#D2042D", "#0047AB", "#50C878", "#FFD300", "#F28500", "#7851A9", "#00FFFF", "#FF6F61", "#98FF98", "#800000", "#DAA520", "#40E0D0", "#E6E6FA", "#708090", "#008080", "#FF00FF", "#8888FF", "#808000", "#E97451", "#FF0090"]
 
@@ -28,11 +29,18 @@ colorList = ["#D2042D", "#0047AB", "#50C878", "#FFD300", "#F28500", "#7851A9", "
   ) {
     new PlayerRouting().routIf(router, memory, gameService);
     this.initial = this.router.url === '/initial';
+    this.selectgame = this.router.url === '/selectgame';
+
     playerService.getPlayer(memory.playerId).subscribe(player => {
       memory.color = player.color;
       this.bgc = memory.color;
     })
 
+    if (this.selectgame) {
+      this.gameService.getGame(memory.gameID).subscribe(game => 
+        colorList = game.players.map(player => player.color);
+      );
+    }
   }
 
   select(color: string) {
