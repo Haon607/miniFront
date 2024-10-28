@@ -17,11 +17,11 @@ import { ColorFader } from "../../utils";
   styleUrl: './idle.player.component.css'
 })
 export class IdlePlayerComponent implements OnDestroy {
-initial: boolean = false;
-selectgame: boolean = false;
-bgc: string = '';
-animate: boolean = false;
-colorList = ["#D2042D", "#0047AB", "#50C878", "#FFD300", "#F28500", "#7851A9", "#00FFFF", "#FF6F61", "#98FF98", "#800000", "#DAA520", "#40E0D0", "#E6E6FA", "#708090", "#008080", "#FF00FF", "#8888FF", "#808000", "#E97451", "#FF0090"]
+  initial: boolean = false;
+  selectgame: boolean = false;
+  bgc: string = '';
+  animate: boolean = false;
+  colorList = ["#D2042D", "#0047AB", "#50C878", "#FFD300", "#F28500", "#7851A9", "#00FFFF", "#FF6F61", "#98FF98", "#800000", "#DAA520", "#40E0D0", "#E6E6FA", "#708090", "#008080", "#FF00FF", "#8888FF", "#808000", "#E97451", "#FF0090"]
 
   constructor(
     private gameService: GameReqService,
@@ -47,24 +47,25 @@ colorList = ["#D2042D", "#0047AB", "#50C878", "#FFD300", "#F28500", "#7851A9", "
     }
   }
 
-  private async startAnimation() {
-  let i = 0;
-    while (this.animate) {
-      new ColorFader().fadeColor(this.bgc, this.colorList[i % this.colorList.length], 200, color => this.bgc = color);
-      await new Promise(resolve => setTimeout(resolve, 250));
-      i++
-    }
-  }
-
   select(color: string) {
-    this.playerService.setColor(this.memory.playerId, color).subscribe(() =>  {
+    this.playerService.setColor(this.memory.playerId, color).subscribe(() => {
       this.playerService.getPlayer(this.memory.playerId).subscribe(player => {
-      this.memory.color = player.color;
-      this.bgc = this.memory.color;
-    })});
+        this.memory.color = player.color;
+        this.bgc = this.memory.color;
+      })
+    });
   }
 
   ngOnDestroy(): void {
     this.animate = false;
+  }
+
+  private async startAnimation() {
+    let i = 0;
+    while (this.animate) {
+      new ColorFader().fadeColor(this.bgc, this.colorList[i % this.colorList.length], 750, color => this.bgc = color);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      i++;
+    }
   }
 }
