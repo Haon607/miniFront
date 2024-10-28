@@ -28,7 +28,7 @@ export class JoinGameComponent implements OnDestroy {
     private router: Router,
     private squares: SquaresService
   ) {
-    // let startMusic = new Audio('/audio/start.mp3');
+    // let startMusic = new Audio('/audio/startmusic.mp3');
     // startMusic.play();
     // this.startAnimation(9);
     // startMusic.addEventListener('ended', () => {
@@ -50,6 +50,11 @@ export class JoinGameComponent implements OnDestroy {
 
       this.gameService.getGame(this.game.id).subscribe(game => {
         this.scoreboardService.playerSubject.next(game.players);
+        if (game.players?.length > 0) {
+          if (this.game.players.length !== game.players.length) {
+            new Audio('/audio/join.mp3').play();
+          }
+        }
         this.game = game;
         let colors = game.players.map((player: Player) => player.color);
         colors = this.squares.shuffleArray(colors);
@@ -75,18 +80,19 @@ export class JoinGameComponent implements OnDestroy {
 
   async startGame() {
     if (this.joinAble) {
+      new Audio('/audio/start.mp3').play();
       this.joinAble = false
       this.memory.gameId = this.game.id;
 
       this.gameService.modifyData(this.memory.gameId, "/idle").subscribe(() => {})
-
       let rounds = 3;
-      this.gameService.setRounds(this.game.id, rounds).subscribe(() =>{})
+      let largeRounds = 1;
+      this.gameService.setRounds(this.game.id, rounds, largeRounds).subscribe(() =>{})
       this.memory.rounds = rounds;
 
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      let playMusic = new Audio('/audio/start.mp3');
+      let playMusic = new Audio('/audio/startmusic.mp3');
       playMusic.play();
       this.memory.music = playMusic;
       this.startAnimation();
@@ -121,6 +127,6 @@ export class JoinGameComponent implements OnDestroy {
       this.colors = this.colors.reverse();
     }
     await new Promise(resolve => setTimeout(resolve, 100));
-    this.squares.allFade('#000080', 250);
+    this.squares.allFade('#000000', 250);
   }
 }

@@ -28,8 +28,8 @@ export class GameReqService {
     return this.http.put<Game>(`${this.url}/${id}`, [route, data]);
   }
 
-  setRounds(id: number, amount: number): Observable<Game> {
-    return this.http.post<Game>(`${this.url}/${id}/rounds/${amount}`, {});
+  setRounds(id: number, amount: number, amountLargeRounds: number): Observable<Game> {
+    return this.http.post<Game>(`${this.url}/${id}/rounds/${amount}/${amountLargeRounds}`, {});
 
   }
 }

@@ -59,7 +59,7 @@ export class SelectGameComponent {
   }
 
   private async startFirstAnimation() {
-    this.squares.allFade('#000000', 250)
+    this.squares.allFade('#000000', 100)
     await new Promise(resolve => setTimeout(resolve, 250));
     this.startLines();
     for (; this.size > 25; this.size -= 1) {
@@ -76,15 +76,11 @@ export class SelectGameComponent {
 
   private async startLines() {
     let lineNumber = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    for (let i = 0; i < 10; i++) { //TODO TIME THIS WITH
-      //TODO ROULETTE
+    for (let i = 0; i < 10; i++) {
       let color = this.game.players[i % this.game.players.length].color;
       for (let j = 0; j < 10; j++) {
         this.squares.line(lineNumber[j], color, 250, 10, 1, false);
         await new Promise(resolve => setTimeout(resolve, 100));
-        // if (lineNumber[j] === 3 || lineNumber[j] === 5 || lineNumber[j] === 6) {
-        //   new ColorFader().fadeColor(this.color, new ColorFader().getContrastColor(color), 250, col => this.color = col);
-        // }
       }
       lineNumber = this.squares.shuffleArray(lineNumber)
     }

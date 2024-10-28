@@ -102,6 +102,4 @@ export class PlayerIntroGameComponent {
       oldColor = newColor;
     }
   }
-
-  protected readonly ColorFader = ColorFader;
 }

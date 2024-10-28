@@ -1,5 +1,3 @@
-import { Input } from "@angular/core";
-
 export class Player {
   id: number;
   name: string;
@@ -36,6 +34,7 @@ export class Player {
   get color() {
     return this.playerColor === '' ? '#FFFFFF' : this.playerColor;
   }
+
   set color(color: string) {
     this.playerColor = color;
   }
@@ -92,17 +91,20 @@ export class Round {
   id: number;
   name: string;
   rules: string;
+  large: boolean;
   questions: Question[];
 
   constructor(
     id: number = 0,
     name: string = '',
     rules: string = '',
+    large: boolean = false,
     questions: Question[] = []
   ) {
     this.id = id;
     this.name = name;
     this.rules = rules;
+    this.large = large;
     this.questions = questions;
   }
 }
