@@ -37,12 +37,17 @@ colorList = ["#D2042D", "#0047AB", "#50C878", "#FFD300", "#F28500", "#7851A9", "
     })
 
     if (this.selectgame) {
-      this.gameService.getGame(memory.gameID).subscribe(game => 
+      this.gameService.getGame(memory.gameID).subscribe(game => {
         colorList = game.players.map(player => player.color);
-      );
+        this.startAnimation();
+      });
     }
   }
 
+  private async startAnimation() {
+    
+  }
+  
   select(color: string) {
     this.playerService.setColor(this.memory.playerId, color).subscribe(() =>  {
       this.playerService.getPlayer(this.memory.playerId).subscribe(player => {
