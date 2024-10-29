@@ -26,9 +26,14 @@
 }
 
 .color-button {
-  min-width: 40%;
+  width: 50%;
   margin: 5px 0;
   flex-grow: 1;
+}
+
+input {
+  min-height: 50px;
+  border-radius: 15px;
 }
 
 span {

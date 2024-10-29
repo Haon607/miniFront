@@ -46,7 +46,7 @@ export class ScoreboardComponent {
   constructor(private scoreboardService: ScoreboardService) {
     scoreboardService.playerSubject.subscribe((players: Player[]) => {
       this.players = players.map(player => {
-        player.fontColor = new ColorFader().getContrastColor(player.color);
+        player.fontColor = ColorFader.getContrastColor(player.color);
         return player;
       });
       this.checkOverflow();
@@ -95,7 +95,7 @@ export class ScoreboardComponent {
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     for (let player of this.players) {
-      new ColorFader().fadeColor(player.fontColor, new ColorFader().getContrastColor(player.color), 1000, (newColor) => player.fontColor = newColor);
+      new ColorFader().fadeColor(player.fontColor, ColorFader.getContrastColor(player.color), 1000, (newColor) => player.fontColor = newColor);
     }
   }
 

@@ -6,12 +6,14 @@ import { PlayerRouting } from "../playerRouting";
 import { NgStyle } from "@angular/common";
 import { PlayerReqService } from "../../service/request/player.req.service";
 import { ColorFader } from "../../utils";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: 'app-idle.player',
   standalone: true,
   imports: [
-    NgStyle
+    NgStyle,
+    FormsModule
   ],
   templateUrl: './idle.player.component.html',
   styleUrl: './idle.player.component.css'
@@ -19,6 +21,7 @@ import { ColorFader } from "../../utils";
 export class IdlePlayerComponent implements OnDestroy {
   initial: boolean = false;
   selectgame: boolean = false;
+  colorPicked: any | null = null;
   bgc: string = '';
   animate: boolean = false;
   colorList = ["#D2042D", "#0047AB", "#50C878", "#FFD300", "#F28500", "#7851A9", "#00FFFF", "#FF6F61", "#98FF98", "#800000", "#DAA520", "#40E0D0", "#E6E6FA", "#708090", "#008080", "#FF00FF", "#8888FF", "#808000", "#E97451", "#FF0090"]
@@ -68,4 +71,6 @@ export class IdlePlayerComponent implements OnDestroy {
       i++;
     }
   }
+
+  protected readonly ColorFader = ColorFader;
 }

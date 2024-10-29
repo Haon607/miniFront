@@ -112,7 +112,7 @@ export class SelectGameComponent {
     let lineNumber = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     let contrastColorsArray: string[] = [];
     for (let j = 0; j < this.game.players.length; j++) {
-      contrastColorsArray.push(new ColorFader().getContrastColor(this.game.players[j].color));
+      contrastColorsArray.push(ColorFader.getContrastColor(this.game.players[j].color));
     }
     let blackray: string[] = contrastColorsArray.filter(x => x === '#000000');
     let whiteray: string[] = contrastColorsArray.filter(x => x === '#FFFFFF');

@@ -28,7 +28,7 @@ export class JoinPlayerComponent {
   ) {
     this.playerService.getPlayers().subscribe(players =>
       this.players = players.map(player => {
-        player.fontColor = new ColorFader().getContrastColor(player.color);
+        player.fontColor = ColorFader.getContrastColor(player.color);
         return player;
       })
     );
@@ -42,7 +42,7 @@ export class JoinPlayerComponent {
             this.playerService.getPlayers()
               .subscribe(players => {
                   this.players = players.map(player => {
-                    player.fontColor = new ColorFader().getContrastColor(player.color);
+                    player.fontColor = ColorFader.getContrastColor(player.color);
                     return player;
                   });
                   this.create = false;

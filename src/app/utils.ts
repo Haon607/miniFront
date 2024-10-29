@@ -44,7 +44,7 @@ export class ColorFader {
     }, 16);
   }
 
-  getContrastColor(hexColor: string): string {
+  static getContrastColor(hexColor: string): string {
     // Remove the '#' if it's present
     const color = hexColor.replace(/^#/, '');
 
