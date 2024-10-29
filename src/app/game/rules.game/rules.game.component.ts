@@ -32,15 +32,21 @@ export class RulesGameComponent {
     );
     this.displayHints = false;
 
-    this.rulesMusic.src = '/audio/rules.mp3'; //TODO
-    this.rulesMusic.play();
+    // this.rulesMusic.src = '/audio/rules.mp3'; //TODO
+    // this.rulesMusic.play();
+
     this.startAnimation();
+
+    this.memory.music.pause();
+    this.roundNumber = String(Number(this.roundNumber)+1)
+    this.skipToNext()
   }
 
   skipToNext() {
     this.rulesMusic.pause();
     this.rulesMusic.currentTime = 0;
-    this.router.navigateByUrl(`/game/round/${this.roundNumber}`)
+    this.router.navigateByUrl(`/game/select/${this.roundNumber}`)
+    // this.router.navigateByUrl(`/game/round/${this.roundNumber}`)
   }
 
   private async startAnimation() {

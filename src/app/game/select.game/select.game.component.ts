@@ -6,6 +6,7 @@ import { GameReqService } from "../../service/request/game.req.service";
 import { Game } from "../../models";
 import { ColorFader, RandomText } from "../../utils";
 import { NgStyle } from "@angular/common";
+import {colors} from "@angular/cli/src/utilities/color";
 
 @Component({
   selector: 'app-select.game',
@@ -47,11 +48,11 @@ export class SelectGameComponent {
     switch (this.roundNumber) {
       case "1":
         this.selectMusic.src = '/audio/select_first.mp3';
-        this.startFirstAnimation();
+        this.startSmallAnimation(true);
         break;
       case this.memory.rounds.toString():
-        this.selectMusic.src = '/audio/select_last.mp3'; //TODO THIS SHOULD JUST BE A STINGER
-        break;
+        // this.selectMusic.src = '/audio/select_last.mp3'; //TODO THIS SHOULD JUST BE A STINGER
+
       default:
         if (this.game.rounds[Number(this.roundNumber)-1].large) {
           this.selectMusic.src = '/audio/select_large.mp3'; //TODO animation should go up i think and theme should be duell and animation could be longer
@@ -65,26 +66,15 @@ export class SelectGameComponent {
     this.selectMusic.play();
   }
 
-  private async startFirstAnimation() {
-    this.startLines();
-    for (; this.size > 25; this.size -= 1) {
-      if (this.size % 4 === 0 && this.size <= 100) {
-        this.roundName = RandomText.generateRandomText(this.game.rounds[0].name.length)
-        new Audio("/audio/select_roulette_tick.mp3").play();
-      }
-      await new Promise(resolve => setTimeout(resolve, 25));
-    }
-    this.size = 0;
-    new Audio("/audio/selected.mp3").play();
-    this.roundName = this.game.rounds[0].name;
-  }
-
-  private async startSmallAnimation() {
-    this.startLines(true);
-    for (; this.size > 25; this.size -= 1) {
+  private async startSmallAnimation(first = false) {
+    this.startLines(!first, false, !first);
+    for (; this.size > 0; this.size -= 1) {
       if (this.size % 4 === 0 && this.size <= 100) {
         this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name.length)
         new Audio("/audio/select_roulette_tick.mp3").play();
+      }
+      if (this.size > 25 && !first) {
+        this.size -= 4;
       }
       await new Promise(resolve => setTimeout(resolve, 25));
     }
@@ -95,8 +85,8 @@ export class SelectGameComponent {
 
   private async startLargeAnimation() {
     this.startLines(true, true);
-    for (; this.size > 25; this.size -= 1) {
-      if (this.size % 4 === 0 && this.size <= 100) {
+    for (; this.size > 0; this.size -= 1) {
+      if (this.size % 4 === 0 && this.size <= 200) {
         this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name.length)
         new Audio("/audio/select_roulette_tick.mp3").play(); //TODO MAYBE CHANGE THIS
       }
@@ -107,7 +97,7 @@ export class SelectGameComponent {
     this.roundName = this.game.rounds[Number(this.roundNumber)-1].name;
   }
 
-  private async startLines(alt = false, vertical = false) {
+  private async startLines(alt = false, vertical = false, faster = false) {
     let lineNumber = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     let contrastColorsArray: string[] = [];
     for (let j = 0; j < this.game.players.length; j++) {
@@ -123,12 +113,14 @@ export class SelectGameComponent {
       this.fontColor = '#FFFFFF';
     }
 
-    for (let i = 0; i < 10; i++) {
+    let colors = this.game.players.map(player => player.color);
+
+    for (let i = 0; i < (faster ? 5 : 10); i++) {
       let color;
-      if (this.game.players.length > 1) {
-        color = this.game.players[i % this.game.players.length].color;
+      if (colors.length > 1) {
+        color = colors[i % colors.length];
       } else {
-        let colorList = [this.game.players[0].color, new ColorFader().adjustBrightness(this.game.players[0].color, 10), new ColorFader().adjustBrightness(this.game.players[0].color, -10)];
+        let colorList = [colors[0], new ColorFader().adjustBrightness(colors[0], 10), new ColorFader().adjustBrightness(colors[0], -10)];
         color = colorList[i % colorList.length];
       }
       for (let j = 0; j < 10; j++) {
@@ -141,7 +133,11 @@ export class SelectGameComponent {
       }
       lineNumber = this.squares.shuffleArray(lineNumber)
     }
-    this.selectMusic.pause()
+    if (!vertical) {
+      this.selectMusic.pause()
+    } else {
+      this.memory.music = this.selectMusic;
+    }
     new Audio("/audio/transition_to_rules.mp3").play();
     lineNumber = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].reverse();
     for (let j = 0; j < 10; j++) {

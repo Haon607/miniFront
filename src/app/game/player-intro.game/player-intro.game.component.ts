@@ -79,7 +79,7 @@ export class PlayerIntroGameComponent {
       this.spin = false;
       await new Promise(resolve => setTimeout(resolve, 1500));
       this.memory.music.pause();
-      this.router.navigateByUrl("/game/select/2");
+      this.router.navigateByUrl("/game/select/1");
     }
   }
 
