@@ -4,8 +4,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MemoryGameService } from "../../service/memory/memory.game.service";
 import { GameReqService } from "../../service/request/game.req.service";
 import { Game } from "../../models";
-import { RandomText } from "../../utils";
+import { ColorFader, RandomText } from "../../utils";
 import { NgStyle } from "@angular/common";
+import { ColdObservable } from "rxjs/internal/testing/ColdObservable";
 
 @Component({
   selector: 'app-select.game',
@@ -22,7 +23,7 @@ export class SelectGameComponent {
   roundName = '#######'
   game: Game = new Game();
   size = 250;
-  color = '#FFFFFF'
+  fontColor = '#FFFFFF'
 
   constructor(
     private squares: SquaresService,
@@ -41,7 +42,7 @@ export class SelectGameComponent {
   }
 
   private async startSequence() {
-    this.squares.allFade('#000000', 100)
+    this.squares.allFade('#000000', 50)
     await new Promise(resolve => setTimeout(resolve, 250));
 
     switch (this.roundNumber) {
@@ -54,8 +55,8 @@ export class SelectGameComponent {
         break;
       default:
         if (this.game.rounds[Number(this.roundNumber)-1].large) {
-          this.selectMusic.src = '/audio/select_small.mp3'; //TODO animation should go up i think and theme should be duell and animation could be longer
-          this.startSmallAnimation();
+          this.selectMusic.src = '/audio/select_large.mp3'; //TODO animation should go up i think and theme should be duell and animation could be longer
+          this.startLargeAnimation();
         } else {
           this.selectMusic.src = '/audio/select_small.mp3';
           this.startSmallAnimation();
@@ -83,22 +84,60 @@ export class SelectGameComponent {
     this.startLines(true);
     for (; this.size > 25; this.size -= 1) {
       if (this.size % 4 === 0 && this.size <= 100) {
-        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)].name.length)
+        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name.length)
         new Audio("/audio/select_roulette_tick.mp3").play();
       }
       await new Promise(resolve => setTimeout(resolve, 25));
     }
     this.size = 0;
     new Audio("/audio/selected.mp3").play();
-    this.roundName = this.game.rounds[0].name;
+    this.roundName = this.game.rounds[Number(this.roundNumber)-1].name;
   }
 
-  private async startLines(alt = false) {
+  private async startLargeAnimation() {
+    this.startLines(true, true);
+    for (; this.size > 25; this.size -= 1) {
+      if (this.size % 4 === 0 && this.size <= 100) {
+        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name.length)
+        new Audio("/audio/select_roulette_tick.mp3").play(); //TODO MAYBE CHANGE THIS
+      }
+      await new Promise(resolve => setTimeout(resolve, 25));
+    }
+    this.size = 0;
+    new Audio("/audio/selected.mp3").play(); //TODO CHANGE THIS SOUND
+    this.roundName = this.game.rounds[Number(this.roundNumber)-1].name;
+  }
+
+  private async startLines(alt = false, vertical = false) {
     let lineNumber = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let contrastColorsArray: string[] = [];
+    for (let j = 0; j < this.game.players.length; j++) {
+      contrastColorsArray.push(new ColorFader().getContrastColor(this.game.players[j].color));
+    }
+    let blackray: string[] = contrastColorsArray.filter(x => x === '#000000');
+    let whiteray: string[] = contrastColorsArray.filter(x => x === '#FFFFFF');
+    if (blackray.length > whiteray.length) {
+      this.fontColor = '#000000';
+    } else if (blackray.length < whiteray.length) {
+      this.fontColor = '#FFFFFF';
+    } else {
+      this.fontColor = '#FFFFFF';
+    }
+
     for (let i = 0; i < 10; i++) {
-      let color = this.game.players[i % this.game.players.length].color;
+      let color;
+      if (this.game.players.length > 1) {
+        color = this.game.players[i % this.game.players.length].color;
+      } else {
+        let colorList = [this.game.players[0].color, new ColorFader().adjustBrightness(this.game.players[0].color, 10), new ColorFader().adjustBrightness(this.game.players[0].color, -10)];
+        color = colorList[i % colorList.length];
+      }
       for (let j = 0; j < 10; j++) {
-        this.squares.line(lineNumber[j], color, 250, 10, 1, false, alt);
+        if (vertical) {
+          this.squares.verticalLine(lineNumber[j], color, 250, 10, 1, false, alt);
+        } else {
+          this.squares.line(lineNumber[j], color, 250, 10, 1, false, alt);
+        }
         await new Promise(resolve => setTimeout(resolve, 100));
       }
       lineNumber = this.squares.shuffleArray(lineNumber)
@@ -107,7 +146,11 @@ export class SelectGameComponent {
     new Audio("/audio/transition_to_rules.mp3").play();
     lineNumber = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].reverse();
     for (let j = 0; j < 10; j++) {
-      this.squares.line(lineNumber[j], '#000000', 250, 10, 1, false);
+      if (vertical) {
+        this.squares.verticalLine(lineNumber[j], '#000000', 250, 10, 1, false, alt);
+      } else {
+        this.squares.line(lineNumber[j], '#000000', 250, 10, 1, false, alt);
+      }
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 

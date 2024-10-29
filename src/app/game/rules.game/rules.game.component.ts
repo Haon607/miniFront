@@ -38,11 +38,7 @@ export class RulesGameComponent {
   }
 
   private async startAnimation() {
-    await this.squares.circle('#3333FF', 200, 10, 2);
-    await new Promise(resolve => setTimeout(resolve, 250));
-    this.displayHints = true;
-    await this.squares.all('#3333FF');
-    await this.squares.allFade('#000080', 500);
+
   }
 
   skipToNext() {
