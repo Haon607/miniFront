@@ -23,7 +23,9 @@ export class SelectGameComponent {
   roundName = '#######'
   game: Game = new Game();
   size = 250;
+  maxsize = 250;
   fontColor = '#FFFFFF'
+  preRoundText: string = '';
 
   constructor(
     private squares: SquaresService,
@@ -52,18 +54,27 @@ export class SelectGameComponent {
         break;
       case this.memory.rounds.toString():
         // this.selectMusic.src = '/audio/select_last.mp3'; //TODO THIS SHOULD JUST BE A STINGER
-
+        this.preRoundText = "LETZTE "
+        this.maxsize -= 50;
+        this.notFirstRound();
+        break
       default:
-        if (this.game.rounds[Number(this.roundNumber)-1].large) {
-          this.selectMusic.src = '/audio/select_large.mp3'; //TODO animation should go up i think and theme should be duell and animation could be longer
-          this.startLargeAnimation();
-        } else {
-          this.selectMusic.src = '/audio/select_small.mp3';
-          this.startSmallAnimation();
-        }
+        this.notFirstRound();
         break;
     }
     this.selectMusic.play();
+  }
+
+  private notFirstRound() {
+    if (this.game.rounds[Number(this.roundNumber) - 1].large) {
+      this.selectMusic.src = '/audio/select_large.mp3';
+      this.preRoundText += "GROSSE "
+      this.maxsize -= 50;
+      this.startLargeAnimation();
+    } else {
+      this.selectMusic.src = '/audio/select_small.mp3';
+      this.startSmallAnimation();
+    }
   }
 
   private async startSmallAnimation(first = false) {
@@ -88,12 +99,12 @@ export class SelectGameComponent {
     for (; this.size > 0; this.size -= 1) {
       if (this.size % 4 === 0 && this.size <= 200) {
         this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name.length)
-        new Audio("/audio/select_roulette_tick.mp3").play(); //TODO MAYBE CHANGE THIS
+        new Audio("/audio/select_roulette_tick.mp3").play(); //TODO Other sound?
       }
       await new Promise(resolve => setTimeout(resolve, 25));
     }
     this.size = 0;
-    new Audio("/audio/selected.mp3").play(); //TODO CHANGE THIS SOUND
+    new Audio("/audio/selected_large.mp3").play();
     this.roundName = this.game.rounds[Number(this.roundNumber)-1].name;
   }
 
@@ -150,5 +161,9 @@ export class SelectGameComponent {
     }
 
     this.router.navigateByUrl("/game/rules/" + this.roundNumber);
+  }
+
+  min(a: number, b: number): number {
+    return a < b ? a : b;
   }
 }
