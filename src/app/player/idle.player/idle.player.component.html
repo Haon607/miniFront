@@ -1,7 +1,7 @@
 <div class="background" [ngStyle]="{'background-color': bgc}">
   @if (initial) {
     <div class="color-list">
-      <input class="color-button" type="color" [ngStyle]="{'background-color': colorPicked}" [(ngModel)]="colorPicked">
+      <input type="color" [ngStyle]="{'background-color': colorPicked}" [(ngModel)]="colorPicked">
       <button class="color-button" (click)="select(colorPicked)" [ngStyle]="{'background-color': colorPicked, 'color': ColorFader.getContrastColor(colorPicked)}">Auswählen</button>
 
       @for (color of colorList; track color) {
@@ -14,3 +14,4 @@
     }
   }
 </div>
+<!--TODO playericons-->

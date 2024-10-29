@@ -1,7 +1,7 @@
 <div class="background">
   <div class="element">
-    <button class="subelement" (click)="create = !create" [disabled]="!create">Spieler*in auswählen</button>
-    <button class="subelement" (click)="create = !create" [disabled]="create">Neue*r Spieler*in</button>
+    <button class="subelement" (click)="create = !create" [disabled]="!create">Wählen</button>
+    <button class="subelement" (click)="create = !create" [disabled]="create">Neu</button>
   </div>
   <br>
   @if (create) {
@@ -14,7 +14,7 @@
     <input class="element" type="number" #gameId>
     <div class="player-list">
       @for (player of players; track player.id) {
-        <button class="player-button" (click)="selectPlayer(gameId.value, player.id!)" [ngStyle]="{'color': player.fontColor, 'background': player.correct ? '#00FF0088' : player.color + 'FF'}">{{ player.name }}</button>
+        <button class="player-button" (click)="selectPlayer(gameId.value, player.id!)" [ngStyle]="{'color': player.fontColor, 'background': player.color}">{{ player.name }}</button>
       }
     </div>
   }
