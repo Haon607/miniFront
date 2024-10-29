@@ -67,20 +67,34 @@ export class SelectGameComponent {
 
   private async startFirstAnimation() {
     this.startLines();
-    await this.startAnimation();
+    for (; this.size > 25; this.size -= 1) {
+      if (this.size % 4 === 0 && this.size <= 100) {
+        this.roundName = RandomText.generateRandomText(this.game.rounds[0].name.length)
+        new Audio("/audio/select_roulette_tick.mp3").play();
+      }
+      await new Promise(resolve => setTimeout(resolve, 25));
+    }
+    this.size = 0;
+    new Audio("/audio/selected.mp3").play();
+    this.roundName = this.game.rounds[0].name;
   }
 
   private async startSmallAnimation() {
     this.startLines(true);
-    await this.startAnimation();
+    for (; this.size > 25; this.size -= 1) {
+      if (this.size % 4 === 0 && this.size <= 100) {
+        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name.length)
+        new Audio("/audio/select_roulette_tick.mp3").play();
+      }
+      await new Promise(resolve => setTimeout(resolve, 25));
+    }
+    this.size = 0;
+    new Audio("/audio/selected.mp3").play();
+    this.roundName = this.game.rounds[Number(this.roundNumber)-1].name;
   }
 
   private async startLargeAnimation() {
     this.startLines(true, true);
-    await this.startLargeAnimation();
-  }
-
-  private async startAnimation() {
     for (; this.size > 25; this.size -= 1) {
       if (this.size % 4 === 0 && this.size <= 100) {
         this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name.length)
