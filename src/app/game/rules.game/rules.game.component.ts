@@ -41,10 +41,7 @@ export class RulesGameComponent {
       }
     })
 
-    this.memory.music.addEventListener('ended', () => {
-      // this.rulesMusic.src = '/audio/rules.mp3'; //TODO
-      // this.rulesMusic.play();
-    });
+    this.rulesMusic = this.memory.music;
 
     this.roundNumber = activatedRoute.snapshot.paramMap.get('round')!;
     this.gameService.getGame(memory.gameId).subscribe(game =>
@@ -55,8 +52,10 @@ export class RulesGameComponent {
     );
     this.displayHints = false;
 
-    // this.rulesMusic.src = '/audio/rules.mp3'; //TODO
-    // this.rulesMusic.play();
+    if (this.rulesMusic.paused) {
+      // this.rulesMusic.src = '/audio/rules.mp3'; //TODO
+      // this.rulesMusic.play();
+    }
 
     this.startAnimation();
 
@@ -87,7 +86,7 @@ export class RulesGameComponent {
         let colorList = [colors[0], ColorFader.adjustBrightness(colors[0], 10), ColorFader.adjustBrightness(colors[0], -10)];
         color = colorList[i % colorList.length];
       }
-      this.squares.allFade(color,750);
+      this.squares.allFade(color, 750);
       await new Promise(resolve => setTimeout(resolve, 1000));
       this.squares.circle(ColorFader.adjustBrightness(color, ColorFader.getContrastColor(color) === '#FFFFFF' ? 25 : -25), 1500, 10, 1, true);
       await new Promise(resolve => setTimeout(resolve, 9000));
