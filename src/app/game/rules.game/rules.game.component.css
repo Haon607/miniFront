@@ -9,6 +9,7 @@
   margin: 0;
   font-size: 250px;
   text-align: center;
+  display: flex;
 }
 .name {
   height: 20vh;

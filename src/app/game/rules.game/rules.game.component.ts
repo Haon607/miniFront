@@ -60,8 +60,4 @@ export class RulesGameComponent {
   private async startAnimation() {
     //TODO
   }
-
-  get roundName() {
-    return this.game?.rounds[Number(this.roundNumber)]?.name ?? '';
-  }
 }
