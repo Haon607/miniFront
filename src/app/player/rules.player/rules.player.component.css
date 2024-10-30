@@ -7,14 +7,9 @@
 }
 
 .element {
-  color: white;
   width: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
-}
-
-span {
-  color: white;
 }

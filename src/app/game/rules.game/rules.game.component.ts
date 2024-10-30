@@ -44,8 +44,9 @@ export class RulesGameComponent {
     this.rulesMusic = this.memory.music;
 
     this.roundNumber = activatedRoute.snapshot.paramMap.get('round')!;
+    let realRoundNumber = this.roundNumber;
     this.gameService.getGame(memory.gameId).subscribe(game =>
-      gameService.modifyData(memory.gameId, '/rules/' + this.roundNumber, game.rounds[Number(this.roundNumber)].rules).subscribe(game2 => {
+      gameService.modifyData(memory.gameId, '/rules/' + realRoundNumber, game.rounds[Number(this.roundNumber)].rules).subscribe(game2 => {
         this.game = game2;
         this.startAnimation();
       })
