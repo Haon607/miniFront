@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { SquaresService } from "../../squares/squares.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MemoryGameService } from "../../service/memory/memory.game.service";
@@ -23,6 +23,7 @@ export class RulesGameComponent {
   game: Game = new Game();
   imageSource: string = '';
   animate: boolean = false;
+  doneEmitter = new EventEmitter();
 
   constructor(
     private squares: SquaresService,
@@ -31,6 +32,20 @@ export class RulesGameComponent {
     private memory: MemoryGameService,
     private gameService: GameReqService,
   ) {
+    this.doneEmitter.subscribe(() => {
+      if (!this.animate) {
+        this.rulesMusic.pause();
+        this.rulesMusic.currentTime = 0;
+        this.router.navigateByUrl(`/game/select/${this.roundNumber}`)
+        // this.router.navigateByUrl(`/game/round/${this.roundNumber}`)
+      }
+    })
+
+    this.memory.music.addEventListener('ended', () => {
+      // this.rulesMusic.src = '/audio/rules.mp3'; //TODO
+      // this.rulesMusic.play();
+    });
+
     this.roundNumber = activatedRoute.snapshot.paramMap.get('round')!;
     this.gameService.getGame(memory.gameId).subscribe(game =>
       gameService.modifyData(memory.gameId, '/rules/' + this.roundNumber, game.rounds[Number(this.roundNumber)].rules).subscribe(game2 => {
@@ -54,14 +69,12 @@ export class RulesGameComponent {
   }
 
   skipToNext() {
-    this.rulesMusic.pause();
-    this.rulesMusic.currentTime = 0;
-    this.router.navigateByUrl(`/game/select/${this.roundNumber}`)
-    // this.router.navigateByUrl(`/game/round/${this.roundNumber}`)
+    //TODO some feedback
+    this.animate = false;
+
   }
 
   private async startAnimation() {
-    //TODO
     this.animate = true;
 
     let colors = this.game.players.map(player => player.color);
@@ -78,6 +91,7 @@ export class RulesGameComponent {
       await new Promise(resolve => setTimeout(resolve, 1000));
       this.squares.circle(ColorFader.adjustBrightness(color, ColorFader.getContrastColor(color) === '#FFFFFF' ? 25 : -25), 1500, 10, 1, true);
       await new Promise(resolve => setTimeout(resolve, 9000));
+      this.doneEmitter.emit();
       i++;
     }
   }
