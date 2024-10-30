@@ -4,11 +4,15 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MemoryGameService } from "../../service/memory/memory.game.service";
 import { GameReqService } from "../../service/request/game.req.service";
 import { Game } from "../../models";
+import { NgOptimizedImage } from "@angular/common";
+import { ColorFader } from "../../utils";
 
 @Component({
   selector: 'app-rules.game',
   standalone: true,
-  imports: [],
+  imports: [
+    NgOptimizedImage
+  ],
   templateUrl: './rules.game.component.html',
   styleUrl: './rules.game.component.css'
 })
@@ -17,6 +21,7 @@ export class RulesGameComponent {
   rulesMusic = new Audio();
   roundNumber = '';
   game: Game = new Game();
+  imageSource: string = '';
 
   constructor(
     private squares: SquaresService,
@@ -39,7 +44,10 @@ export class RulesGameComponent {
 
     this.memory.music.pause();
     this.roundNumber = String(Number(this.roundNumber)+1)
-    this.skipToNext()
+
+    this.imageSource = "test.gif"
+
+    // this.skipToNext()
   }
 
   skipToNext() {
@@ -54,6 +62,6 @@ export class RulesGameComponent {
   }
 
   get roundName() {
-    return this.game.rounds[Number(this.roundNumber)].name;
+    return this.game?.rounds[Number(this.roundNumber)]?.name ?? '';
   }
 }
