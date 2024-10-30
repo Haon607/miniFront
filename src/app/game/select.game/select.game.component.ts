@@ -131,7 +131,7 @@ export class SelectGameComponent {
       if (colors.length > 1) {
         color = colors[i % colors.length];
       } else {
-        let colorList = [colors[0], new ColorFader().adjustBrightness(colors[0], 10), new ColorFader().adjustBrightness(colors[0], -10)];
+        let colorList = [colors[0], ColorFader.adjustBrightness(colors[0], 10), ColorFader.adjustBrightness(colors[0], -10)];
         color = colorList[i % colorList.length];
       }
       for (let j = 0; j < 10; j++) {

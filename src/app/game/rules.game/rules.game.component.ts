@@ -22,6 +22,7 @@ export class RulesGameComponent {
   roundNumber = '';
   game: Game = new Game();
   imageSource: string = '';
+  animate: boolean = false;
 
   constructor(
     private squares: SquaresService,
@@ -31,9 +32,11 @@ export class RulesGameComponent {
     private gameService: GameReqService,
   ) {
     this.roundNumber = activatedRoute.snapshot.paramMap.get('round')!;
-
-    gameService.modifyData(memory.gameId, '/rules/' + this.roundNumber).subscribe(game =>
-      this.game = game
+    this.gameService.getGame(memory.gameId).subscribe(game =>
+      gameService.modifyData(memory.gameId, '/rules/' + this.roundNumber, game.rounds[Number(this.roundNumber)].rules).subscribe(game2 => {
+        this.game = game2;
+        this.startAnimation();
+      })
     );
     this.displayHints = false;
 
@@ -43,7 +46,7 @@ export class RulesGameComponent {
     this.startAnimation();
 
     this.memory.music.pause();
-    this.roundNumber = String(Number(this.roundNumber)+1)
+    this.roundNumber = String(Number(this.roundNumber) + 1)
 
     this.imageSource = "test.gif"
 
@@ -59,5 +62,23 @@ export class RulesGameComponent {
 
   private async startAnimation() {
     //TODO
+    this.animate = true;
+
+    let colors = this.game.players.map(player => player.color);
+    let i = 0;
+    while (this.animate) {
+      let color = '';
+      if (colors.length > 1) {
+        color = colors[i % colors.length];
+      } else {
+        let colorList = [colors[0], ColorFader.adjustBrightness(colors[0], 10), ColorFader.adjustBrightness(colors[0], -10)];
+        color = colorList[i % colorList.length];
+      }
+      this.squares.allFade(color,750);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      this.squares.circle(ColorFader.adjustBrightness(color, ColorFader.getContrastColor(color) === '#FFFFFF' ? 25 : -25), 1500, 10, 1, true);
+      await new Promise(resolve => setTimeout(resolve, 9000));
+      i++;
+    }
   }
 }

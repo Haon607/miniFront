@@ -67,7 +67,7 @@ export class ColorFader {
    *                   Positive values increase brightness, negative decrease.
    * @returns The adjusted hex color string.
    */
-  adjustBrightness(hexColor: string, percent: number): string {
+  static adjustBrightness(hexColor: string, percent: number): string {
     // Ensure percent is clamped between -100 and 100
     percent = Math.max(-100, Math.min(100, percent));
 
