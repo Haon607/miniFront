@@ -45,6 +45,7 @@ export class SelectGameComponent {
 
   private async startSequence() {
     this.squares.allFade('#000000', 50)
+    this.fontColor = '#000000'
     await new Promise(resolve => setTimeout(resolve, 250));
 
     switch (this.roundNumber) {
@@ -119,9 +120,10 @@ export class SelectGameComponent {
     if (blackray.length > whiteray.length) {
       this.fontColor = '#000000';
     } else if (blackray.length < whiteray.length) {
-      this.fontColor = '#FFFFFF';
+      new ColorFader().fadeColor(this.fontColor, '#FFFFFF', 1000, col => this.fontColor = col);
     } else {
-      this.fontColor = '#FFFFFF';
+      new ColorFader().fadeColor(this.fontColor, '#FFFFFF', 5000, col => this.fontColor = col);
+
     }
 
     let colors = this.game.players.map(player => player.color);

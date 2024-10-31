@@ -36,32 +36,33 @@ export class RulesGameComponent {
       if (!this.animate) {
         this.rulesMusic.pause();
         this.rulesMusic.currentTime = 0;
-        this.router.navigateByUrl(`/game/select/${this.roundNumber}`)
+        this.router.navigateByUrl(`/game/select/${realRoundNumber+2}`)
         // this.router.navigateByUrl(`/game/round/${this.roundNumber}`)
       }
     })
-
     this.rulesMusic = this.memory.music;
 
+    this.rulesMusic.addEventListener('ended', () => {
+      this.rulesMusic.src = '/audio/rules.mp3';
+      this.rulesMusic.play();
+    });
+
     this.roundNumber = activatedRoute.snapshot.paramMap.get('round')!;
-    let realRoundNumber = this.roundNumber;
-    this.gameService.getGame(memory.gameId).subscribe(game =>
-      gameService.modifyData(memory.gameId, '/rules/' + realRoundNumber, game.rounds[Number(this.roundNumber)].rules).subscribe(game2 => {
+    let realRoundNumber = Number(this.roundNumber) -1;
+    this.gameService.getGame(memory.gameId).subscribe(game => {
+      console.log(game);
+      this.game = game;
+      gameService.modifyData(memory.gameId, '/rules/' + this.roundNumber, game.rounds[realRoundNumber].name + '§' + game.rounds[realRoundNumber].rules).subscribe(game2 => {
         this.game = game2;
         this.startAnimation();
       })
-    );
+    });
     this.displayHints = false;
 
     if (this.rulesMusic.paused) {
-      // this.rulesMusic.src = '/audio/rules.mp3'; //TODO
-      // this.rulesMusic.play();
+      this.rulesMusic.src = '/audio/rules.mp3';
+      this.rulesMusic.play();
     }
-
-    this.startAnimation();
-
-    this.memory.music.pause();
-    this.roundNumber = String(Number(this.roundNumber) + 1)
 
     this.imageSource = "test.gif"
 
