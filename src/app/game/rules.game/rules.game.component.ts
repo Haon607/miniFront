@@ -73,7 +73,7 @@ export class RulesGameComponent {
   skipToNext() {
     //TODO some feedback
     this.animate = false;
-
+    this.gameService.modifyData(this.memory.gameId, '/idle').subscribe(() => {})
   }
 
   private async startAnimation() {

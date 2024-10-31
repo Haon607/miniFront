@@ -3,8 +3,8 @@ import { MemoryPlayerService } from "../../service/memory/memory.player.service"
 import {ActivatedRoute, Router} from "@angular/router";
 import { GameReqService } from "../../service/request/game.req.service";
 import { PlayerRouting } from "../playerRouting";
-import { ColorFader } from "../../utils";
 import { NgStyle } from "@angular/common";
+import { ColorFader } from "../../utils";
 
 @Component({
   selector: 'app-rules.player',

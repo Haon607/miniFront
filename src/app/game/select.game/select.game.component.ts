@@ -82,7 +82,7 @@ export class SelectGameComponent {
     this.startLines(!first, false, !first);
     for (; this.size > 0; this.size -= 1) {
       if (this.size % 4 === 0 && this.size <= 100) {
-        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name.length)
+        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name)
         new Audio("/audio/select_roulette_tick.mp3").play();
       }
       if (this.size > 25 && !first) {
@@ -99,7 +99,7 @@ export class SelectGameComponent {
     this.startLines(true, true);
     for (; this.size > 0; this.size -= 1) {
       if (this.size % 4 === 0 && this.size <= 200) {
-        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name.length)
+        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name)
         new Audio("/audio/select_roulette_tick.mp3").play(); //TODO Other sound?
       }
       await new Promise(resolve => setTimeout(resolve, 25));

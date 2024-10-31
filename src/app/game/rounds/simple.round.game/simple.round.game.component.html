@@ -1,6 +1,17 @@
 <div class="background">
   <app-scoreboard></app-scoreboard>
   <div class="content">
-
+    <button (click)="startRound()"></button>
+    <button (click)="toggleAudioTrack(true)"></button>
+    <button (click)="toggleAudioTrack(false)"></button>
+    <div class="question" @slide>{{question}}</div>
+    <div class="answers-list">
+      @for (answer of answers; track answer.answer) {
+        <div class="answer" [ngStyle]="{'background': answer.color}" @slide>
+          <span class="answerAnswer">{{ answer.answer }}</span>
+          <span class="answerPlayers">{{ playersToString(answer.players) }}</span>
+        </div>
+      }
+    </div>
   </div>
 </div>

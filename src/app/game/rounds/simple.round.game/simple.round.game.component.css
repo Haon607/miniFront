@@ -11,3 +11,30 @@
   text-align: center;
 
 }
+
+.answers-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.answer {
+  border-radius: 10px;
+  font-size: 50px;
+  padding: 20px;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.answerAnswer {
+  flex-grow: 1;
+}
+
+.answerPlayers {
+  font-size: 25px;
+}

@@ -92,7 +92,6 @@ export class SquaresService {
     await this.anyPath(path, color, time, tailLength, repeats, fadeBack);
   }
 
-
   async allLine(color: string, time: number, tailLength: number, repeats: number = 1, fadeBack: boolean = true, alt: boolean = false, altColor: string = color) {
     for (let row = 0; row < 10; row++) {
       this.line(row, row % 2 === 0 ? color : altColor, time, tailLength, repeats, fadeBack, alt && row % 2 === 0);
@@ -136,6 +135,56 @@ export class SquaresService {
         await new Promise(resolve => setTimeout(resolve, time / tailLength));
       }
     }
+  }
+
+  async setGradient(topColor: string, bottomColor: string, turnNegNinetyDeg: boolean, time: number) {
+    const rowCount = this.squaresData.length;
+
+    // Calculate each row's target color by interpolating between topColor and bottomColor
+    for (let row = 0; row < rowCount; row++) {
+      const rowColor = new ColorFader().interpolateColor(topColor, bottomColor, row / (rowCount - 1));
+
+      // Set each square in the row to the calculated rowColor
+      for (let col = 0; col < this.squaresData[row].length; col++) {
+        if (turnNegNinetyDeg) {
+          this.squaresData[col][row] = rowColor;
+        } else {
+          this.squaresData[row][col] = rowColor;
+        }
+      }
+
+      // Emit the updated squares data and wait before proceeding to the next row
+      this.squares.next([...this.squaresData]);
+      await new Promise(resolve => setTimeout(resolve, time));
+    }
+  }
+
+  // Add this function to the SquaresService class
+  async shiftColors(direction: 'up' | 'down' | 'left' | 'right') {
+    const newSquaresData = this.squaresData.map(row => [...row]); // Copy current state
+
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        switch (direction) {
+          case 'up':
+            newSquaresData[row][col] = this.squaresData[(row + 1) % 10][col];
+            break;
+          case 'down':
+            newSquaresData[row][col] = this.squaresData[(row - 1 + 10) % 10][col];
+            break;
+          case 'left':
+            newSquaresData[row][col] = this.squaresData[row][(col + 1) % 10];
+            break;
+          case 'right':
+            newSquaresData[row][col] = this.squaresData[row][(col - 1 + 10) % 10];
+            break;
+        }
+      }
+    }
+
+    // Update squaresData with the shifted values and emit the new state
+    this.squaresData = newSquaresData;
+    this.squares.next([...this.squaresData]);
   }
 
   private fadeAndUpdate(rowIndex: number, colIndex: number, color: string, time: number) {

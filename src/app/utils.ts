@@ -124,7 +124,7 @@ export class ColorFader {
   }
 
 // Interpolate between two colors, including opacity
-  private interpolateColor(color1: string, color2: string, factor: number): string {
+  interpolateColor(color1: string, color2: string, factor: number): string {
     const [r1, g1, b1, a1] = this.hexToRgba(color1);
     const [r2, g2, b2, a2] = this.hexToRgba(color2);
 
@@ -159,13 +159,21 @@ export class MusicFader {
 }
 
 export class RandomText {
-  static generateRandomText(length: number): string {
+  static generateRandomText(input: string): string {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      result += characters.charAt(randomIndex);
+
+    for (let i = 0; i < input.length; i++) {
+      // Preserve non-alphanumeric characters
+      if (!/[A-Za-z0-9]/.test(input.charAt(i))) {
+        result += input.charAt(i);
+      } else {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+      }
     }
+
     return result;
   }
 }
+
