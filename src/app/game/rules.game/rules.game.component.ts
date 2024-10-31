@@ -36,8 +36,9 @@ export class RulesGameComponent {
       if (!this.animate) {
         this.rulesMusic.pause();
         this.rulesMusic.currentTime = 0;
-        this.router.navigateByUrl(`/game/select/${realRoundNumber+2}`)
-        // this.router.navigateByUrl(`/game/round/${this.roundNumber}`)
+        // this.squares.all('#000000')
+        // this.router.navigateByUrl(`/game/select/${realRoundNumber+2}`)
+        this.router.navigateByUrl(`/game/round/${this.game.rounds[realRoundNumber].route}/${this.roundNumber}`)
       }
     })
     this.rulesMusic = this.memory.music;

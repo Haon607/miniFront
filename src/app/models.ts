@@ -91,21 +91,27 @@ export class Round {
   id: number;
   name: string;
   rules: string;
+  route: string;
   large: boolean;
   questions: Question[];
+  data: string;
 
   constructor(
     id: number = 0,
     name: string = '',
     rules: string = '',
+    route: string = '',
     large: boolean = false,
-    questions: Question[] = []
+    questions: Question[] = [],
+    data: string = ''
   ) {
     this.id = id;
     this.name = name;
     this.rules = rules;
+    this.route = route;
     this.large = large;
     this.questions = questions;
+    this.data = data;
   }
 }
 

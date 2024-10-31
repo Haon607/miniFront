@@ -10,6 +10,7 @@ import { SelectPlayerComponent } from "./player/select.player/select.player.comp
 import { ScoreboardPlayerComponent } from "./player/scoreboard.player/scoreboard.player.component";
 import { ScoreboardGameComponent } from "./game/scoreboard.game/scoreboard.game.component";
 import { SelectGameComponent } from "./game/select.game/select.game.component";
+import { SimpleRoundGameComponent } from "./game/rounds/simple.round.game/simple.round.game.component";
 
 export const routes: Routes = [
   {path: "", component: JoinPlayerComponent},
@@ -26,4 +27,5 @@ export const routes: Routes = [
   {path: "game/select/:round", component: SelectGameComponent},
   {path: "game/rules/:round", component: RulesGameComponent},
   {path: "game/scoreboard/:round", component: ScoreboardGameComponent},
+  {path: "game/round/simple/:round", component: SimpleRoundGameComponent},
 ];
