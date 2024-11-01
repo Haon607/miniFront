@@ -44,12 +44,12 @@ export class RulesGameComponent {
     this.rulesMusic = this.memory.music;
 
     this.rulesMusic.addEventListener('ended', () => {
-      this.rulesMusic.src = '/audio/rules.mp3';
+      this.rulesMusic.src = '/audio/rules/rules.mp3';
       this.rulesMusic.play();
     });
 
     this.roundNumber = activatedRoute.snapshot.paramMap.get('round')!;
-    let realRoundNumber = Number(this.roundNumber) -1;
+    let realRoundNumber = Number(this.roundNumber) - 1;
     this.gameService.getGame(memory.gameId).subscribe(game => {
       console.log(game);
       this.game = game;
@@ -61,19 +61,19 @@ export class RulesGameComponent {
     this.displayHints = false;
 
     if (this.rulesMusic.paused) {
-      this.rulesMusic.src = '/audio/rules.mp3';
+      this.rulesMusic.src = '/audio/rules/rules.mp3';
       this.rulesMusic.play();
     }
 
     this.imageSource = "test.gif"
-
-    // this.skipToNext()
   }
 
   skipToNext() {
     //TODO some feedback
+    new Audio("/audio/simple_feedback.mp3").play();
     this.animate = false;
-    this.gameService.modifyData(this.memory.gameId, '/idle').subscribe(() => {})
+    this.gameService.modifyData(this.memory.gameId, '/idle').subscribe(() => {
+    })
   }
 
   private async startAnimation() {
@@ -81,20 +81,24 @@ export class RulesGameComponent {
 
     let colors = this.game.players.map(player => player.color);
     let i = 0;
+    let bool = false;
     while (this.animate) {
       let color = '';
-      if (colors.length > 1) {
+      if (colors.length > 2) {
         color = colors[i % colors.length];
+      } else if (colors.length === 2) {
+        let colorList = [colors[0], colors[1], ColorFader.adjustBrightness(colors[i % 2], ColorFader.getContrastColor(colors[i % 2]) === '#000000' ? -50 : 50)];
+        color = colorList[i % colorList.length];
       } else {
         let colorList = [colors[0], ColorFader.adjustBrightness(colors[0], 10), ColorFader.adjustBrightness(colors[0], -10)];
         color = colorList[i % colorList.length];
       }
-      this.squares.allFade(color, 750);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      this.squares.circle(ColorFader.adjustBrightness(color, ColorFader.getContrastColor(color) === '#FFFFFF' ? 25 : -25), 1500, 10, 1, true);
-      await new Promise(resolve => setTimeout(resolve, 9000));
+
+      this.squares.fadeSquares(bool ? this.squares.checkerPath : this.squares.checkerPathInv, color, 2000);
+      await new Promise(resolve => setTimeout(resolve, 2500));
       this.doneEmitter.emit();
       i++;
+      bool = !bool;
     }
   }
 }

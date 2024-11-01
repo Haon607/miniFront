@@ -77,9 +77,10 @@ export class PlayerIntroGameComponent {
   async skipToNext() {
     if (this.spin) {
       this.spin = false;
+      new Audio("/audio/simple_feedback.mp3").play();
       await new Promise(resolve => setTimeout(resolve, 1500));
       this.memory.music.pause();
-      this.router.navigateByUrl("/game/select/1");
+      this.router.navigateByUrl("/game/select/2");
     }
   }
 

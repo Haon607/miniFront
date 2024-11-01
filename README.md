@@ -11,3 +11,5 @@ some sort of buzzer beater
 some sort of sorting
 music by tone (pop quiz)
 speed list
+quickfire
+call outen 

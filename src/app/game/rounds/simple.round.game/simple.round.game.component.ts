@@ -157,8 +157,10 @@ export class SimpleRoundGameComponent {
         this.squares.line(0, ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 1, 1, 1, false, false)
         this.squares.line(9, ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 1, 1, 1, false, true)
       } else {
-        //TODO find better animation
-        this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), bool, 40);
+        this.squares.fadeSquares(this.squares.circlePath, ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 400)
+
+        //find better animation
+        // this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), bool, 40);
       }
       await new Promise(resolve => setTimeout(resolve, 434));
     }
