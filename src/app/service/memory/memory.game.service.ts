@@ -5,7 +5,7 @@ import { Player } from "../../models";
   providedIn: 'root'
 })
 export class MemoryGameService {
-  gameId: number = /*NaN*/ 855;
+  gameId: number = NaN;
   music = new Audio();
   rounds: number = 0;
   players: Player[] = [

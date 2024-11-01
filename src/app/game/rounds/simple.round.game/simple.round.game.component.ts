@@ -96,9 +96,10 @@ export class SimpleRoundGameComponent {
       this.answers[0].isCorrect = true;
       this.answers = this.squares.shuffleArray(this.answers)
       this.toggleAudioTrack(false);
-      this.gameService.modifyData(this.memory.gameId, "/select", this.answers.join(';')).subscribe(game => this.game = game)
+      this.gameService.modifyData(this.memory.gameId, "/select", this.answers.map(ans => {return ans.answer}).join(';')).subscribe(game => this.game = game)
       await this.answerTime();
       this.toggleAudioTrack(true)
+      this.gameService.modifyData(this.memory.gameId, "/idle").subscribe(game => this.game = game)
       await this.revealAnswers();
     }
   }
@@ -198,6 +199,21 @@ export class SimpleRoundGameComponent {
   }
 
   private async revealAnswers() {
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    this.game.players.forEach((player: Player) => {
+      let playerAnswer = this.answers.filter(answer => answer.answer === player.input)
+      if (playerAnswer[0]) {
+        playerAnswer[0].players.push(player);
+      }
+    })
+    for (let i = 0; i < 20; i++) {
+      for (let answer of this.answers) {
+        if (answer.players[0]) {
+          new ColorFader().fadeColor(answer.color, answer.players[i % answer.players.length].color, 200, col => answer.color = col);
+        } else {
+          answer.color = '#FFFFFF55'
+        }
+      }
+      await new Promise(resolve => setTimeout(resolve, 250));
+    }
   }
 }
