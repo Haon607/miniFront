@@ -1,0 +1,20 @@
+<div
+  class="timer"
+  [ngStyle]="{'font-size.px': size / 2, 'width.px': size, 'height.px': size}"
+>
+  <div
+    class="progress-bar"
+    [style.background-color]="isWarning ? warningColor : progressBarColor"
+    [style.width.%]="(timeLeft / initialTime) * 100"
+  ></div>
+  <div
+    class="time-display"
+    [@scaleText]="scaleState"
+    [@flash]="{ value: flashState, params: { textColor: textColor, warningTextColor: warningTextColor }}"
+  >
+    {{ timeLeft }}
+  </div>
+</div>
+<button (click)="startTimer()">Start</button>
+<button (click)="stopTimer()">Stop</button>
+<button (click)="resetTimer()">Reset</button>

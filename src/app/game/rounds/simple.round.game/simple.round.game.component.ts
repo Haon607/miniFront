@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ScoreboardComponent } from "../../../scoreboard/scoreboard.component";
 import { GameReqService } from "../../../service/request/game.req.service";
 import { MemoryGameService } from "../../../service/memory/memory.game.service";
@@ -8,13 +8,15 @@ import { SquaresService } from "../../../squares/squares.service";
 import { ColorFader } from "../../../utils";
 import { NgStyle } from "@angular/common";
 import { animate, style, transition, trigger } from "@angular/animations";
+import { TimerComponent } from "../../../timer/timer.component";
 
 @Component({
   selector: 'app-simple.round.game',
   standalone: true,
   imports: [
     ScoreboardComponent,
-    NgStyle
+    NgStyle,
+    TimerComponent
   ],
   templateUrl: './simple.round.game.component.html',
   styleUrl: './simple.round.game.component.css',
@@ -54,6 +56,8 @@ export class SimpleRoundGameComponent {
   question: string = '';
   answers: Answer[] = [];
   backgroundMore: boolean | undefined = undefined;
+
+  @ViewChild(TimerComponent) timerComponent!: TimerComponent;
 
   constructor(
     private gameService: GameReqService,
@@ -96,8 +100,13 @@ export class SimpleRoundGameComponent {
       this.answers[0].isCorrect = true;
       this.answers = this.squares.shuffleArray(this.answers)
       this.toggleAudioTrack(false);
-      this.gameService.modifyData(this.memory.gameId, "/select",  this.answers.join(';')).subscribe(() => {})
+      this.gameService.modifyData(this.memory.gameId, "/select", this.answers.join(';')).subscribe(() => {
+      })
     }
+  }
+
+  onTimerEnd() {
+
   }
 
   protected async animateIntro() {

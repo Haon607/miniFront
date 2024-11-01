@@ -1,0 +1,26 @@
+.timer {
+  position: relative;
+  border: 2px solid #ddd;
+  border-radius: 500px;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease-in-out; /* Smooth background color transition */
+}
+
+.progress-bar {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  transition: width 0.5s ease-in-out; /* Smooth width transition */
+}
+
+.time-display {
+  z-index: 2;
+  font-weight: bold;
+  transition: transform 0.2s ease-in-out; /* Smooth scale transition for text */
+}
