@@ -9,7 +9,13 @@
 .content {
   flex-grow: 1;
   text-align: center;
+}
 
+.question {
+  font-size: 100px;
+  color: white;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .answers-list {
@@ -25,6 +31,7 @@
   font-size: 50px;
   padding: 20px;
   margin: 20px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -37,4 +44,11 @@
 
 .answerPlayers {
   font-size: 25px;
+}
+
+.timer {
+  position: absolute;
+  top: 1vh;
+  right: 1vw;
+  z-index: 0;
 }

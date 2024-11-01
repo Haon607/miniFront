@@ -3,12 +3,13 @@ import { ScoreboardComponent } from "../../../scoreboard/scoreboard.component";
 import { GameReqService } from "../../../service/request/game.req.service";
 import { MemoryGameService } from "../../../service/memory/memory.game.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Answer, Game, Player, Question, Round } from "../../../models";
+import { Answer, Game, Player, Round } from "../../../models";
 import { SquaresService } from "../../../squares/squares.service";
 import { ColorFader } from "../../../utils";
 import { NgStyle } from "@angular/common";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { TimerComponent } from "../../../timer/timer.component";
+import { PlayerReqService } from "../../../service/request/player.req.service";
 
 @Component({
   selector: 'app-simple.round.game',
@@ -58,9 +59,11 @@ export class SimpleRoundGameComponent {
   backgroundMore: boolean | undefined = undefined;
 
   @ViewChild(TimerComponent) timerComponent!: TimerComponent;
+  private timeUp: boolean = false;
 
   constructor(
     private gameService: GameReqService,
+    private playerService: PlayerReqService,
     private memory: MemoryGameService,
     private router: Router,
     private route: ActivatedRoute,
@@ -71,17 +74,6 @@ export class SimpleRoundGameComponent {
       this.round = game.rounds[Number(route.snapshot.paramMap.get('round')!) - 1];
       this.startRound();
     });
-
-    this.round = new Round(
-      0, "", "", "", false, [
-        new Question(0, "Test§1;2;3;4"),
-        new Question(1, "Test§1;2;3;4"),
-        new Question(2, "Test§1;2;3;4"),
-        new Question(3, "Test§1;2;3;4"),
-        new Question(4, "Test§1;2;3;4"),
-        new Question(5, "Test§1;2;3;4"),
-      ], '#4fa626'
-    )
   }
 
   async startRound() {
@@ -91,6 +83,10 @@ export class SimpleRoundGameComponent {
     await this.animateIntro();
 
     for (let question of this.round.questions) {
+      this.playerService.deleteInputs().subscribe(() => {});
+      this.timeUp = false;
+      this.timerComponent.resetTimer();
+      await new Promise(resolve => setTimeout(resolve, 500));
       this.question = question.data.split('§')[0];
       this.answers = question.data.split('§')[1].split(';').map(text => new Answer(NaN, text));
       this.answers = this.answers.map(answer => {
@@ -100,13 +96,15 @@ export class SimpleRoundGameComponent {
       this.answers[0].isCorrect = true;
       this.answers = this.squares.shuffleArray(this.answers)
       this.toggleAudioTrack(false);
-      this.gameService.modifyData(this.memory.gameId, "/select", this.answers.join(';')).subscribe(() => {
-      })
+      this.gameService.modifyData(this.memory.gameId, "/select", this.answers.join(';')).subscribe(game => this.game = game)
+      await this.answerTime();
+      this.toggleAudioTrack(true)
+      await this.revealAnswers();
     }
   }
 
   onTimerEnd() {
-
+    this.timeUp = true;
   }
 
   protected async animateIntro() {
@@ -173,5 +171,33 @@ export class SimpleRoundGameComponent {
       }
       await new Promise(resolve => setTimeout(resolve, 434));
     }
+  }
+
+  private async answerTime() {
+    this.timerComponent.startTimer();
+    while (!this.timeUp) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      this.gameService.getGame(this.memory.gameId).subscribe(game => this.game = game);
+      if (this.didEveryPlayerAnswer()) {
+        break;
+      }
+    }
+    this.gameService.getGame(this.memory.gameId).subscribe(game => this.game = game);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    this.timerComponent.stopTimer();
+  }
+
+  didEveryPlayerAnswer() {
+    let bool = true;
+    for (let player of this.game.players) {
+      if (player.input === '') {
+        bool = false;
+      }
+    }
+    return bool;
+  }
+
+  private async revealAnswers() {
+    await new Promise(resolve => setTimeout(resolve, 5000));
   }
 }

@@ -4,18 +4,20 @@
     <button (click)="startRound()"></button>
     <button (click)="toggleAudioTrack(true)"></button>
     <button (click)="toggleAudioTrack(false)"></button>
-    <app-timer
-      [initialTime]="30"
-      [warningThreshold]="10"
-      [progressBarColor]="round.data"
-      [warningColor]="'#FF0000'"
-      [size]="200"
-      [textColor]="'#FFFFFF'"
-      [warningTextColor]="'#FF0000'"
-      (currentSecond)="null"
-      (timerEnded)="onTimerEnd()"
+    <app-timer class="timer"
+               [initialTime]="30"
+               [warningThreshold]="10"
+               [progressBarColor]="'#000080'"
+               [warningColor]="'#800000'"
+               [size]="150"
+               [textColor]="'#FFFFFF'"
+               [warningTextColor]="'#FF0000'"
+               (currentSecond)="null"
+               (timerEnded)="onTimerEnd()"
     ></app-timer>
-    <div class="question" @slide>{{question}}</div>
+    @if (question) {
+      <div class="question content-highlight" @slide>{{ question }}</div>
+    }
     <div class="answers-list">
       @for (answer of answers; track answer.answer) {
         <div class="answer" [ngStyle]="{'background': answer.color}" @slide>
