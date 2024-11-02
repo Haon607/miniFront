@@ -54,7 +54,6 @@ export class SelectGameComponent {
         this.startSmallAnimation(true);
         break;
       case this.memory.rounds.toString():
-        // this.selectMusic.src = '/audio/select_last.mp3'; //TODO THIS SHOULD JUST BE A STINGER
         this.preRoundText = "LETZTE "
         this.maxsize -= 50;
         await this.lastRoundStinger();
@@ -81,10 +80,12 @@ export class SelectGameComponent {
   }
 
   private async startSmallAnimation(first = false, last = false) {
-    this.startLines(!first, false, !first && !last, last);
+    const faster = !first && !last;
+    this.startLines(!first, false, faster, last);
+
     for (; this.size > 0; this.size -= 1) {
       if (this.size % 4 === 0 && this.size <= 100) {
-        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name)
+        this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber) - 1].name);
         new Audio("/audio/select_roulette_tick.mp3").play();
       }
       if (this.size > 25 && !first) {
@@ -94,7 +95,7 @@ export class SelectGameComponent {
     }
     this.size = 0;
     new Audio("/audio/selected.mp3").play();
-    this.roundName = this.game.rounds[Number(this.roundNumber)-1].name;
+    this.roundName = this.game.rounds[Number(this.roundNumber) - 1].name;
   }
 
   private async startLargeAnimation() {
@@ -102,7 +103,7 @@ export class SelectGameComponent {
     for (; this.size > 0; this.size -= 1) {
       if (this.size % 4 === 0 && this.size <= 200) {
         this.roundName = RandomText.generateRandomText(this.game.rounds[Number(this.roundNumber)-1].name)
-        new Audio("/audio/select_roulette_tick.mp3").play(); //TODO Other sound?
+        new Audio("/audio/select_roulette_tick.mp3").play();
       }
       await new Promise(resolve => setTimeout(resolve, 25));
     }

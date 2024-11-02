@@ -107,12 +107,12 @@ export class ScoreboardComponent {
   private async runSortedAnim(player: Player, dir: 'up' | 'down' | 'same') {
     for (let i = 0; i < 6; i++)
     if (dir === 'same') {
-      player.textBg[0] = '#FFFFFF99'
-      player.textBg[1] = '#FFFFFF99'
-      await new Promise(resolve => setTimeout(resolve, 250));
-      player.textBg[0] = '#00000000'
-      player.textBg[1] = '#00000000'
-      await new Promise(resolve => setTimeout(resolve, 250));
+      // player.textBg[0] = '#FFFFFF99'
+      // player.textBg[1] = '#FFFFFF99'
+      // await new Promise(resolve => setTimeout(resolve, 250));
+      // player.textBg[0] = '#00000000'
+      // player.textBg[1] = '#00000000'
+      // await new Promise(resolve => setTimeout(resolve, 250));
     } else if (dir === 'up') {
       player.textBg[1] = '#00FF0099'
       await new Promise(resolve => setTimeout(resolve, 100));

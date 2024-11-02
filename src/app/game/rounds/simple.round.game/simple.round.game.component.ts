@@ -254,7 +254,7 @@ export class SimpleRoundGameComponent {
         playerAnswer[0].players.push(player);
       }
     })
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 10; i++) {
       for (let answer of this.answers) {
         if (answer.players[0]) {
           new ColorFader().fadeColor(answer.color, answer.players[i % answer.players.length].color, 400, col => answer.color = col);
@@ -274,8 +274,8 @@ export class SimpleRoundGameComponent {
       player.gameScore += 2;
       player.correct = true;
     });
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    await new Promise(resolve => setTimeout(resolve, 2500));
     this.scoreboard.sortSubject.next();
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 2500));
   }
 }
