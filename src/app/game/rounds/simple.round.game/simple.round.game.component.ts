@@ -122,7 +122,35 @@ export class SimpleRoundGameComponent {
     }
     this.more.pause();
     this.less.pause();
-    this.router.navigateByUrl("/game/scoreboard" + this.round)
+    this.backgroundMore = undefined;
+    await this.endAnimation();
+  }
+
+  protected async endAnimation() {
+    let endAudio = new Audio('/audio/rounds/simple/simple_end.mp3');
+    endAudio.play();
+    endAudio.addEventListener('ended', () => {
+      this.router.navigateByUrl("/game/scoreboard/" + Number(this.route.snapshot.paramMap.get('round')!));
+    });
+    this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), true, 50);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, 25));
+    await new Promise(resolve => setTimeout(resolve, 200));
+    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, -25));
+    await new Promise(resolve => setTimeout(resolve, 150));
+    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, 25));
+    await new Promise(resolve => setTimeout(resolve, 200));
+    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, -25));
+    await new Promise(resolve => setTimeout(resolve, 250));
+    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, 25));
+    await new Promise(resolve => setTimeout(resolve, 250));
+    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, -25));
+    await new Promise(resolve => setTimeout(resolve, 200));
+    this.squares.randomPath('#000000', 18, 1, 1, false)
+    await new Promise(resolve => setTimeout(resolve, 1850));
+    this.squares.colorEdges(this.round.data)
+    this.squares.fadeEdges('#000000', 800)
+    await new Promise(resolve => setTimeout(resolve, 800));
   }
 
   onTimerEnd() {
@@ -196,7 +224,7 @@ export class SimpleRoundGameComponent {
         this.squares.line(0, ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 1, 1, 1, false, false)
         this.squares.line(9, ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 1, 1, 1, false, true)
       } else {
-        this.squares.fadeSquares(this.squares.circlePath, ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 400)
+        this.squares.fadeSquares([[0, 0],[1, 0],[2, 0],[3, 0],[4, 0],[5, 0],[6, 0],[7, 0],[8, 0],[9, 0],[0, 9],[1, 9],[2, 9],[3, 9],[4, 9],[5, 9],[6, 9],[7, 9],[8, 9],[9, 9]], ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 400)
 
         //find better animation
         // this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), bool, 40);
@@ -242,10 +270,10 @@ export class SimpleRoundGameComponent {
     this.answers.forEach(answer => answer.color = answer.isCorrect ? '#00FF00' + answer.color.substring(7) : '#FF0000' + answer.color.substring(7))
     let correctAnswer = this.answers.filter(answer => answer.isCorrect)[0].answer;
     this.game.players.filter(player => player.input === correctAnswer).forEach(gamePlayer => {
-        let player = this.memory.players.filter(memoryPlayer => memoryPlayer.id === gamePlayer.id)[0];
-        player.gameScore += 2;
-        player.correct = true;
-      });
+      let player = this.memory.players.filter(memoryPlayer => memoryPlayer.id === gamePlayer.id)[0];
+      player.gameScore += 2;
+      player.correct = true;
+    });
     await new Promise(resolve => setTimeout(resolve, 4000));
     this.scoreboard.sortSubject.next();
     await new Promise(resolve => setTimeout(resolve, 2000));
