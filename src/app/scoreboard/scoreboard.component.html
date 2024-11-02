@@ -2,8 +2,8 @@
   @for (player of players; track player.id) {
     @if (!player.hidden) {
       <div class="player-container" [ngClass]="{'no-scroll': !isOverflowing, 'scroll': isOverflowing}" [ngStyle]="{'color': player.fontColor, 'background': player.correct ? '#00FF0088' : player.color + 'FF'}" @slide-to-right>
-        <span class="player-name">{{ player.name }}</span>
-        <span class="player-score">{{ totalScore ? player.totalScore : player.gameScore }}</span>
+        <span class="player-name"  [ngStyle]="{'background': player.textBg[0]}">{{ player.name }}</span>
+        <span class="player-score" [ngStyle]="{'background': player.textBg[1]}">{{ totalScore ? player.totalScore : player.gameScore }}</span>
       </div>
     }
   }

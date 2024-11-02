@@ -8,6 +8,7 @@ export class Player {
   private playerColor: string;
   input: string;
   correct: boolean; //ONLY USE FOR SCOREBOARD!
+  textBg: string[]; //ONLY USE FOR SCOREBOARD!
 
   constructor(
     id: number = 0,
@@ -18,7 +19,8 @@ export class Player {
     fontColor: string = '#000000',
     playerColor: string = '',
     input: string = '',
-    correct: boolean = false
+    correct: boolean = false,
+    textBg: string[] = ['#00000000', '#00000000']
   ) {
     this.id = id;
     this.name = name;
@@ -29,6 +31,7 @@ export class Player {
     this.playerColor = playerColor;
     this.input = input;
     this.correct = correct;
+    this.textBg = textBg;
   }
 
   get color() {

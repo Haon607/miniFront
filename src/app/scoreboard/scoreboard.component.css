@@ -20,6 +20,11 @@
   justify-content: start;
 }
 
+span {
+  width: 100%;
+  text-align: center;
+}
+
 .player-container {
   font-size: 25px;
   color: white;

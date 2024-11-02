@@ -46,6 +46,7 @@ export class ScoreboardComponent {
   constructor(private scoreboardService: ScoreboardService) {
     scoreboardService.playerSubject.subscribe((players: Player[]) => {
       this.players = players.map(player => {
+        player.textBg = ['#00000000', '#00000000']
         player.fontColor = ColorFader.getContrastColor(player.color);
         return player;
       });
@@ -79,23 +80,17 @@ export class ScoreboardComponent {
       player.correct = false;
       const previousIndex = previousOrder.indexOf(player.id);
       if (previousIndex > index) {
-        player.fontColor = '#99FF99';
+        this.runSortedAnim(player, 'up');
       } else if (previousIndex < index) {
-        player.fontColor = '#FF9999';
+        this.runSortedAnim(player, 'down');
       } else {
-        player.fontColor = '#999999';
+        this.runSortedAnim(player, 'same');
       }
     });
 
     for (let player of this.players) {
       player.hidden = false;
       await new Promise(resolve => setTimeout(resolve, 50));
-    }
-
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    for (let player of this.players) {
-      new ColorFader().fadeColor(player.fontColor, ColorFader.getContrastColor(player.color), 1000, (newColor) => player.fontColor = newColor);
     }
   }
 
@@ -107,5 +102,35 @@ export class ScoreboardComponent {
   checkOverflow() {
     const bodyEl = this.bodyElement.nativeElement;
     this.isOverflowing = bodyEl.scrollHeight > bodyEl.clientHeight;
+  }
+
+  private async runSortedAnim(player: Player, dir: 'up' | 'down' | 'same') {
+    for (let i = 0; i < 6; i++)
+    if (dir === 'same') {
+      player.textBg[0] = '#FFFFFF99'
+      player.textBg[1] = '#FFFFFF99'
+      await new Promise(resolve => setTimeout(resolve, 250));
+      player.textBg[0] = '#00000000'
+      player.textBg[1] = '#00000000'
+      await new Promise(resolve => setTimeout(resolve, 250));
+    } else if (dir === 'up') {
+      player.textBg[1] = '#00FF0099'
+      await new Promise(resolve => setTimeout(resolve, 100));
+      player.textBg[0] = '#00FF0099'
+      await new Promise(resolve => setTimeout(resolve, 150));
+      player.textBg[1] = '#00000000'
+      await new Promise(resolve => setTimeout(resolve, 100));
+      player.textBg[0] = '#00000000'
+      await new Promise(resolve => setTimeout(resolve, 150));
+    } else if (dir === 'down') {
+      player.textBg[0] = '#FF000099'
+      await new Promise(resolve => setTimeout(resolve, 100));
+      player.textBg[1] = '#FF000099'
+      await new Promise(resolve => setTimeout(resolve, 150));
+      player.textBg[0] = '#00000000'
+      await new Promise(resolve => setTimeout(resolve, 100));
+      player.textBg[1] = '#00000000'
+      await new Promise(resolve => setTimeout(resolve, 150));
+    }
   }
 }
