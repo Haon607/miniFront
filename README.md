@@ -5,7 +5,8 @@ large round      < ~8 min
 for a given player count, there should be at least 5 playable rounds
 
 IDEAS:
-basic ahh round
+
+[//]: # (basic ahh round)
 jamboree eel boss -> fibbage
 some sort of buzzer beater
 some sort of sorting

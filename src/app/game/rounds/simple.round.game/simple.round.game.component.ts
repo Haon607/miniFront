@@ -150,6 +150,7 @@ export class SimpleRoundGameComponent {
     endAudio.addEventListener('ended', () => {
       this.router.navigateByUrl("/game/scoreboard/" + Number(this.route.snapshot.paramMap.get('round')!));
     });
+    //TODO ANimation
     this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), true, 50);
     await new Promise(resolve => setTimeout(resolve, 500));
     this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, 25));
@@ -172,19 +173,33 @@ export class SimpleRoundGameComponent {
   }
 
   protected async animateIntro() {
+    new Audio('audio/rounds/simple/simple_start.mp3').play();
+    this.squares.line(0, this.round.data, 100, 1, 1, false);
+    this.squares.line(1, this.round.data, 100, 1, 1, false);
+    this.squares.line(8, this.round.data, 100, 1, 1, false);
+    this.squares.line(9, this.round.data, 100, 1, 1, false);
+    await new Promise(resolve => setTimeout(resolve, 1150));
+    this.squares.line(2, this.round.data, 100, 1, 1, false);
+    this.squares.line(3, this.round.data, 100, 1, 1, false);
+    this.squares.line(4, this.round.data, 100, 1, 1, false);
+    this.squares.line(5, this.round.data, 100, 1, 1, false);
+    this.squares.line(6, this.round.data, 100, 1, 1, false);
+    this.squares.line(7, this.round.data, 100, 1, 1, false);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), false, 100);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
     this.toggleAudioTrack(true)
     this.more.play();
     this.less.play();
-    this.squares.allLine(this.round.data, 90, 1, 1, false, true)
-    await new Promise(resolve => setTimeout(resolve, 900));
-    this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), false, 50);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    this.squares.circle(this.round.data, 48, 1, 1, false)
+    await new Promise(resolve => setTimeout(resolve, 1750));
     this.backgroundMore = true;
     this.beginBackground();
   }
 
   protected toggleAudioTrack(more: boolean): void {
-    const fadeDuration = 100; // duration of the fade in milliseconds
+    const fadeDuration = 1000; // duration of the fade in milliseconds
     const fadeInterval = 10;  // interval time for each volume adjustment in milliseconds
     const steps = fadeDuration / fadeInterval;
     let step = 0;
@@ -233,7 +248,7 @@ export class SimpleRoundGameComponent {
         //find better animation
         // this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), bool, 40);
       }
-      await new Promise(resolve => setTimeout(resolve, 434));
+      await new Promise(resolve => setTimeout(resolve, 428));
     }
   }
 
