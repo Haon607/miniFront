@@ -11,6 +11,7 @@ import { animate, style, transition, trigger } from "@angular/animations";
 import { TimerComponent } from "../../../timer/timer.component";
 import { PlayerReqService } from "../../../service/request/player.req.service";
 import { ScoreboardService } from "../../../scoreboard/scoreboard.service";
+import { ProgressBarComponent } from "../../../progress-bar/progress-bar.component";
 
 @Component({
   selector: 'app-simple.round.game',
@@ -18,7 +19,8 @@ import { ScoreboardService } from "../../../scoreboard/scoreboard.service";
   imports: [
     ScoreboardComponent,
     NgStyle,
-    TimerComponent
+    TimerComponent,
+    ProgressBarComponent
   ],
   templateUrl: './simple.round.game.component.html',
   styleUrl: './simple.round.game.component.css',
@@ -60,6 +62,7 @@ export class SimpleRoundGameComponent {
   backgroundMore: boolean | undefined = undefined;
 
   @ViewChild(TimerComponent) timerComponent!: TimerComponent;
+  @ViewChild(ProgressBarComponent) progressBarComponent!: ProgressBarComponent;
   private timeUp: boolean = false;
 
   constructor(
@@ -98,6 +101,7 @@ export class SimpleRoundGameComponent {
       });
       this.timeUp = false;
       this.timerComponent.resetTimer();
+      this.progressBarComponent.modifyProgress(1);
       await new Promise(resolve => setTimeout(resolve, 500));
       this.question = question.data.split('§')[0];
       this.answers = question.data.split('§')[1].split(';').map(text => new Answer(NaN, text));
@@ -126,6 +130,20 @@ export class SimpleRoundGameComponent {
     await this.endAnimation();
   }
 
+  onTimerEnd() {
+    this.timeUp = true;
+  }
+
+  didEveryPlayerAnswer() {
+    let bool = true;
+    for (let player of this.game.players) {
+      if (player.input === '') {
+        bool = false;
+      }
+    }
+    return bool;
+  }
+
   protected async endAnimation() {
     let endAudio = new Audio('/audio/rounds/simple/simple_end.mp3');
     endAudio.play();
@@ -151,20 +169,6 @@ export class SimpleRoundGameComponent {
     this.squares.colorEdges(this.round.data)
     this.squares.fadeEdges('#000000', 800)
     await new Promise(resolve => setTimeout(resolve, 800));
-  }
-
-  onTimerEnd() {
-    this.timeUp = true;
-  }
-
-  didEveryPlayerAnswer() {
-    let bool = true;
-    for (let player of this.game.players) {
-      if (player.input === '') {
-        bool = false;
-      }
-    }
-    return bool;
   }
 
   protected async animateIntro() {
@@ -224,7 +228,7 @@ export class SimpleRoundGameComponent {
         this.squares.line(0, ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 1, 1, 1, false, false)
         this.squares.line(9, ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 1, 1, 1, false, true)
       } else {
-        this.squares.fadeSquares([[0, 0],[1, 0],[2, 0],[3, 0],[4, 0],[5, 0],[6, 0],[7, 0],[8, 0],[9, 0],[0, 9],[1, 9],[2, 9],[3, 9],[4, 9],[5, 9],[6, 9],[7, 9],[8, 9],[9, 9]], ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 400)
+        this.squares.fadeSquares([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0], [9, 0], [0, 9], [1, 9], [2, 9], [3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9]], ColorFader.adjustBrightness(this.round.data, bool ? 10 : -10), 400)
 
         //find better animation
         // this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), bool, 40);

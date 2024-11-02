@@ -1,0 +1,23 @@
+.progress-tracker {
+  position: relative;
+  border: 2px solid #ddd;
+  border-radius: 500px;
+  overflow: hidden;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.progress-fill {
+  height: 100%;
+  transition: width 0.3s ease-in-out; /* Smooth transition for progress width */
+}
+
+.progress-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  color: #000;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}

@@ -52,3 +52,10 @@
   right: 1vw;
   z-index: 0;
 }
+
+.progress {
+  position: absolute;
+  top: 1vh;
+  left: 21vw;
+  z-index: 0;
+}

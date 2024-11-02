@@ -1,0 +1,15 @@
+<div
+  class="progress-tracker"
+  [ngStyle]="{'width.px': size, 'height.px': size }"
+>
+  <div
+    class="progress-fill"
+    [ngStyle]="{
+      'width.%': progressWidth,
+      'background-color': isWarning ? warningColor : progressBarColor
+    }"
+  ></div>
+  <div class="progress-text" [ngStyle]="{'font-size.px': size / 2, 'color': textColor}">
+    {{ currentProgress }} / {{ maxProgress }}
+  </div>
+</div>

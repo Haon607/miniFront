@@ -75,7 +75,7 @@ export class SelectGameComponent {
       this.startLargeAnimation();
     } else {
       this.selectMusic.src = last ? '/audio/select/select_last.mp3' : '/audio/select_small.mp3';
-      this.startSmallAnimation(false, true);
+      this.startSmallAnimation(false, last);
     }
   }
 
