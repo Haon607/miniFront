@@ -10,6 +10,7 @@ import { NgStyle } from "@angular/common";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { TimerComponent } from "../../../timer/timer.component";
 import { PlayerReqService } from "../../../service/request/player.req.service";
+import { ScoreboardService } from "../../../scoreboard/scoreboard.service";
 
 @Component({
   selector: 'app-simple.round.game',
@@ -68,12 +69,22 @@ export class SimpleRoundGameComponent {
     private router: Router,
     private route: ActivatedRoute,
     private squares: SquaresService,
+    private scoreboard: ScoreboardService,
   ) {
     gameService.getGame(memory.gameId).subscribe(game => {
       this.game = game;
       this.round = game.rounds[Number(route.snapshot.paramMap.get('round')!) - 1];
       this.startRound();
     });
+    this.initScoreboard();
+  }
+
+  async initScoreboard() {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    this.scoreboard.playerSubject.next(this.memory.players);
+    this.scoreboard.totalSubject.next(false);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    this.scoreboard.sortSubject.next();
   }
 
   async startRound() {
@@ -83,7 +94,8 @@ export class SimpleRoundGameComponent {
     await this.animateIntro();
 
     for (let question of this.round.questions) {
-      this.playerService.deleteInputs().subscribe(() => {});
+      this.playerService.deleteInputs().subscribe(() => {
+      });
       this.timeUp = false;
       this.timerComponent.resetTimer();
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -96,16 +108,35 @@ export class SimpleRoundGameComponent {
       this.answers[0].isCorrect = true;
       this.answers = this.squares.shuffleArray(this.answers)
       this.toggleAudioTrack(false);
-      this.gameService.modifyData(this.memory.gameId, "/select", this.answers.map(ans => {return ans.answer}).join(';')).subscribe(game => this.game = game)
+      this.gameService.modifyData(this.memory.gameId, "/select", this.answers.map(ans => {
+        return ans.answer
+      }).join(';')).subscribe(game => this.game = game)
       await this.answerTime();
       this.toggleAudioTrack(true)
       this.gameService.modifyData(this.memory.gameId, "/idle").subscribe(game => this.game = game)
       await this.revealAnswers();
+      await this.rewardPoints();
+
+      this.question = '';
+      this.answers = [];
     }
+    this.more.pause();
+    this.less.pause();
+    this.router.navigateByUrl("/game/scoreboard" + this.round)
   }
 
   onTimerEnd() {
     this.timeUp = true;
+  }
+
+  didEveryPlayerAnswer() {
+    let bool = true;
+    for (let player of this.game.players) {
+      if (player.input === '') {
+        bool = false;
+      }
+    }
+    return bool;
   }
 
   protected async animateIntro() {
@@ -188,16 +219,6 @@ export class SimpleRoundGameComponent {
     this.timerComponent.stopTimer();
   }
 
-  didEveryPlayerAnswer() {
-    let bool = true;
-    for (let player of this.game.players) {
-      if (player.input === '') {
-        bool = false;
-      }
-    }
-    return bool;
-  }
-
   private async revealAnswers() {
     this.game.players.forEach((player: Player) => {
       let playerAnswer = this.answers.filter(answer => answer.answer === player.input)
@@ -205,15 +226,28 @@ export class SimpleRoundGameComponent {
         playerAnswer[0].players.push(player);
       }
     })
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 15; i++) {
       for (let answer of this.answers) {
         if (answer.players[0]) {
-          new ColorFader().fadeColor(answer.color, answer.players[i % answer.players.length].color, 200, col => answer.color = col);
+          new ColorFader().fadeColor(answer.color, answer.players[i % answer.players.length].color, 400, col => answer.color = col);
         } else {
           answer.color = '#FFFFFF55'
         }
       }
-      await new Promise(resolve => setTimeout(resolve, 250));
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
+  }
+
+  private async rewardPoints() {
+    this.answers.forEach(answer => answer.color = answer.isCorrect ? '#00FF00' + answer.color.substring(7) : '#FF0000' + answer.color.substring(7))
+    let correctAnswer = this.answers.filter(answer => answer.isCorrect)[0].answer;
+    this.game.players.filter(player => player.input === correctAnswer).forEach(gamePlayer => {
+        let player = this.memory.players.filter(memoryPlayer => memoryPlayer.id === gamePlayer.id)[0];
+        player.gameScore += 2;
+        player.correct = true;
+      });
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    this.scoreboard.sortSubject.next();
+    await new Promise(resolve => setTimeout(resolve, 2000));
   }
 }
