@@ -30,6 +30,5 @@ export class GameReqService {
 
   setRounds(id: number, playerCount: number, amount: number, amountLargeRounds: number): Observable<Game> {
     return this.http.post<Game>(`${this.url}/${id}/rounds/${playerCount}/${amount}/${amountLargeRounds}`, {});
-
   }
 }

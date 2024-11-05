@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { GameReqService } from "../../service/request/game.req.service";
-import { MemoryPlayerService } from "../../service/memory/memory.player.service";
+import { GameReqService } from "../../../service/request/game.req.service";
+import { MemoryPlayerService } from "../../../service/memory/memory.player.service";
 import { Router } from "@angular/router";
-import { PlayerRouting } from "../playerRouting";
-import { PlayerReqService } from "../../service/request/player.req.service";
+import { PlayerRouting } from "../../playerRouting";
+import { PlayerReqService } from "../../../service/request/player.req.service";
 import { NgStyle } from "@angular/common";
-import { ColorFader } from "../../utils";
+import { ColorFader } from "../../../utils";
 
 @Component({
   selector: 'app-select.player',

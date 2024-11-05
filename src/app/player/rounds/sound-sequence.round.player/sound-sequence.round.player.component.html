@@ -1,0 +1,7 @@
+<div class="background" [ngStyle]="{'background-color': bgc}">
+  @if (data === 'test') {
+    <span class="element" [ngStyle]="{'color': ColorFader.getContrastColor(bgc)}">Dreh den Ton auf und teste ob jeder den Ton aus deinem Gerät hören kann!</span>
+    <br>
+    <button (click)="playSound()">Testsound abspielen</button>
+  }
+</div>
