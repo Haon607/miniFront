@@ -34,8 +34,8 @@ export class SoundSequenceRoundPlayerComponent {
   }
 
   playSound() {
-    new Audio("/audio/rounds/sound-sequence/key" + String(Math.floor((Math.random()*3)+1)) + ".mp3")
-  } //TODO MAKE THIS WORK
+    new Audio("/audio/rounds/sound-sequence/key" + String(Math.floor((Math.random()*3)+1)) + ".mp3").play();
+  }
 
   protected readonly ColorFader = ColorFader;
 }
