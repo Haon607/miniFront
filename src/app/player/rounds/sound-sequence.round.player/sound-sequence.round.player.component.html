@@ -2,6 +2,16 @@
   @if (data === 'test') {
     <span class="element" [ngStyle]="{'color': ColorFader.getContrastColor(bgc)}">Dreh den Ton auf und teste ob jeder den Ton aus deinem Gerät hören kann!</span>
     <br>
-    <button (click)="playSound()">Testsound abspielen</button>
+    <button (click)="playSound(true)">Testsound abspielen</button>
+  }
+  @if (data === 'select') {
+    <div class="selector-list">
+      @for (player of players; track player.id) {
+        <button class="selector-button" (click)="addToInput(player.id)"
+                [ngStyle]="{'background': player.color, 'color': ColorFader.getContrastColor(player.color)}">
+          {{ player.name }}
+        </button>
+      }
+    </div>
   }
 </div>

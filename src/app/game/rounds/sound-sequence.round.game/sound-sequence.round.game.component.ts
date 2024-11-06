@@ -41,6 +41,9 @@ export class SoundSequenceRoundGameComponent {
 
   startRound() {
     this.gameService.modifyData(this.memory.gameId, "/sound", "test").subscribe(() => {});
+  }
 
+  sendSoundToPlayer(playerId: number | string) {
+    this.gameService.modifyData(this.memory.gameId, "/sound", String(playerId)).subscribe(() => {})
   }
 }

@@ -1,1 +1,4 @@
-<p>sound-sequence.round.game works!</p>
+@for (player of game.players; track player.id) {
+  <button (click)="sendSoundToPlayer(player.id)">{{player.name}}</button>
+}
+<button (click)="sendSoundToPlayer('select')">select</button>
