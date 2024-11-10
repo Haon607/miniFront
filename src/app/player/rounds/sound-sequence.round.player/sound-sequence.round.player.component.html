@@ -5,6 +5,7 @@
     <button (click)="playSound(true)">Testsound abspielen</button>
   }
   @if (data === 'select') {
+    <span class="element" [ngStyle]="{'color': ColorFader.getContrastColor(bgc)}">Reproduziere die Reihenfolge</span>
     <div class="selector-list">
       @for (player of players; track player.id) {
         <button class="selector-button" (click)="addToInput(player.id)"

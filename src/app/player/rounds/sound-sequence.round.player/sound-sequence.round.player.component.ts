@@ -59,7 +59,7 @@ export class SoundSequenceRoundPlayerComponent implements OnDestroy {
           this.router.navigateByUrl(game.route);
           this.do = false;
         }
-        if (!this.players) {
+        if (this.players.length === 0) {
           this.players = game.players;
         }
         if (this.data === String(this.memory.playerId)) {

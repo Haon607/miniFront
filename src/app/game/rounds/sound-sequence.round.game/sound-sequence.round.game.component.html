@@ -1,4 +1,33 @@
-@for (player of game.players; track player.id) {
-  <button (click)="sendSoundToPlayer(player.id)">{{player.name}}</button>
-}
-<button (click)="sendSoundToPlayer('select')">select</button>
+<div class="background">
+  <app-scoreboard></app-scoreboard>
+  <div class="content">
+    <app-progress-bar class="progress"
+                      [currentProgress]="0"
+                      [maxProgress]="10"
+                      [progressBarColor]="'#000080'"
+                      [warningColor]="'#800000'"
+                      [warningThreshold]="0"
+                      [size]="150"
+                      [textColor]="'#FFFFFF'"
+    ></app-progress-bar>
+    <app-timer class="timer"
+               [initialTime]="30"
+               [warningThreshold]="5"
+               [progressBarColor]="'#000080'"
+               [warningColor]="'#800000'"
+               [size]="150"
+               [textColor]="'#FFFFFF'"
+               [warningTextColor]="'#FF0000'"
+               (currentSecond)="null"
+               (timerEnded)="onTimerEnd()"
+    ></app-timer>
+    @if (state === 'test') {
+      <span class="content-highlight" (click)="startRound()">Teste ob dein Ton gut hörbar für alle Spieler ist</span>
+    } @else {
+      @for (player of game.players; track player.id) {
+        <button (click)="sendSoundToPlayer(player.id)">{{ player.name }}</button>
+      }
+      <button (click)="sendSelectToPlayer()">select</button>
+    }
+  </div>
+</div>

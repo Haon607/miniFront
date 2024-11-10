@@ -1,6 +1,6 @@
 round definition | time rules --> scoreboard
-small round      < 3 min
-large round      < ~8 min
+small round      < 3 min          10p
+large round      < ~8 min         pot more
 
 for a given player count, there should be at least 5 playable rounds
 
