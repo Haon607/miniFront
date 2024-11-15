@@ -1,6 +1,6 @@
 <div
   class="timer"
-  [ngStyle]="{'font-size.px': size / 2, 'width.px': size, 'height.px': size}"
+  [ngStyle]="{'font-size.px': size / 2, 'width.px': size*2, 'height.px': size}"
 >
   <div
     class="progress-bar"
@@ -12,6 +12,6 @@
     [@scaleText]="scaleState"
     [@flash]="{ value: flashState, params: { textColor: textColor, warningTextColor: warningTextColor }}"
   >
-    {{ timeLeft }}
+    {{ pipeTime(timeLeft) }}
   </div>
 </div>

@@ -109,4 +109,8 @@ export class TimerComponent implements OnInit, OnDestroy {
       this.intervalId = null;
     }
   }
+
+  pipeTime(timeLeft: number) {
+    return `${Math.floor(timeLeft / 60)}:${timeLeft % 60}`;
+  }
 }
