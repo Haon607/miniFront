@@ -10,24 +10,52 @@
                       [size]="150"
                       [textColor]="'#FFFFFF'"
     ></app-progress-bar>
-    <app-timer class="timer"
-               [initialTime]="30"
-               [warningThreshold]="5"
-               [progressBarColor]="'#000080'"
-               [warningColor]="'#800000'"
-               [size]="150"
-               [textColor]="'#FFFFFF'"
-               [warningTextColor]="'#FF0000'"
-               (currentSecond)="null"
-               (timerEnded)="onTimerEnd()"
-    ></app-timer>
+    <!--    TODO click DEBUG-->
+    @if (state !== 'reveal') {
+      <app-timer class="timer"
+                 (click)="onTimerEnd()"
+                 [initialTime]="30"
+                 [warningThreshold]="5"
+                 [progressBarColor]="'#000080'"
+                 [warningColor]="'#800000'"
+                 [size]="150"
+                 [textColor]="'#FFFFFF'"
+                 [warningTextColor]="'#FF0000'"
+                 (currentSecond)="null"
+                 (timerEnded)="onTimerEnd()"
+      ></app-timer>
+    }
     @if (state === 'test') {
-      <span class="content-highlight" (click)="startRound()">Teste ob dein Ton gut hörbar für alle Spieler ist</span>
-    } @else {
-      @for (player of game.players; track player.id) {
-        <button (click)="sendSoundToPlayer(player.id)">{{ player.name }}</button>
-      }
-      <button (click)="sendSelectToPlayer()">select</button>
+      <div class="content-highlight text"
+           (click)="startRound()">Teste ob dein Ton gut hörbar für alle Spieler ist
+      </div>
+    } @else if (state === 'select') {
+      <div class="content-highlight text">Reproduziere die Reihenfolge von {{ indexedSequence.length }} Tönen auf deinem
+        Gerät
+      </div>
+      <br>
+      <div class="option-container">
+        @for (option of game.players; track option.id) {
+          <div class="option content-highlight">{{ option.name }}</div>
+        }
+      </div>
+    } @else if (state === 'reveal') {
+      <table>
+        <tr>
+          <th>Reihenfolge</th>
+          @for (player of playerAnswerProjection; track player.id) {
+            <th [ngStyle]="{'background': player.sequenceCorrect ? '#00FF0099' : '#FFFFFF30'}">{{ player.name }}</th>
+          }
+        </tr>
+        @for (step of indexedSequence; track step[0]) {
+          <tr>
+            <td class="sequence">{{ idToPlayerName(step[1].toString()) }}</td>
+            @for (player of playerAnswerProjection; track player.id) {
+              <td [ngStyle]="{'background': player.input.split(';')[step[0]] === step[1].toString() ? '#00FF0099' : '#FF000099'}">{{ idToPlayerName(player.input.split(';')[step[0]]) }}</td>
+            }
+          </tr>
+        }
+      </table>
     }
   </div>
 </div>

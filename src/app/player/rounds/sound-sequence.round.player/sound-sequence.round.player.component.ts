@@ -6,6 +6,7 @@ import {NgStyle} from "@angular/common";
 import {ColorFader} from "../../../utils";
 import {Player} from "../../../models";
 import {PlayerReqService} from "../../../service/request/player.req.service";
+import { Constants } from "../../../constants";
 
 @Component({
   selector: 'app-sound-sequence.round.player',
@@ -22,6 +23,7 @@ export class SoundSequenceRoundPlayerComponent implements OnDestroy {
   do = true;
   players: Player[] = [];
   input: number[] = [];
+  disableButtons: boolean = false;
 
   constructor(
     private gameService: GameReqService,
@@ -53,6 +55,7 @@ export class SoundSequenceRoundPlayerComponent implements OnDestroy {
       this.gameService.getGame(this.memory.gameId).subscribe(game => {
         if (game.data === 'select' && this.data !== 'select') {
           this.input = [];
+          this.disableButtons = false
         }
         this.data = game.data;
         if (game.route !== this.router.url) {
@@ -61,6 +64,10 @@ export class SoundSequenceRoundPlayerComponent implements OnDestroy {
         }
         if (this.players.length === 0) {
           this.players = game.players;
+          let gamePlayer = new Player(-1, Constants.GAMEOPTIONAME);
+          gamePlayer.color = '#000000';
+          gamePlayer.fontColor = '#FFFFFF';
+          this.players.push(gamePlayer);
         }
         if (this.data === String(this.memory.playerId)) {
           this.gameService.modifyData(this.memory.gameId, "/sound", "playing").subscribe(() => {
@@ -73,11 +80,22 @@ export class SoundSequenceRoundPlayerComponent implements OnDestroy {
   }
 
   addToInput(playerId: number) {
+    this.disableButtons = true;
     this.input.push(playerId);
-    this.playerService.setInput(this.memory.playerId, this.input.join(';')).subscribe(() => {});
+    this.playerService.setInput(this.memory.playerId, this.input.join(';')).subscribe(() => {
+      this.disableButtons = false;
+    });
   }
 
   ngOnDestroy(): void {
     this.do = false;
+  }
+
+  delete() {
+    this.disableButtons = true;
+    this.input = [];
+    this.playerService.setInput(this.memory.playerId, "").subscribe(() => {
+      this.disableButtons = false;
+    });
   }
 }

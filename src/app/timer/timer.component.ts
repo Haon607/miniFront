@@ -111,6 +111,8 @@ export class TimerComponent implements OnInit, OnDestroy {
   }
 
   pipeTime(timeLeft: number) {
-    return `${Math.floor(timeLeft / 60)}:${timeLeft % 60}`;
+    const seconds = timeLeft % 60;
+    const minutes = Math.floor(timeLeft / 60);
+    return `${minutes}:${seconds > 9 ? seconds : '0' + seconds}`;
   }
 }

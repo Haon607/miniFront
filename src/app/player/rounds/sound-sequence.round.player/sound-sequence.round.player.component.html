@@ -7,8 +7,9 @@
   @if (data === 'select') {
     <span class="element" [ngStyle]="{'color': ColorFader.getContrastColor(bgc)}">Reproduziere die Reihenfolge</span>
     <div class="selector-list">
+    <button class="selector-button delete-btn" [disabled]="disableButtons" (click)="delete()">LÖSCHE DEINE GESAMTE EINGABE</button>
       @for (player of players; track player.id) {
-        <button class="selector-button" (click)="addToInput(player.id)"
+        <button class="selector-button" [disabled]="disableButtons" (click)="addToInput(player.id)"
                 [ngStyle]="{'background': player.color, 'color': ColorFader.getContrastColor(player.color)}">
           {{ player.name }}
         </button>
