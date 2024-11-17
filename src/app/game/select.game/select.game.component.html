@@ -1,6 +1,6 @@
 <div class="background">
   <div class="content" [ngStyle]="{'color': fontColor}">
-    <span [ngStyle]="{'font-size': (min(size, maxsize) + 50) + 'px'}">{{ preRoundText }}RUNDE {{ roundNumber }}</span><br>
+    <span [ngStyle]="{'font-size': (Math.min(size, maxsize) + 50) + 'px'}">{{ preRoundText }}RUNDE {{ roundNumber }}</span><br>
     <span [ngStyle]="{'font-size': (250 - (size + 50)) + 'px'}">{{ roundName }}</span>
   </div>
 </div>

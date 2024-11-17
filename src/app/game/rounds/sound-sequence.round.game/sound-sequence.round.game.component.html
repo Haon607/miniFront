@@ -11,20 +11,18 @@
                       [textColor]="'#FFFFFF'"
     ></app-progress-bar>
     <!--    TODO click DEBUG-->
-    @if (state !== 'reveal') {
-      <app-timer class="timer"
-                 (click)="onTimerEnd()"
-                 [initialTime]="30"
-                 [warningThreshold]="5"
-                 [progressBarColor]="'#000080'"
-                 [warningColor]="'#800000'"
-                 [size]="150"
-                 [textColor]="'#FFFFFF'"
-                 [warningTextColor]="'#FF0000'"
-                 (currentSecond)="null"
-                 (timerEnded)="onTimerEnd()"
-      ></app-timer>
-    }
+    <app-timer class="timer"
+               (click)="onTimerEnd()"
+               [initialTime]="30"
+               [warningThreshold]="5"
+               [progressBarColor]="'#000080'"
+               [warningColor]="'#800000'"
+               [size]="150"
+               [textColor]="'#FFFFFF'"
+               [warningTextColor]="'#FF0000'"
+               (currentSecond)="null"
+               (timerEnded)="onTimerEnd()"
+    ></app-timer>
     @if (state === 'test') {
       <div class="content-highlight text"
            (click)="startRound()">Teste ob dein Ton gut hörbar für alle Spieler ist
@@ -41,17 +39,21 @@
       </div>
     } @else if (state === 'reveal') {
       <table>
-        <tr>
+        <tr @slide>
           <th>Reihenfolge</th>
           @for (player of playerAnswerProjection; track player.id) {
-            <th [ngStyle]="{'background': player.sequenceCorrect ? '#00FF0099' : '#FFFFFF30'}">{{ player.name }}</th>
+            <th
+              [ngStyle]="{'background': player.sequenceCorrect === true ? '#00FF0099' : (player.sequenceCorrect === false ? '#FF000099' : '#FFFFFF30')}">{{ player.name }}
+            </th>
           }
         </tr>
         @for (step of indexedSequence; track step[0]) {
-          <tr>
+          <tr @slide>
             <td class="sequence">{{ idToPlayerName(step[1].toString()) }}</td>
             @for (player of playerAnswerProjection; track player.id) {
-              <td [ngStyle]="{'background': player.input.split(';')[step[0]] === step[1].toString() ? '#00FF0099' : '#FF000099'}">{{ idToPlayerName(player.input.split(';')[step[0]]) }}</td>
+              <td
+                [ngStyle]="{'background': player.input.split(';')[step[0]] === step[1].toString() ? '#00FF0099' : '#FF000099'}">{{ idToPlayerName(player.input.split(';')[step[0]]) }}
+              </td>
             }
           </tr>
         }

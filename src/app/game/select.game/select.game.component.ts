@@ -168,10 +168,6 @@ export class SelectGameComponent {
     this.router.navigateByUrl("/game/rules/" + this.roundNumber);
   }
 
-  min(a: number, b: number): number {
-    return a < b ? a : b;
-  }
-
   private async lastRoundStinger() {
     let playerInFirst = '#FFFFFF'; //TODO
     new Audio('/audio/select/intro_select_last.mp3').play();
@@ -227,4 +223,6 @@ export class SelectGameComponent {
     this.squares.line(0, playerInFirst, 1, 1, 1, false);
     await new Promise(resolve => setTimeout(resolve, 400));
   }
+
+  protected readonly Math = Math;
 }

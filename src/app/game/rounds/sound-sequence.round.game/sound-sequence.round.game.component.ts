@@ -11,6 +11,7 @@ import { ProgressBarComponent } from "../../../progress-bar/progress-bar.compone
 import { ScoreboardComponent } from "../../../scoreboard/scoreboard.component";
 import { Constants } from "../../../constants";
 import { NgStyle } from "@angular/common";
+import { animate, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: 'app-sound-sequence.round.game',
@@ -22,12 +23,34 @@ import { NgStyle } from "@angular/common";
     NgStyle
   ],
   templateUrl: './sound-sequence.round.game.component.html',
-  styleUrl: './sound-sequence.round.game.component.css'
+  styleUrl: './sound-sequence.round.game.component.css',
+  animations: [
+    trigger('slide', [
+      transition('void => *', [
+        style({
+          position: "relative",
+          right: "-1300px",
+        }),
+        animate('250ms ease-out', style({
+          right: "0"
+        })),
+      ]),
+      transition('* => void', [
+        style({
+          position: "relative",
+          left: "0"
+        }),
+        animate('250ms ease-in', style({
+          left: "-1300px"
+        }))
+      ])
+    ])
+  ]
 })
 export class SoundSequenceRoundGameComponent {
   game: Game = new Game();
   state = 'startup';
-  playerAnswerProjection: {id: number, name: string, input: string, sequenceCorrect: boolean}[] = [];
+  playerAnswerProjection: {id: number, name: string, input: string, sequenceCorrect: boolean | undefined}[] = [];
   indexedSequence: number[][] = [];
   @ViewChild(TimerComponent) timerComponent!: TimerComponent;
   @ViewChild(ProgressBarComponent) progressBarComponent!: ProgressBarComponent;
@@ -91,7 +114,9 @@ export class SoundSequenceRoundGameComponent {
     this.state = '';
     await new Promise(resolve => setTimeout(resolve, 500));
     for (let i = 1; i <= 10; i++) {
+      this.state = 'setup'
       this.squares.setGradient('#281A26', '#1A6675', true, 100);
+      await new Promise(resolve => setTimeout(resolve, 500));
       this.timerComponent.resetTimer();
       this.progressBarComponent.modifyProgress(1);
       this.state = 'playing'
@@ -144,16 +169,17 @@ export class SoundSequenceRoundGameComponent {
                 id: player.id,
                 name: player.name,
                 input: player.input,
-                sequenceCorrect: false
+                sequenceCorrect: undefined
               }
               );
           }
         })
       }
+      this.gameService.modifyData(this.memory.gameId, "/sound", "reveal").subscribe(() => {})
       this.timerComponent.stopTimer();
+      this.timerComponent.modifyTimer(0);
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      this.state = 'reveal';
       this.squares.setGradient('#281A26', '#1A6675', false, 100);
       await this.reveal();
     }
@@ -181,9 +207,31 @@ export class SoundSequenceRoundGameComponent {
   }
 
   private async reveal() {
-
-    while (this.state === 'reveal') {
-      await new Promise(resolve => setTimeout(resolve, 500));
+    let sequence = this.indexedSequence;
+    this.indexedSequence = [];
+    this.state = 'reveal';
+    for (let i = 0; i < sequence.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, Math.max(7500, sequence.length*500) / sequence.length));
+      this.indexedSequence.push(sequence[i]);
     }
+
+    let gSeq = sequence.map(element => element[1].toString())
+    for (let i = 0; i < this.playerAnswerProjection.length; i++) {
+      let pSeq = this.playerAnswerProjection[i].input.split(';');
+      if (pSeq[pSeq.length - 1] === 'done') {
+        pSeq.pop();
+      }
+      if (gSeq.toString() === pSeq.toString()) {
+        this.playerAnswerProjection[i].sequenceCorrect = true;
+        let player = this.memory.players.filter(memoryPlayer => memoryPlayer.id === this.playerAnswerProjection[i].id)[0];
+        player.gameScore += 1;
+        player.correct = true;
+      } else {
+        this.playerAnswerProjection[i].sequenceCorrect = false;
+      }
+    }
+    await new Promise(resolve => setTimeout(resolve, 2500));
+    this.scoreboard.sortSubject.next();
+    await new Promise(resolve => setTimeout(resolve, Math.max(2000, 250 * sequence.length)));
   }
 }
