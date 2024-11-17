@@ -33,8 +33,8 @@
       </div>
       <br>
       <div class="option-container">
-        @for (option of game.players; track option.id) {
-          <div class="option content-highlight">{{ option.name }}</div>
+        @for (player of playerAnswerProjection; track player.id) {
+          <div class="option" [ngStyle]="{'background': player.color, 'color': ColorFader.getContrastColor(player.color)}">{{ player.name }}</div>
         }
       </div>
     } @else if (state === 'reveal') {
@@ -43,13 +43,13 @@
           <th>Reihenfolge</th>
           @for (player of playerAnswerProjection; track player.id) {
             <th
-              [ngStyle]="{'background': player.sequenceCorrect === true ? '#00FF0099' : (player.sequenceCorrect === false ? '#FF000099' : '#FFFFFF30')}">{{ player.name }}
+              [ngStyle]="{'background': player.sequenceCorrect === true ? '#00FF0099' : (player.sequenceCorrect === false ? '#FF000099' : player.color), 'color': ColorFader.getContrastColor(player.color)}">{{ player.name }}
             </th>
           }
         </tr>
         @for (step of indexedSequence; track step[0]) {
           <tr @slide>
-            <td class="sequence">{{ idToPlayerName(step[1].toString()) }}</td>
+            <td class="sequence" [ngStyle]="{'background': idToPlayerColor(step[1].toString()), 'color': ColorFader.getContrastColor(idToPlayerColor(step[1].toString()))}">{{ idToPlayerName(step[1].toString()) }}</td>
             @for (player of playerAnswerProjection; track player.id) {
               <td
                 [ngStyle]="{'background': player.input.split(';')[step[0]] === step[1].toString() ? '#00FF0099' : '#FF000099'}">{{ idToPlayerName(player.input.split(';')[step[0]]) }}

@@ -1,70 +1,50 @@
-import { Component, ViewChild } from '@angular/core';
-import { GameReqService } from "../../../service/request/game.req.service";
-import { PlayerReqService } from "../../../service/request/player.req.service";
-import { MemoryGameService } from "../../../service/memory/memory.game.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { SquaresService } from "../../../squares/squares.service";
-import { ScoreboardService } from "../../../scoreboard/scoreboard.service";
-import { Game, Player } from "../../../models";
-import { TimerComponent } from "../../../timer/timer.component";
-import { ProgressBarComponent } from "../../../progress-bar/progress-bar.component";
-import { ScoreboardComponent } from "../../../scoreboard/scoreboard.component";
-import { Constants } from "../../../constants";
-import { NgStyle } from "@angular/common";
-import { animate, style, transition, trigger } from "@angular/animations";
+import {Component, ViewChild} from '@angular/core';
+import {GameReqService} from "../../../service/request/game.req.service";
+import {PlayerReqService} from "../../../service/request/player.req.service";
+import {MemoryGameService} from "../../../service/memory/memory.game.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {SquaresService} from "../../../squares/squares.service";
+import {ScoreboardService} from "../../../scoreboard/scoreboard.service";
+import {Game, Player} from "../../../models";
+import {TimerComponent} from "../../../timer/timer.component";
+import {ProgressBarComponent} from "../../../progress-bar/progress-bar.component";
+import {ScoreboardComponent} from "../../../scoreboard/scoreboard.component";
+import {Constants} from "../../../constants";
+import {NgStyle} from "@angular/common";
+import {animate, style, transition, trigger} from "@angular/animations";
+import {ColorFader} from "../../../utils";
 
 @Component({
   selector: 'app-sound-sequence.round.game',
   standalone: true,
-  imports: [
-    ProgressBarComponent,
-    ScoreboardComponent,
-    TimerComponent,
-    NgStyle
-  ],
+  imports: [ProgressBarComponent, ScoreboardComponent, TimerComponent, NgStyle],
   templateUrl: './sound-sequence.round.game.component.html',
   styleUrl: './sound-sequence.round.game.component.css',
-  animations: [
-    trigger('slide', [
-      transition('void => *', [
-        style({
-          position: "relative",
-          right: "-1300px",
-        }),
-        animate('250ms ease-out', style({
-          right: "0"
-        })),
-      ]),
-      transition('* => void', [
-        style({
-          position: "relative",
-          left: "0"
-        }),
-        animate('250ms ease-in', style({
-          left: "-1300px"
-        }))
-      ])
-    ])
-  ]
+  animations: [trigger('slide', [transition('void => *', [style({
+    position: "relative", right: "-1300px",
+  }), animate('250ms ease-out', style({
+    right: "0"
+  })),]), transition('* => void', [style({
+    position: "relative", left: "0"
+  }), animate('250ms ease-in', style({
+    left: "-1300px"
+  }))])])]
 })
 export class SoundSequenceRoundGameComponent {
   game: Game = new Game();
   state = 'startup';
-  playerAnswerProjection: {id: number, name: string, input: string, sequenceCorrect: boolean | undefined}[] = [];
+  playerAnswerProjection: {
+    id: number,
+    name: string,
+    input: string,
+    sequenceCorrect: boolean | undefined,
+    color: string
+  }[] = [];
   indexedSequence: number[][] = [];
   @ViewChild(TimerComponent) timerComponent!: TimerComponent;
   @ViewChild(ProgressBarComponent) progressBarComponent!: ProgressBarComponent;
 
-
-  constructor(
-    private gameService: GameReqService,
-    private playerService: PlayerReqService,
-    private memory: MemoryGameService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private squares: SquaresService,
-    private scoreboard: ScoreboardService,
-  ) {
+  constructor(private gameService: GameReqService, private playerService: PlayerReqService, private memory: MemoryGameService, private router: Router, private route: ActivatedRoute, private squares: SquaresService, private scoreboard: ScoreboardService,) {
     gameService.getGame(memory.gameId).subscribe(game => {
       this.game = game;
       this.game.players.push(new Player(-1, Constants.GAMEOPTIONAME))
@@ -152,37 +132,47 @@ export class SoundSequenceRoundGameComponent {
       }
       this.state = 'select'
       this.sendSelectToPlayer()
+      let everySecond = false;
       while (this.state === 'select') {
-        this.squares.fadeSquares(this.squares.checkerPath, '#281A26', 400)
+        // this.squares.fadeSquares(this.squares.checkerPath, '#281A26', 400)
         await new Promise(resolve => setTimeout(resolve, 250));
-        this.squares.fadeSquares(this.squares.checkerPathInv, '#281A26', 400)
+        // this.squares.fadeSquares(this.squares.checkerPathInv, '#281A26', 400)
         await new Promise(resolve => setTimeout(resolve, 250));
-        this.squares.fadeSquares(this.squares.checkerPath, '#1A6675', 400)
+        // this.squares.fadeSquares(this.squares.checkerPath, '#1A6675', 400)
         await new Promise(resolve => setTimeout(resolve, 250));
-        this.squares.fadeSquares(this.squares.checkerPathInv, '#1A6675', 400)
+        // this.squares.fadeSquares(this.squares.checkerPathInv, '#1A6675', 400)
         await new Promise(resolve => setTimeout(resolve, 250));
         this.gameService.getGame(this.memory.gameId).subscribe(game => {
-          this.playerAnswerProjection = [];
-          for (let player of game.players) {
-            this.playerAnswerProjection.push(
-              {
-                id: player.id,
-                name: player.name,
-                input: player.input,
-                sequenceCorrect: undefined
-              }
-              );
-          }
+          this.playerAnswerProjection = game.players.map(player => {
+            return {
+              id: player.id,
+              name: player.name,
+              input: player.input,
+              sequenceCorrect: undefined,
+              color: (everySecond || !this.isPlayerDone(player.id)) ? player.color : (ColorFader.getContrastColor(player.color) === '#FFFFFF' ? '#000000' : '#FFFFFF')
+            }
+          })
         })
+        everySecond = !everySecond;
       }
-      this.gameService.modifyData(this.memory.gameId, "/sound", "reveal").subscribe(() => {})
-      this.timerComponent.stopTimer();
-      this.timerComponent.modifyTimer(0);
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      this.squares.setGradient('#281A26', '#1A6675', false, 100);
-      await this.reveal();
     }
+    this.gameService.modifyData(this.memory.gameId, "/sound", "reveal").subscribe(game => {
+      this.playerAnswerProjection = game.players.map(player => {
+        return {
+          id: player.id,
+          name: player.name,
+          input: player.input,
+          sequenceCorrect: undefined,
+          color: player.color
+        }
+      })
+    })
+    this.timerComponent.stopTimer();
+    this.timerComponent.modifyTimer(0);
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    this.squares.setGradient('#281A26', '#1A6675', false, 100);
+    await this.reveal();
   }
 
   onTimerEnd() {
@@ -206,12 +196,12 @@ export class SoundSequenceRoundGameComponent {
     return this.memory.players.filter(player => player.id.toString() === id)[0]?.name ?? '';
   }
 
-  private async reveal() {
+  async reveal() {
     let sequence = this.indexedSequence;
     this.indexedSequence = [];
     this.state = 'reveal';
     for (let i = 0; i < sequence.length; i++) {
-      await new Promise(resolve => setTimeout(resolve, Math.max(7500, sequence.length*500) / sequence.length));
+      await new Promise(resolve => setTimeout(resolve, Math.max(7500, sequence.length * 500) / sequence.length));
       this.indexedSequence.push(sequence[i]);
     }
 
@@ -234,4 +224,21 @@ export class SoundSequenceRoundGameComponent {
     this.scoreboard.sortSubject.next();
     await new Promise(resolve => setTimeout(resolve, Math.max(2000, 250 * sequence.length)));
   }
+
+  isPlayerDone(playerId: number): boolean {
+    let playerInput = this.playerAnswerProjection.filter(player => player.id === playerId)[0].input;
+    if (playerInput.split(';')) {
+      return playerInput.split(';')[playerInput.split(';').length - 1] === 'done'
+    }
+    return false;
+  }
+
+  idToPlayerColor(id: string) {
+    if (id === '-1') {
+      return '#000000';
+    }
+    return this.memory.players.filter(player => player.id.toString() === id)[0]?.color ?? '';
+  }
+
+  protected readonly ColorFader = ColorFader;
 }

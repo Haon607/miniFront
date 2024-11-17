@@ -22,7 +22,7 @@ export class SoundSequenceRoundPlayerComponent implements OnDestroy {
   data: string = '';
   do = true;
   players: Player[] = [];
-  input: number[] = [];
+  input: string[] = [];
   disableButtons: boolean = false;
 
   constructor(
@@ -81,7 +81,7 @@ export class SoundSequenceRoundPlayerComponent implements OnDestroy {
 
   addToInput(playerId: number) {
     this.disableButtons = true;
-    this.input.push(playerId);
+    this.input.push(playerId.toString());
     this.playerService.setInput(this.memory.playerId, this.input.join(';')).subscribe(() => {
       this.disableButtons = false;
     });
@@ -97,5 +97,11 @@ export class SoundSequenceRoundPlayerComponent implements OnDestroy {
     this.playerService.setInput(this.memory.playerId, "").subscribe(() => {
       this.disableButtons = false;
     });
+  }
+
+  submit() {
+    this.disableButtons = true;
+    this.input.push('done');
+    this.playerService.setInput(this.memory.playerId, this.input.join(';')).subscribe(() => {});
   }
 }

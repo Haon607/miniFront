@@ -141,9 +141,9 @@ export class SelectGameComponent {
       }
       for (let j = 0; j < 10; j++) {
         if (vertical) {
-          this.squares.verticalLine(lineNumber[j], color, 250, 10, 1, false, alt);
+          this.squares.verticalLine(lineNumber[j], color, Math.floor((Math.random() * 200)+150), 10, 1, false, alt);
         } else {
-          this.squares.line(lineNumber[j], color, 250, 10, 1, false, alt);
+          this.squares.line(lineNumber[j], color, Math.floor((Math.random() * 200)+150), 10, 1, false, alt);
         }
         await new Promise(resolve => setTimeout(resolve, 100));
       }
