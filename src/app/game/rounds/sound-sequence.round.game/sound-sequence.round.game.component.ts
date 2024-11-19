@@ -41,8 +41,11 @@ export class SoundSequenceRoundGameComponent {
     color: string
   }[] = [];
   indexedSequence: number[][] = [];
+  selectMusic = new Audio('/audio/rounds/sound-sequence/select.mp3');
+  revealMusic = new Audio('/audio/rounds/sound-sequence/reveal.mp3')
   @ViewChild(TimerComponent) timerComponent!: TimerComponent;
   @ViewChild(ProgressBarComponent) progressBarComponent!: ProgressBarComponent;
+  private advanceMusic = false;
 
   constructor(private gameService: GameReqService, private playerService: PlayerReqService, private memory: MemoryGameService, private router: Router, private route: ActivatedRoute, private squares: SquaresService, private scoreboard: ScoreboardService,) {
     gameService.getGame(memory.gameId).subscribe(game => {
@@ -50,6 +53,8 @@ export class SoundSequenceRoundGameComponent {
       this.game.players.push(new Player(-1, Constants.GAMEOPTIONAME))
       this.testSound();
     });
+    this.selectMusic.load()
+    this.revealMusic.load()
     this.initScoreboard();
     this.squares.setGradient('#281A26', '#1A6675', true, 100);
   }
@@ -95,6 +100,8 @@ export class SoundSequenceRoundGameComponent {
     await new Promise(resolve => setTimeout(resolve, 500));
     for (let i = 1; i <= 10; i++) {
       this.state = 'setup'
+      this.selectMusic.currentTime = 0
+      this.advanceMusic = false;
       this.squares.setGradient('#281A26', '#1A6675', true, 100);
       await new Promise(resolve => setTimeout(resolve, 500));
       this.timerComponent.resetTimer();
@@ -131,6 +138,10 @@ export class SoundSequenceRoundGameComponent {
         this.indexedSequence.push([j, sequence[j]]);
       }
       this.state = 'select'
+      this.selectMusic.play();
+      this.soundMonitor();
+      this.revealMusic.currentTime = 0;
+      this.revealMusic.volume = 1;
       this.sendSelectToPlayer()
       let everySecond = false;
       while (this.state === 'select') {
@@ -169,10 +180,11 @@ export class SoundSequenceRoundGameComponent {
     })
     this.timerComponent.stopTimer();
     this.timerComponent.modifyTimer(0);
+    this.advanceMusic = true;
     await new Promise(resolve => setTimeout(resolve, 500));
-
+    console.log("TOreveal")
     this.squares.setGradient('#281A26', '#1A6675', false, 100);
-    await this.reveal();
+    await this.revealFnct();
   }
 
   onTimerEnd() {
@@ -196,13 +208,16 @@ export class SoundSequenceRoundGameComponent {
     return this.memory.players.filter(player => player.id.toString() === id)[0]?.name ?? '';
   }
 
-  async reveal() {
+  async revealFnct(): Promise<void> {
     let sequence = this.indexedSequence;
+    console.log(sequence)
     this.indexedSequence = [];
     this.state = 'reveal';
     for (let i = 0; i < sequence.length; i++) {
+      console.log(sequence[i])
       await new Promise(resolve => setTimeout(resolve, Math.max(7500, sequence.length * 500) / sequence.length));
       this.indexedSequence.push(sequence[i]);
+      this.playSound();
     }
 
     let gSeq = sequence.map(element => element[1].toString())
@@ -241,4 +256,12 @@ export class SoundSequenceRoundGameComponent {
   }
 
   protected readonly ColorFader = ColorFader;
+
+  private async soundMonitor() {
+    while (!this.advanceMusic) {
+      await new Promise(resolve => setTimeout(resolve, 2901));
+    }
+    this.revealMusic.play();
+    this.selectMusic.pause();
+  }
 }
