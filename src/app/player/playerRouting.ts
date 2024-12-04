@@ -5,6 +5,9 @@ import { GameReqService } from "../service/request/game.req.service";
 export class PlayerRouting {
   async routIf(router: Router, memory: MemoryPlayerService, gameService: GameReqService) {
     let loop = true;
+    if (isNaN(memory.gameId)) {
+      router.navigateByUrl("/");
+    }
     while (loop) {
       gameService.getGame(memory.gameId).subscribe(game => {
         if (game.route !== router.url) {

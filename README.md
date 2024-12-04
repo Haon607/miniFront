@@ -17,3 +17,5 @@ quickfire
 call outen 
 Guesspionage?
 code LM ass smp game
+list grid connect 
+player symbols 10x10 grid
