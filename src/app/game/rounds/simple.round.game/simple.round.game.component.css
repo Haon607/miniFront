@@ -3,12 +3,13 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  height: 100vh;
 }
 
 .content {
   flex-grow: 1;
   text-align: center;
+  margin-left: 20vw;
 }
 
 .question {
@@ -48,14 +49,19 @@
 
 .timer {
   position: absolute;
-  top: 1vh;
-  right: 1vw;
+  bottom: 1vh;
+  left: 0.5vw;
   z-index: 0;
 }
 
 .progress {
   position: absolute;
-  top: 1vh;
-  left: 21vw;
+  bottom: 19vh;
+  left: 7.4vw;
   z-index: 0;
+}
+
+.scoreboard {
+  position: absolute;
+  top: 0;
 }

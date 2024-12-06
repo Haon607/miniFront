@@ -42,6 +42,7 @@ export class ScoreboardComponent {
   isOverflowing = false;
   totalScore: boolean = true;
   players: Player[] = [];
+  @Input() height: number = 100;
 
   constructor(private scoreboardService: ScoreboardService) {
     scoreboardService.playerSubject.subscribe((players: Player[]) => {

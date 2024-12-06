@@ -1,5 +1,5 @@
 <div class="background">
-  <app-scoreboard></app-scoreboard>
+  <app-scoreboard class="scoreboard" [height]="75"></app-scoreboard>
   <div class="content">
     <app-progress-bar class="progress"
       [currentProgress]="0"
@@ -7,7 +7,7 @@
       [progressBarColor]="'#000080'"
       [warningColor]="'#800000'"
       [warningThreshold]="0"
-      [size]="150"
+      [size]="50"
       [textColor]="'#FFFFFF'"
     ></app-progress-bar>
     <app-timer class="timer"
@@ -15,7 +15,7 @@
                [warningThreshold]="5"
                [progressBarColor]="'#000080'"
                [warningColor]="'#800000'"
-               [size]="150"
+               [size]="180"
                [textColor]="'#FFFFFF'"
                [warningTextColor]="'#FF0000'"
                (currentSecond)="null"

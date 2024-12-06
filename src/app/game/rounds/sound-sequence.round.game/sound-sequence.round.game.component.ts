@@ -1,18 +1,18 @@
-import {Component, ViewChild} from '@angular/core';
-import {GameReqService} from "../../../service/request/game.req.service";
-import {PlayerReqService} from "../../../service/request/player.req.service";
-import {MemoryGameService} from "../../../service/memory/memory.game.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {SquaresService} from "../../../squares/squares.service";
-import {ScoreboardService} from "../../../scoreboard/scoreboard.service";
-import {Game, Player} from "../../../models";
-import {TimerComponent} from "../../../timer/timer.component";
-import {ProgressBarComponent} from "../../../progress-bar/progress-bar.component";
-import {ScoreboardComponent} from "../../../scoreboard/scoreboard.component";
-import {Constants} from "../../../constants";
-import {NgStyle} from "@angular/common";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {ColorFader} from "../../../utils";
+import { Component, ViewChild } from '@angular/core';
+import { GameReqService } from "../../../service/request/game.req.service";
+import { PlayerReqService } from "../../../service/request/player.req.service";
+import { MemoryGameService } from "../../../service/memory/memory.game.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { SquaresService } from "../../../squares/squares.service";
+import { ScoreboardService } from "../../../scoreboard/scoreboard.service";
+import { Game, Player } from "../../../models";
+import { TimerComponent } from "../../../timer/timer.component";
+import { ProgressBarComponent } from "../../../progress-bar/progress-bar.component";
+import { ScoreboardComponent } from "../../../scoreboard/scoreboard.component";
+import { Constants } from "../../../constants";
+import { NgStyle } from "@angular/common";
+import { animate, style, transition, trigger } from "@angular/animations";
+import { ColorFader } from "../../../utils";
 
 @Component({
   selector: 'app-sound-sequence.round.game',
@@ -45,6 +45,7 @@ export class SoundSequenceRoundGameComponent {
   revealMusic = new Audio('/audio/rounds/sound-sequence/reveal.mp3')
   @ViewChild(TimerComponent) timerComponent!: TimerComponent;
   @ViewChild(ProgressBarComponent) progressBarComponent!: ProgressBarComponent;
+  protected readonly ColorFader = ColorFader;
   private advanceMusic = false;
 
   constructor(private gameService: GameReqService, private playerService: PlayerReqService, private memory: MemoryGameService, private router: Router, private route: ActivatedRoute, private squares: SquaresService, private scoreboard: ScoreboardService,) {
@@ -79,10 +80,8 @@ export class SoundSequenceRoundGameComponent {
   }
 
   sendSelectToPlayer() {
-    this.playerService.deleteInputs().subscribe(() => {
-      this.gameService.modifyData(this.memory.gameId, "/sound", 'select').subscribe(() => {
-        this.timerComponent.startTimer()
-      })
+    this.gameService.modifyData(this.memory.gameId, "/sound", 'select').subscribe(() => {
+      this.timerComponent.startTimer()
     })
   }
 
@@ -97,20 +96,20 @@ export class SoundSequenceRoundGameComponent {
 
   async startRound() {
     this.state = '';
-    await new Promise(resolve => setTimeout(resolve, 500));
+    this.squares.setGradient('#281A26', '#1A6675', true, 100);
+    await new Promise(resolve => setTimeout(resolve, 1500));
     for (let i = 1; i <= 10; i++) {
       this.state = 'setup'
       this.selectMusic.currentTime = 0
       this.advanceMusic = false;
-      this.squares.setGradient('#281A26', '#1A6675', true, 100);
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 250));
       this.timerComponent.resetTimer();
       this.progressBarComponent.modifyProgress(1);
+      this.playerService.deleteInputs().subscribe(() => {
+      });
       this.state = 'playing'
       let sequence = this.generateSequence(i + Math.floor((i + 1) * 0.5))
-      console.log(sequence) //TODO DEBUG
       for (let j = 0; j < sequence.length; j++) {
-        console.log(sequence[j]) //TODO DEBUG
         if (sequence[j] === -1) {
           let done = false;
           this.playSound().addEventListener('ended', () => {
@@ -145,14 +144,6 @@ export class SoundSequenceRoundGameComponent {
       this.sendSelectToPlayer()
       let everySecond = false;
       while (this.state === 'select') {
-        // this.squares.fadeSquares(this.squares.checkerPath, '#281A26', 400)
-        await new Promise(resolve => setTimeout(resolve, 250));
-        // this.squares.fadeSquares(this.squares.checkerPathInv, '#281A26', 400)
-        await new Promise(resolve => setTimeout(resolve, 250));
-        // this.squares.fadeSquares(this.squares.checkerPath, '#1A6675', 400)
-        await new Promise(resolve => setTimeout(resolve, 250));
-        // this.squares.fadeSquares(this.squares.checkerPathInv, '#1A6675', 400)
-        await new Promise(resolve => setTimeout(resolve, 250));
         this.gameService.getGame(this.memory.gameId).subscribe(game => {
           this.playerAnswerProjection = game.players.map(player => {
             return {
@@ -165,38 +156,56 @@ export class SoundSequenceRoundGameComponent {
           })
         })
         everySecond = !everySecond;
-      }
-    }
-    this.gameService.modifyData(this.memory.gameId, "/sound", "reveal").subscribe(game => {
-      this.playerAnswerProjection = game.players.map(player => {
-        return {
-          id: player.id,
-          name: player.name,
-          input: player.input,
-          sequenceCorrect: undefined,
-          color: player.color
+
+        this.squares.line(0, '#1A6675', 100, 1, 1, false)
+        this.squares.line(9, '#281A26', 100, 1, 1, false, true)
+        await new Promise(resolve => setTimeout(resolve, 250));
+
+        let allDone = true;
+        this.playerAnswerProjection.forEach(player => {
+          if (!this.isPlayerDone(player.id)) allDone = false;
+        })
+        if (allDone) {
+          this.state = 'done';
         }
-      })
-    })
-    this.timerComponent.stopTimer();
-    this.timerComponent.modifyTimer(0);
-    this.advanceMusic = true;
-    await new Promise(resolve => setTimeout(resolve, 500));
-    console.log("TOreveal")
-    this.squares.setGradient('#281A26', '#1A6675', false, 100);
-    await this.revealFnct();
+
+        this.squares.line(0, '#281A26', 100, 1, 1, false)
+        this.squares.line(9, '#1A6675', 100, 1, 1, false, true)
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
+
+      this.gameService.modifyData(this.memory.gameId, "/sound", "reveal").subscribe(game => {
+        this.playerAnswerProjection = game.players.map(player => {
+          return {
+            id: player.id,
+            name: player.name,
+            input: player.input,
+            sequenceCorrect: undefined,
+            color: player.color
+          }
+        })
+      });
+      this.timerComponent.stopTimer();
+      this.timerComponent.modifyTimer(0);
+      this.advanceMusic = true;
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      this.squares.setGradient('#281A26', '#1A6675', false, 100);
+      await this.revealFnct();
+    }
   }
 
   onTimerEnd() {
     this.state = 'done';
   }
 
-  playSound() {
+  playSound(reveal = false) {
     let sound = new Audio("/audio/rounds/sound-sequence/key" + String(Math.floor((Math.random() * 4) + 1)) + ".mp3");
-    this.squares.colorEdges('#FFFFFF');
-    sound.addEventListener('ended', () => {
-      this.squares.colorEdges('#000000');
-    })
+    if (!reveal) {
+      this.squares.colorEdges('#FFFFFF');
+      sound.addEventListener('ended', () => {
+        this.squares.colorEdges('#000000');
+      })
+    }
     sound.play();
     return sound;
   }
@@ -210,14 +219,13 @@ export class SoundSequenceRoundGameComponent {
 
   async revealFnct(): Promise<void> {
     let sequence = this.indexedSequence;
-    console.log(sequence)
     this.indexedSequence = [];
     this.state = 'reveal';
+    await new Promise(resolve => setTimeout(resolve, 2000));
     for (let i = 0; i < sequence.length; i++) {
-      console.log(sequence[i])
       await new Promise(resolve => setTimeout(resolve, Math.max(7500, sequence.length * 500) / sequence.length));
       this.indexedSequence.push(sequence[i]);
-      this.playSound();
+      this.playSound(true);
     }
 
     let gSeq = sequence.map(element => element[1].toString())
@@ -237,7 +245,15 @@ export class SoundSequenceRoundGameComponent {
     }
     await new Promise(resolve => setTimeout(resolve, 2500));
     this.scoreboard.sortSubject.next();
-    await new Promise(resolve => setTimeout(resolve, Math.max(2000, 250 * sequence.length)));
+    await new Promise(resolve => setTimeout(resolve, Math.min(2000, 250 * sequence.length)));
+    this.squares.setGradient('#281A26', '#1A6675', true, 100);
+    for (let i = 10; i > 0; i--) {
+      this.revealMusic.volume = i / 10;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    this.revealMusic.pause()
+    this.revealMusic.currentTime = 0;
+    this.revealMusic.volume = 1;
   }
 
   isPlayerDone(playerId: number): boolean {
@@ -254,8 +270,6 @@ export class SoundSequenceRoundGameComponent {
     }
     return this.memory.players.filter(player => player.id.toString() === id)[0]?.color ?? '';
   }
-
-  protected readonly ColorFader = ColorFader;
 
   private async soundMonitor() {
     while (!this.advanceMusic) {
