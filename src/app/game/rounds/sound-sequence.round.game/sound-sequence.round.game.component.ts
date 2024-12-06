@@ -192,6 +192,7 @@ export class SoundSequenceRoundGameComponent {
       this.squares.setGradient('#281A26', '#1A6675', false, 100);
       await this.revealFnct();
     }
+    this.router.navigateByUrl("/game/scoreboard/" + Number(this.route.snapshot.paramMap.get('round')!))
   }
 
   onTimerEnd() {

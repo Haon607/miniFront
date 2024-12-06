@@ -124,9 +124,10 @@ export class SimpleRoundGameComponent {
       this.question = '';
       this.answers = [];
     }
+    this.backgroundMore = undefined;
+    await new Promise(resolve => setTimeout(resolve, 500));
     this.more.pause();
     this.less.pause();
-    this.backgroundMore = undefined;
     await this.endAnimation();
   }
 
@@ -150,26 +151,30 @@ export class SimpleRoundGameComponent {
     endAudio.addEventListener('ended', () => {
       this.router.navigateByUrl("/game/scoreboard/" + Number(this.route.snapshot.paramMap.get('round')!));
     });
-    //TODO ANimation
-    this.squares.setGradient(ColorFader.adjustBrightness(this.round.data, 10), ColorFader.adjustBrightness(this.round.data, -10), true, 50);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, 25));
+
+    let seq = this.squares.shuffleArray(this.squares.allPath);
+
+    await new Promise(resolve => setTimeout(resolve, 90));
+    this.rmfSquares(seq, 0)
     await new Promise(resolve => setTimeout(resolve, 200));
-    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, -25));
-    await new Promise(resolve => setTimeout(resolve, 150));
-    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, 25));
+    this.rmfSquares(seq, 1)
+    await new Promise(resolve => setTimeout(resolve, 430));
+    this.rmfSquares(seq, 2)
+    await new Promise(resolve => setTimeout(resolve, 215));
+    this.rmfSquares(seq, 3)
+    await new Promise(resolve => setTimeout(resolve, 120));
+    this.rmfSquares(seq, 4)
     await new Promise(resolve => setTimeout(resolve, 200));
-    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, -25));
-    await new Promise(resolve => setTimeout(resolve, 250));
-    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, 25));
-    await new Promise(resolve => setTimeout(resolve, 250));
-    this.squares.colorEdges(ColorFader.adjustBrightness(this.round.data, -25));
+    this.rmfSquares(seq, 5)
+    await new Promise(resolve => setTimeout(resolve, 125));
+    this.rmfSquares(seq, 6)
     await new Promise(resolve => setTimeout(resolve, 200));
-    this.squares.randomPath('#000000', 18, 1, 1, false)
-    await new Promise(resolve => setTimeout(resolve, 1850));
-    this.squares.colorEdges(this.round.data)
-    this.squares.fadeEdges('#000000', 800)
-    await new Promise(resolve => setTimeout(resolve, 800));
+    this.rmfSquares(seq, 7)
+  }
+  private rmfSquares(seq: number[][], step: number) {
+    for (let i = step*10; i < (step !== 7 ? (step*10)+10 : 100); i++) {
+      this.squares.colorSquares([seq[i]], '#000000');
+    }
   }
 
   protected async animateIntro() {
