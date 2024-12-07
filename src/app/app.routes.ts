@@ -17,6 +17,8 @@ import {
 import {
   SoundSequenceRoundPlayerComponent
 } from "./player/rounds/sound-sequence.round.player/sound-sequence.round.player.component";
+import { DashRoundGameComponent } from "./game/rounds/dash.round.game/dash.round.game.component";
+import { TextRoundPlayerComponent } from "./player/rounds/text.round.player/text.round.player.component";
 
 export const routes: Routes = [
   {path: "", component: JoinPlayerComponent},
@@ -26,6 +28,7 @@ export const routes: Routes = [
   {path: "rules/:round", component: RulesPlayerComponent},
   {path: "select", component: SelectPlayerComponent},
   {path: "sound", component: SoundSequenceRoundPlayerComponent},
+  {path: "text", component: TextRoundPlayerComponent},
   {path: "scoreboard/:round", component: ScoreboardPlayerComponent},
   //---{atop: player routes | below: game routes}---
   {path: "game", component: LaunchGameComponent},
@@ -36,4 +39,5 @@ export const routes: Routes = [
   {path: "game/scoreboard/:round", component: ScoreboardGameComponent},
   {path: "game/round/simple/:round", component: SimpleRoundGameComponent},
   {path: "game/round/sounds/:round", component: SoundSequenceRoundGameComponent},
+  {path: "game/round/dash/:round", component: DashRoundGameComponent},
 ];

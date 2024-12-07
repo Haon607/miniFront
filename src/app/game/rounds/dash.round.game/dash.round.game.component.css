@@ -1,0 +1,60 @@
+.background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+}
+
+.content {
+  flex-grow: 1;
+  text-align: center;
+  margin-left: 20vw;
+}
+
+.timerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.time-constrainer {
+  flex-grow: 1;
+}
+
+.timer {
+  flex-grow: 0;
+  text-align: center;
+}
+
+.scoreboard {
+  position: absolute;
+  top: 0;
+}
+
+.definition {
+  color: white;
+  font-size: 50px;
+  margin: 20px;
+}
+
+.title {
+  font-weight: bold;
+  color: #feca35;
+  font-size: 100px;
+  margin: 20px;
+}
+
+.elementsLeft {
+  color: white;
+  font-size: 50px;
+  margin: 20px;
+}
+
+.countdown {
+  color: #feca35;
+  font-size: 200px;
+  margin: 20px;
+}

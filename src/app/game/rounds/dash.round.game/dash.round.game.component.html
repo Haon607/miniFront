@@ -1,0 +1,34 @@
+<div class="background">
+  <app-scoreboard class="scoreboard"></app-scoreboard>
+  <div class="content">
+    <button (click)="startRound()">R</button>
+    <button (click)="startGame()">G</button>
+    @if (display.title) {
+      <div class="title content-highlight" @slide>{{ display.title }}</div>
+    }
+    @if (display.elementsLeft) {
+      <div class="elementsLeft" @slide>Noch <span style="color: #feca35; font-weight: bold">{{ display.elementsLeft }}</span> Einträge
+        unentdeckt
+      </div>
+    }
+    @if (display.definition) {
+      <div class="definition content-highlight" @slide>{{ display.definition }}</div>
+    }
+    @if (display.countdown) {
+      <div class="countdown " @slide>{{ display.countdown }}</div>
+    }
+    <div class="timerContainer">
+      <app-timer class="timer"
+                 [initialTime]="120"
+                 [warningThreshold]="10"
+                 [progressBarColor]="'#946c2a'"
+                 [warningColor]="'#feca35'"
+                 [size]="timeSize"
+                 [textColor]="'#FFFFFF'"
+                 [warningTextColor]="'#feca35'"
+                 (currentSecond)="null"
+                 (timerEnded)="onTimerEnd()"
+      ></app-timer>
+    </div>
+  </div>
+</div>

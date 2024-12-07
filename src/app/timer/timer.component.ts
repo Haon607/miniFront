@@ -61,9 +61,11 @@ export class TimerComponent implements OnInit, OnDestroy {
       this.timeLeft -= 1;
       this.currentSecond.emit(this.timeLeft);
 
-      // Trigger text scale animation
-      this.scaleState = 'scaled';
-      setTimeout(() => this.scaleState = 'normal', 200);
+      if (this.timeLeft <= this.warningThreshold || this.timeLeft % 10 === 0) {
+        // Trigger text scale animation
+        this.scaleState = 'scaled';
+        setTimeout(() => this.scaleState = 'normal', 200);
+      }
 
       // Update isWarning and flash states based on the threshold
       if (this.timeLeft <= this.warningThreshold) {
