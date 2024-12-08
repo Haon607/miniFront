@@ -57,6 +57,9 @@ export class TimerComponent implements OnInit, OnDestroy {
   startTimer() {
     if (this.isRunning) return;
     this.isRunning = true;
+    // Trigger text scale animation
+    this.scaleState = 'scaled';
+    setTimeout(() => this.scaleState = 'normal', 200);
     this.intervalId = setInterval(() => {
       this.timeLeft -= 1;
       this.currentSecond.emit(this.timeLeft);

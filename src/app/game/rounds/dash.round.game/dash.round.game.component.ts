@@ -40,14 +40,16 @@ export class DashRoundGameComponent {
     countdown: string,
     elementsLeft: number,
     elements: string[];
-  } = { title: '', definition: '', countdown: '', elements: [], elementsLeft: NaN };
+  } = {title: '', definition: '', countdown: '', elements: [], elementsLeft: NaN};
   list: {
     title: string,
     definition: string,
     elements: string[];
-  } = { title: '', definition: '', elements: [] };
+  } = {title: '', definition: '', elements: []};
   timeSize: number = 0;
-  stopBlinks = false;
+  stopListIntroAnim = false;
+  stopGameStartAnim = false;
+  stopGameRunningAnim = false;
   music = new Audio();
   @ViewChild(TimerComponent) timerComponent!: TimerComponent;
 
@@ -91,7 +93,7 @@ export class DashRoundGameComponent {
     });
     this.music.play();
     await this.playStartAnimation();
-    this.stopBlinks = false;
+    this.stopListIntroAnim = false;
     this.startBlinks();
     this.display.title = this.list.title;
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -108,6 +110,40 @@ export class DashRoundGameComponent {
 
   }
 
+  async startGame() {
+    this.showResults();
+    this.music.pause();
+    this.music = new Audio('/audio/rounds/dash/dash_play.mp3');
+    this.music.play()
+    this.stopListIntroAnim = true;
+    this.display.definition = '';
+    this.display.countdown = "ACHTUNG"
+    this.startGameAnimation();
+    for (let i = 0; i < 60; i++) {
+      await new Promise(resolve => setTimeout(resolve, 25));
+      this.timeSize += 5
+    }
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    this.display.countdown = "3"
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    this.display.countdown = "2"
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    this.display.countdown = "1"
+    await new Promise(resolve => setTimeout(resolve, 750));
+    this.stopGameStartAnim = true;
+    await new Promise(resolve => setTimeout(resolve, 250));
+    this.display.countdown = "LOS"
+    this.timerComponent.startTimer()
+    this.playerService.deleteInputs().subscribe(() => {
+    })
+    this.gameService.modifyData(this.memory.gameId, "/text", this.list.title).subscribe(() => {
+    })
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    this.display.countdown = ""
+    this.gameRunningAnimation();
+
+  }
+
   private async playStartAnimation() {
     await new Promise(resolve => setTimeout(resolve, 500));
     this.squares.verticalLine(3, '#feca35', 500, 10, 1, true)
@@ -120,13 +156,14 @@ export class DashRoundGameComponent {
     this.squares.verticalLine(8, '#268168', 1000, 10, 1, false, true)
     this.squares.verticalLine(9, '#268168', 1000, 10, 1, false, true)
     await new Promise(resolve => setTimeout(resolve, 1350));
-    this.squares.colorSquares([[0, 7],[1, 7],[2, 7],[3, 7],[4, 7],[5, 7],[6, 7],[7, 7],[8, 7],[9, 7],[0, 2],[1, 2],[2, 2],[3, 2],[4, 2],[5, 2],[6, 2],[7, 2],[8, 2],[9, 2]], '#175564')
+    const coords = [[0, 7], [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2], [9, 2], [0, 3], [0, 4], [0, 5], [0, 6], [1, 3], [1, 4], [1, 5], [1, 6], [2, 3], [2, 4], [2, 5], [2, 6], [3, 3], [3, 4], [3, 5], [3, 6], [4, 3], [4, 4], [4, 5], [4, 6], [5, 3], [5, 4], [5, 5], [5, 6], [6, 3], [6, 4], [6, 5], [6, 6], [7, 3], [7, 4], [7, 5], [7, 6], [8, 3], [8, 4], [8, 5], [8, 6], [9, 3], [9, 4], [9, 5], [9, 6]];
+    this.squares.colorSquares(coords, '#175564')
     await new Promise(resolve => setTimeout(resolve, 100));
-    this.squares.colorSquares([[0, 7],[1, 7],[2, 7],[3, 7],[4, 7],[5, 7],[6, 7],[7, 7],[8, 7],[9, 7],[0, 2],[1, 2],[2, 2],[3, 2],[4, 2],[5, 2],[6, 2],[7, 2],[8, 2],[9, 2]], '#5a3735')
+    this.squares.colorSquares(coords, '#5a3735')
     await new Promise(resolve => setTimeout(resolve, 200));
-    this.squares.colorSquares([[0, 7],[1, 7],[2, 7],[3, 7],[4, 7],[5, 7],[6, 7],[7, 7],[8, 7],[9, 7],[0, 2],[1, 2],[2, 2],[3, 2],[4, 2],[5, 2],[6, 2],[7, 2],[8, 2],[9, 2]], '#173a46')
+    this.squares.colorSquares(coords, '#173a46')
     await new Promise(resolve => setTimeout(resolve, 150));
-    this.squares.colorSquares([[0, 7],[1, 7],[2, 7],[3, 7],[4, 7],[5, 7],[6, 7],[7, 7],[8, 7],[9, 7],[0, 2],[1, 2],[2, 2],[3, 2],[4, 2],[5, 2],[6, 2],[7, 2],[8, 2],[9, 2]], '#3b202a')
+    this.squares.colorSquares(coords, '#3b202a')
     await new Promise(resolve => setTimeout(resolve, 100));
     this.squares.allFade('#191725', 500)
     await new Promise(resolve => setTimeout(resolve, 850));
@@ -137,43 +174,60 @@ export class DashRoundGameComponent {
 
   private async startBlinks() {
     let seq = this.squares.shuffleArray(this.squares.allPath);
-    for (let i = 0; !this.stopBlinks; i++) {
-      this.squares.colorSquares([seq[i%100]], '#268168')
-      this.squares.fadeSquares([seq[i%100]], '#142b45', 1000)
+    for (let i = 0; !this.stopListIntroAnim; i++) {
+      this.squares.colorSquares([seq[i % 100]], '#268168')
+      this.squares.fadeSquares([seq[i % 100]], '#142b45', 1000)
       await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
 
-  async startGame() {
-    this.showResults();
-    this.music.pause();
-    this.music = new Audio('/audio/rounds/dash/dash_play.mp3');
-    this.music.play()
-    this.stopBlinks = true;
-    this.display.definition = '';
-    this.display.countdown = "ACHTUNG"
-    for (let i = 0; i < 60; i++) {
-      await new Promise(resolve => setTimeout(resolve, 25));
-      this.timeSize += 5
-    }
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    this.display.countdown = "3"
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    this.display.countdown = "2"
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    this.display.countdown = "1"
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    this.display.countdown = "LOS"
-    this.timerComponent.startTimer()
-    this.playerService.deleteInputs().subscribe(() => {})
-      this.gameService.modifyData(this.memory.gameId, "/text", this.list.title).subscribe(() => {})
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    this.display.countdown = ""
-
-  }
-
   private async showResults() {
     await new Promise(resolve => setTimeout(resolve, 127500));
+    this.stopGameRunningAnim = true
+  }
 
+  private async startGameAnimation() {
+    while (!this.stopGameStartAnim) {
+      this.squares.line(0, '#268168', 10, 1, 1, false)
+      await new Promise(resolve => setTimeout(resolve, 25));
+      this.squares.line(1, '#268168', 10, 1, 1, false)
+      await new Promise(resolve => setTimeout(resolve, 25));
+      this.squares.line(2, '#268168', 10, 1, 1, false)
+      await new Promise(resolve => setTimeout(resolve, 50));
+      this.squares.line(9, '#268168', 10, 1, 1, false, true)
+      await new Promise(resolve => setTimeout(resolve, 25));
+      this.squares.line(8, '#268168', 10, 1, 1, false, true)
+      await new Promise(resolve => setTimeout(resolve, 25));
+      this.squares.line(7, '#268168', 10, 1, 1, false, true)
+      await new Promise(resolve => setTimeout(resolve, 50));
+      this.squares.line(0, '#5a3735', 10, 1, 1, false)
+      await new Promise(resolve => setTimeout(resolve, 25));
+      this.squares.line(1, '#5a3735', 10, 1, 1, false)
+      await new Promise(resolve => setTimeout(resolve, 25));
+      this.squares.line(2, '#5a3735', 10, 1, 1, false)
+      await new Promise(resolve => setTimeout(resolve, 50));
+      this.squares.line(9, '#5a3735', 10, 1, 1, false, true)
+      await new Promise(resolve => setTimeout(resolve, 25));
+      this.squares.line(8, '#5a3735', 10, 1, 1, false, true)
+      await new Promise(resolve => setTimeout(resolve, 25));
+      this.squares.line(7, '#5a3735', 10, 1, 1, false, true)
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    this.squares.colorEdges('#FFFFFF')
+    this.squares.allFade('#3b202a', 1000)
+  }
+
+  private async gameRunningAnimation() {
+    let seq = this.squares.shuffleArray(this.squares.allPath);
+    for (let i = 0; !this.stopGameRunningAnim; i++) {
+      this.fadeInOut(seq[i % 100], i%1.5 === 0);
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+
+  private async fadeInOut(coord: number[], blue: boolean) {
+    this.squares.fadeSquares([coord], blue ? '#268168' : '#5a3735', 1000)
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    this.squares.fadeSquares([coord], blue ? '#142b45' : '#3b202a', 1000)
   }
 }
