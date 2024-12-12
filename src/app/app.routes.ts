@@ -19,6 +19,8 @@ import {
 } from "./player/rounds/sound-sequence.round.player/sound-sequence.round.player.component";
 import { DashRoundGameComponent } from "./game/rounds/dash.round.game/dash.round.game.component";
 import { TextRoundPlayerComponent } from "./player/rounds/text.round.player/text.round.player.component";
+import { Connect4PlayerComponent } from "./player/rounds/connect4.player/connect4.player.component";
+import { Connect4RoundGameComponent } from "./game/rounds/connect4.round.game/connect4.round.game.component";
 
 export const routes: Routes = [
   {path: "", component: JoinPlayerComponent},
@@ -29,6 +31,7 @@ export const routes: Routes = [
   {path: "select", component: SelectPlayerComponent},
   {path: "sound", component: SoundSequenceRoundPlayerComponent},
   {path: "text", component: TextRoundPlayerComponent},
+  {path: "connect4", component: Connect4PlayerComponent},
   {path: "scoreboard/:round", component: ScoreboardPlayerComponent},
   //---{atop: player routes | below: game routes}---
   {path: "game", component: LaunchGameComponent},
@@ -40,4 +43,5 @@ export const routes: Routes = [
   {path: "game/round/simple/:round", component: SimpleRoundGameComponent},
   {path: "game/round/sounds/:round", component: SoundSequenceRoundGameComponent},
   {path: "game/round/dash/:round", component: DashRoundGameComponent},
+  {path: "game/round/connect4/:round", component: Connect4RoundGameComponent},
 ];

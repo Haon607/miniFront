@@ -1,0 +1,13 @@
+<div class="background">
+  <table>
+    @for (answerGroup of toSelect; track answerGroup) {
+      <tr>
+        @for (answer of answerGroup; track answer) {
+          <td class="answer" (click)="select(answer)" [ngStyle]="{'background': getColorForAnswer(answer)}">
+            {{ answer }}
+          </td>
+        }
+      </tr>
+    }
+  </table>
+</div>
