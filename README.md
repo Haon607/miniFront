@@ -17,5 +17,7 @@ quickfire
 call outen 
 Guesspionage?
 code LM ass smp game
-list grid connect 
+list grid connect (use smbw KO arena audio?)
 player symbols 10x10 grid
+scoreboardaudio after round
+
