@@ -11,7 +11,7 @@ jamboree eel boss -> fibbage
 some sort of buzzer beater
 some sort of sorting
 music by tone (pop quiz)
-speed list
+speed list (papstnamen anzahl)
 dash
 quickfire
 call outen 
@@ -20,4 +20,6 @@ code LM ass smp game
 list grid connect (use smbw KO arena audio?)
 player symbols 10x10 grid
 scoreboardaudio after round
-
+Gegen die Zeit
+Paaren
+Riskieren
