@@ -23,3 +23,4 @@ scoreboardaudio after round
 Gegen die Zeit
 Paaren
 Riskieren
+First to x correct

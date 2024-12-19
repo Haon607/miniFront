@@ -29,6 +29,7 @@ export const routes: Routes = [
   {path: "select", component: SelectPlayerComponent},
   {path: "sound", component: SoundSequenceRoundPlayerComponent},
   {path: "text", component: TextRoundPlayerComponent},
+  {path: "dash", component: TextRoundPlayerComponent},
   {path: "scoreboard/:round", component: ScoreboardPlayerComponent},
   //---{atop: player routes | below: game routes}---
   {path: "game", component: LaunchGameComponent},

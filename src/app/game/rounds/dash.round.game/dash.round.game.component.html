@@ -7,7 +7,8 @@
       <div class="title content-highlight" @slide>{{ display.title }}</div>
     }
     @if (display.elementsLeft) {
-      <div class="elementsLeft" @slide>Noch <span style="color: #feca35; font-weight: bold">{{ display.elementsLeft }}</span> Einträge
+      <div class="elementsLeft" @slide>Noch <span
+        style="color: #feca35; font-weight: bold">{{ display.elementsLeft }}</span> Einträge
         unentdeckt
       </div>
     }
@@ -17,18 +18,35 @@
     @if (display.countdown) {
       <div class="countdown " @slide>{{ display.countdown }}</div>
     }
-    <div class="timerContainer">
-      <app-timer class="timer"
-                 [initialTime]="120"
-                 [warningThreshold]="10"
-                 [progressBarColor]="'#946c2a'"
-                 [warningColor]="'#feca35'"
-                 [size]="timeSize"
-                 [textColor]="'#FFFFFF'"
-                 [warningTextColor]="'#feca35'"
-                 (currentSecond)="null"
-                 (timerEnded)="onTimerEnd()"
-      ></app-timer>
-    </div>
+    @if (display.table) {
+      <table @slide>
+        @for (player of playerAnswers; track player.id) {
+          <tr>
+            <td [ngStyle]="{'background-color': player.color, 'color': ColorFader.getContrastColor(player.color)}">
+              {{player.name}}
+            </td>
+            @for (answer of getCurrentDisplayedAnswers(player.validAnswers); track answer) {
+              <td [ngStyle]="{'background-color': player.color, 'color': ColorFader.getContrastColor(player.color)}" @slide>
+                {{answer}}
+              </td>
+            }
+          </tr>
+        }
+      </table>
+    } @else {
+      <div class="timerContainer">
+        <app-timer class="timer"
+                   [initialTime]="120"
+                   [warningThreshold]="10"
+                   [progressBarColor]="'#946c2a'"
+                   [warningColor]="'#feca35'"
+                   [size]="timeSize"
+                   [textColor]="'#FFFFFF'"
+                   [warningTextColor]="'#feca35'"
+                   (currentSecond)="null"
+                   (timerEnded)="onTimerEnd()"
+        ></app-timer>
+      </div>
+    }
   </div>
 </div>

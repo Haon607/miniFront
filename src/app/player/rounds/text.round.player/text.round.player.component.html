@@ -1,1 +1,7 @@
-<p>text.round.player works!</p>
+<div class="background" [ngStyle]="{'background-color': bgc}">
+  <span class="element" [ngStyle]="{'color': ColorFader.getContrastColor(bgc)}">{{ prompt }}</span>
+  <br>
+    <input #input [disabled]="disableInputAndButton" class="element">
+  <br>
+  <button class="element" [disabled]="disableInputAndButton" (click)="send(input)">Senden</button>
+</div>

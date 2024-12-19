@@ -8,8 +8,10 @@ import { MemoryGameService } from "../../../service/memory/memory.game.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SquaresService } from "../../../squares/squares.service";
 import { ScoreboardService } from "../../../scoreboard/scoreboard.service";
-import { Game, Question, Round } from "../../../models";
+import { Game, Round } from "../../../models";
 import { animate, style, transition, trigger } from "@angular/animations";
+import { NgStyle } from "@angular/common";
+import { ColorFader } from "../../../utils";
 
 @Component({
   selector: 'app-dash.round.game',
@@ -17,7 +19,8 @@ import { animate, style, transition, trigger } from "@angular/animations";
   imports: [
     ProgressBarComponent,
     ScoreboardComponent,
-    TimerComponent
+    TimerComponent,
+    NgStyle
   ],
   templateUrl: './dash.round.game.component.html',
   styleUrl: './dash.round.game.component.css',
@@ -41,18 +44,36 @@ export class DashRoundGameComponent {
     elementsLeft: number,
     elements: string[];
     table: boolean;
-  } = {title: '', definition: '', countdown: '', elements: [], elementsLeft: NaN, table: false};
+    tableElements: string[];
+    incorrectAnswers: string[];
+  } = {
+    title: '',
+    definition: '',
+    countdown: '',
+    elements: [],
+    elementsLeft: NaN,
+    table: false,
+    tableElements: [],
+    incorrectAnswers: []
+  };
   list: {
     title: string,
     definition: string,
     elements: string[];
   } = {title: '', definition: '', elements: []};
+  playerAnswers: {
+    id: number,
+    name: string,
+    color: string,
+    validAnswers: string[]
+  }[] = [];
   timeSize: number = 0;
   stopListIntroAnim = false;
   stopGameStartAnim = false;
   stopGameRunningAnim = false;
   music = new Audio();
   @ViewChild(TimerComponent) timerComponent!: TimerComponent;
+  protected readonly ColorFader = ColorFader;
 
   constructor(
     private gameService: GameReqService,
@@ -136,12 +157,20 @@ export class DashRoundGameComponent {
     this.timerComponent.startTimer()
     this.playerService.deleteInputs().subscribe(() => {
     })
-    this.gameService.modifyData(this.memory.gameId, "/text", this.list.title).subscribe(() => {
+    this.gameService.modifyData(this.memory.gameId, "/dash", this.list.title).subscribe(() => {
     })
     await new Promise(resolve => setTimeout(resolve, 3000));
     this.display.countdown = ""
     this.gameRunningAnimation();
 
+  }
+
+  getCurrentDisplayedAnswers(answers: string[]) {
+    let displayedAnswers: string[] = [];
+    for (let tableElement of this.display.tableElements) {
+      displayedAnswers.push(answers.filter(pAnswers => this.compareAnswer(pAnswers, tableElement)).join(' & '))
+    }
+    return displayedAnswers;
   }
 
   private async playStartAnimation() {
@@ -186,23 +215,36 @@ export class DashRoundGameComponent {
     // //LastMinute
     // await new Promise(resolve => setTimeout(resolve, 60000));
     await new Promise(resolve => setTimeout(resolve, 10000));
-    this.timerComponent.modifyTimer(1)
-    this.music.currentTime = 127.5;
+    this.timerComponent.modifyTimer(13)
+    this.music.currentTime = 115.5;
+    await new Promise(resolve => setTimeout(resolve, 12000));
+
     this.stopGameRunningAnim = true
 //timer aus
+    this.gameService.modifyData(this.memory.gameId, '/idle').subscribe(game => {
+      this.playerAnswers = game.players.map(player => {
+        return {
+          id: player.id,
+          name: player.name,
+          color: player.color,
+          validAnswers: player.input.split(';').filter(answer => this.isAnswerAnywhereValid(answer, this.list.elements))
+        }
+      })
+    })
     await new Promise(resolve => setTimeout(resolve, 2916));
 //Rise start
     this.shrinkTimer();
     await new Promise(resolve => setTimeout(resolve, 840));
 //bumm start
     await new Promise(resolve => setTimeout(resolve, 3749));
+//lines
     this.display.countdown = "ENDE!"
     this.middleLinesDashArrow();
-//lines
     await new Promise(resolve => setTimeout(resolve, 7506));
 //start showing table
     this.display.countdown = "";
     this.display.table = true
+    this.scrollTable();
     await new Promise(resolve => setTimeout(resolve, 22484));
 //start showing wrong answers
     await new Promise(resolve => setTimeout(resolve, 13135));
@@ -222,7 +264,7 @@ export class DashRoundGameComponent {
 
   private async middleLinesDashArrow() {
     for (let i = 0; i < 14; i++) {
-      let color = i % 2 ? '#268168' : '#5a3735' ;
+      let color = i % 2 ? '#268168' : '#5a3735';
       this.squares.line(4, color, 500, 10, 1, true)
       this.squares.line(5, color, 500, 10, 1, true)
       await new Promise(resolve => setTimeout(resolve, 50));
@@ -269,7 +311,7 @@ export class DashRoundGameComponent {
   private async gameRunningAnimation() {
     let seq = this.squares.shuffleArray(this.squares.allPath);
     for (let i = 0; !this.stopGameRunningAnim; i++) {
-      this.fadeInOut(seq[i % 100], i%1.5 === 0);
+      this.fadeInOut(seq[i % 100], i % 1.5 === 0);
       await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
@@ -278,5 +320,52 @@ export class DashRoundGameComponent {
     this.squares.fadeSquares([coord], blue ? '#268168' : '#5a3735', 1000)
     await new Promise(resolve => setTimeout(resolve, 1500));
     this.squares.fadeSquares([coord], blue ? '#142b45' : '#3b202a', 1000)
+  }
+
+  private async scrollTable() {
+    let foundAnswers = this.findFoundAnswers();
+  }
+
+  private isAnswerAnywhereValid(input: string, list: string[]) {
+    for (let element of list) {
+      if (this.compareAnswer(input, element)) return true;
+    }
+    if (!this.display.incorrectAnswers.includes(input)) this.display.incorrectAnswers.push(input);
+    return false;
+  }
+
+  private compareAnswer(input: string, actualAnswer: string): string {
+    let errorQuota = 0.25
+
+    // Calculate the maximum number of allowable differences (always round up to allow at least one error)
+    const maxErrors = Math.ceil(actualAnswer.length * errorQuota);
+
+    // Initialize pointers and error count
+    let errorCount = 0;
+    let i = 0, j = 0;
+
+    // Use two pointers to compare characters allowing for missing letters
+    while (i < input.length && j < actualAnswer.length) {
+      if (input[i] !== actualAnswer[j]) {
+        errorCount++;
+        if (errorCount > maxErrors) {
+          return "";
+        }
+        j++; // Assume a missing character in the input
+      } else {
+        i++;
+        j++;
+      }
+    }
+
+    // Account for remaining characters in either string
+    errorCount += (actualAnswer.length - j) + (input.length - i);
+
+    return errorCount <= maxErrors ? input : "";
+  }
+
+  private findFoundAnswers() {
+    let allElements = this.list.elements;
+
   }
 }
