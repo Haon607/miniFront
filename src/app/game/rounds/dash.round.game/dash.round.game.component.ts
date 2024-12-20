@@ -165,12 +165,16 @@ export class DashRoundGameComponent {
 
   }
 
-  getCurrentDisplayedAnswers(answers: string[]) {
+  getCurrentDisplayedAnswers(answers: string[]): { 'value': string, 'key': number }[] {
     let displayedAnswers: string[] = [];
     for (let tableElement of this.display.tableElements) {
       displayedAnswers.push(answers.filter(pAnswers => this.compareAnswer(pAnswers, tableElement)).join(' & '))
     }
-    return displayedAnswers;
+    let returnedDisplayedAnswers: { 'value': string, 'key': number }[] = [];
+    for (let i = 0; i < displayedAnswers.length; i++) {
+      returnedDisplayedAnswers.push({'value': displayedAnswers[i], 'key': i});
+    }
+    return returnedDisplayedAnswers;
   }
 
   private async playStartAnimation() {
@@ -227,7 +231,7 @@ export class DashRoundGameComponent {
           id: player.id,
           name: player.name,
           color: player.color,
-          validAnswers: player.input.split(';').filter(answer => this.isAnswerAnywhereValid(answer, this.list.elements))
+          validAnswers: player.input.split(';').filter(answer => Boolean(this.isAnswerAnywhereValid(answer, this.list.elements)))
         }
       })
     })
@@ -263,7 +267,7 @@ export class DashRoundGameComponent {
   }
 
   private async middleLinesDashArrow() {
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 10; i++) {
       let color = i % 2 ? '#268168' : '#5a3735';
       this.squares.line(4, color, 500, 10, 1, true)
       this.squares.line(5, color, 500, 10, 1, true)
@@ -273,7 +277,7 @@ export class DashRoundGameComponent {
       await new Promise(resolve => setTimeout(resolve, 50));
       this.squares.line(2, color, 500, 10, 1, true)
       this.squares.line(7, color, 500, 10, 1, true)
-      await new Promise(resolve => setTimeout(resolve, 400));
+      await new Promise(resolve => setTimeout(resolve, 644));
     }
   }
 
@@ -324,11 +328,19 @@ export class DashRoundGameComponent {
 
   private async scrollTable() {
     let foundAnswers = this.findFoundAnswers();
+    foundAnswers = foundAnswers.sort((a, b) => a.localeCompare(b))
+
+    if (foundAnswers.length >= 7) this.display.tableElements = [foundAnswers[0], foundAnswers[1], foundAnswers[2], foundAnswers[3], foundAnswers[4], foundAnswers[5], foundAnswers[6]];
+
+    for (let i = 8; i < foundAnswers.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 20000 / foundAnswers.length));
+      this.display.tableElements[i%7] = foundAnswers[i];
+    }
   }
 
-  private isAnswerAnywhereValid(input: string, list: string[]) {
+  private isAnswerAnywhereValid(input: string, list: string[], returnActual = false) {
     for (let element of list) {
-      if (this.compareAnswer(input, element)) return true;
+      if (this.compareAnswer(input, element)) return returnActual ? element : true;
     }
     if (!this.display.incorrectAnswers.includes(input)) this.display.incorrectAnswers.push(input);
     return false;
@@ -364,8 +376,13 @@ export class DashRoundGameComponent {
     return errorCount <= maxErrors ? input : "";
   }
 
-  private findFoundAnswers() {
+  private findFoundAnswers(): string[] {
     let allElements = this.list.elements;
-
+    let allPlayerAnswers: string[] = [];
+    this.playerAnswers.forEach(player => player.validAnswers.forEach(answer => {
+      if (!allPlayerAnswers.includes(answer)) allPlayerAnswers.push(answer);
+    }))
+    let foundElements: string[] = allPlayerAnswers.map(answer => String(this.isAnswerAnywhereValid(answer, allElements, true)));
+    return [...new Set(foundElements)];
   }
 }

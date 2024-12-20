@@ -21,13 +21,13 @@
     @if (display.table) {
       <table @slide>
         @for (player of playerAnswers; track player.id) {
-          <tr>
-            <td [ngStyle]="{'background-color': player.color, 'color': ColorFader.getContrastColor(player.color)}">
+          <tr @slide [ngStyle]="{'height': (100 / playerAnswers.length) + '%'}">
+            <td @slide [ngStyle]="{'background-color': player.color, 'color': ColorFader.getContrastColor(player.color)}" style="font-weight: bold">
               {{player.name}}
             </td>
-            @for (answer of getCurrentDisplayedAnswers(player.validAnswers); track answer) {
-              <td [ngStyle]="{'background-color': player.color, 'color': ColorFader.getContrastColor(player.color)}" @slide>
-                {{answer}}
+            @for (answer of getCurrentDisplayedAnswers(player.validAnswers); track answer.key) {
+              <td [ngStyle]="{'background-color': answer.value ? player.color : '#FFFFFF88', 'color': ColorFader.getContrastColor(player.color)}">
+                {{answer.value}}
               </td>
             }
           </tr>
