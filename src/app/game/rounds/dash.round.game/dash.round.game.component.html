@@ -26,7 +26,7 @@
               {{player.name}}
             </td>
             @for (answer of getCurrentDisplayedAnswers(player.validAnswers); track answer.key) {
-              <td [ngStyle]="{'background-color': answer.value ? player.color : '#FFFFFF88', 'color': ColorFader.getContrastColor(player.color)}">
+              <td [ngStyle]="{'background-color': answer.value ? (player.color + (answer.justAppeared ? 'FF' : '88')) : (ColorFader.adjustBrightness(player.color, -75) + (answer.justAppeared ? 'FF' : '88')), 'color': ColorFader.getContrastColor(player.color), 'font-weight': answer.justAppeared ? 'bold' : 'normal'}">
                 {{answer.value}}
               </td>
             }

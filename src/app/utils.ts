@@ -82,9 +82,7 @@ export class ColorFader {
     b = Math.min(255, Math.max(0, Math.round(b + (b * percent) / 100)));
 
     // Convert back to hex and pad with zeros if needed
-    const newHex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-
-    return newHex;
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
 
   // Convert hex to RGB

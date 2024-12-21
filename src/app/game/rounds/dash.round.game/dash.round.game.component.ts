@@ -44,7 +44,7 @@ export class DashRoundGameComponent {
     elementsLeft: number,
     elements: string[];
     table: boolean;
-    tableElements: string[];
+    tableElements: {element: string, justAppeared: boolean}[];
     incorrectAnswers: string[];
   } = {
     title: '',
@@ -165,16 +165,17 @@ export class DashRoundGameComponent {
 
   }
 
-  getCurrentDisplayedAnswers(answers: string[]): { 'value': string, 'key': number }[] {
-    let displayedAnswers: string[] = [];
+  getCurrentDisplayedAnswers(answers: string[]): { 'value': string, 'key': number, 'justAppeared': boolean }[] {
+    let displayAnswers: { 'value': string, 'key': number, 'justAppeared': boolean }[] = [];
     for (let tableElement of this.display.tableElements) {
-      displayedAnswers.push(answers.filter(pAnswers => this.compareAnswer(pAnswers, tableElement)).join(' & '))
+      let answer = answers.filter(pAnswers => this.compareAnswer(pAnswers, tableElement.element)).join(' & ');
+      displayAnswers.push({'value': answer, 'key': NaN, 'justAppeared': tableElement.justAppeared})
     }
-    let returnedDisplayedAnswers: { 'value': string, 'key': number }[] = [];
-    for (let i = 0; i < displayedAnswers.length; i++) {
-      returnedDisplayedAnswers.push({'value': displayedAnswers[i], 'key': i});
+    let returnDisplayAnswers = [];
+    for (let i = 0; i < displayAnswers.length; i++) {
+      returnDisplayAnswers.push({'value': displayAnswers[i].value, 'key': i, 'justAppeared': displayAnswers[i].justAppeared});
     }
-    return returnedDisplayedAnswers;
+    return returnDisplayAnswers;
   }
 
   private async playStartAnimation() {
@@ -219,7 +220,7 @@ export class DashRoundGameComponent {
     // //LastMinute
     // await new Promise(resolve => setTimeout(resolve, 60000));
     await new Promise(resolve => setTimeout(resolve, 10000));
-    this.timerComponent.modifyTimer(13)
+    this.timerComponent.modifyTimer(12)
     this.music.currentTime = 115.5;
     await new Promise(resolve => setTimeout(resolve, 12000));
 
@@ -328,13 +329,14 @@ export class DashRoundGameComponent {
 
   private async scrollTable() {
     let foundAnswers = this.findFoundAnswers();
-    foundAnswers = foundAnswers.sort((a, b) => a.localeCompare(b))
+    let foundAnswersAsObject = foundAnswers.sort((a, b) => a.localeCompare(b)).map(element => {return {element: element, justAppeared: true}})
 
-    if (foundAnswers.length >= 7) this.display.tableElements = [foundAnswers[0], foundAnswers[1], foundAnswers[2], foundAnswers[3], foundAnswers[4], foundAnswers[5], foundAnswers[6]];
-
-    for (let i = 8; i < foundAnswers.length; i++) {
-      await new Promise(resolve => setTimeout(resolve, 20000 / foundAnswers.length));
-      this.display.tableElements[i%7] = foundAnswers[i];
+    if (foundAnswers.length >= 7) this.display.tableElements = [foundAnswersAsObject[0], foundAnswersAsObject[1], foundAnswersAsObject[2], foundAnswersAsObject[3], foundAnswersAsObject[4], foundAnswersAsObject[5], foundAnswersAsObject[6]];
+    await new Promise(resolve => setTimeout(resolve, 500));
+    for (let i = 8; i < foundAnswersAsObject.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 19500 / foundAnswersAsObject.length));
+      this.display.tableElements.forEach(element => element.justAppeared = false);
+      this.display.tableElements[i % 7] = foundAnswersAsObject[i];
     }
   }
 
@@ -347,7 +349,7 @@ export class DashRoundGameComponent {
   }
 
   private compareAnswer(input: string, actualAnswer: string): string {
-    let errorQuota = 0.25
+    let errorQuota = 0.50
 
     // Calculate the maximum number of allowable differences (always round up to allow at least one error)
     const maxErrors = Math.ceil(actualAnswer.length * errorQuota);
